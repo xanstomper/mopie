@@ -65,6 +65,7 @@ bool sniffer_is_handshake_ready(uint64_t bssidKey);
 
 extern std::set<BeaconList> registeredBeacons;
 extern std::set<String> SavedHS;
+extern uint32_t wifiPktCount;
 
 void newPacketSD(uint32_t ts_sec, uint32_t ts_usec, uint32_t len, uint8_t *buf, File pcap_file);
 

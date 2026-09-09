@@ -63,6 +63,7 @@ volatile bool littleFsSpaceAvailable = true;
 int num_EAPOL = 0;
 int num_HS = 0;
 uint32_t packet_counter = 0;
+uint32_t wifiPktCount = 0;
 uint32_t deauth_counter = 0;
 uint32_t beacon_frames = 0;
 uint32_t start_time = 0;
@@ -958,6 +959,7 @@ void sniffer(void *buf, wifi_promiscuous_pkt_type_t type) {
     wifi_pkt_rx_ctrl_t ctrl = pkt->rx_ctrl;
 
     packet_counter++;
+    wifiPktCount++;
 
     FrameInfo frameInfo = analyzeFrame(pkt);
     if (!frameInfo.valid) { return; }

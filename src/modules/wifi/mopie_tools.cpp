@@ -1,5 +1,7 @@
 #include "mopie_tools.h"
 #include "mopie_tx.h"
+#include "sniffer.h"
+#include <esp_wifi.h>
 #include "core/mykeyboard.h"
 #include "core/display.h"
 #include "core/main_menu.h"
@@ -109,6 +111,33 @@ void mopieAssaultKit() {
                 vTaskDelay(60);
             }
             tft.drawCentreString("done: " + String(frames) + " frames", tftWidth/2, 70, 1);
+        }},
+        {"Sig Monitor",  "live radio activity", []() {
+            // Defensive recon: promiscuous capture, live packet-rate + AP count.
+            tft.fillScreen(bruceConfig.bgColor);
+            tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+            tft.drawCentreString("SIG MONITOR", tftWidth/2, 8, 1);
+            esp_wifi_set_promiscuous(true);
+            esp_wifi_set_promiscuous_rx_cb(nullptr);   // capture raw only, no pcap
+            unsigned long t0 = millis();
+            uint32_t last = 0; unsigned long lastT = t0;
+            while (!check(EscPress) && millis()-t0 < 8000) {
+                unsigned long now = millis();
+                if (now - lastT >= 500) {
+                    uint32_t pkts = wifiPktCount;
+                    uint32_t rate = (pkts - last) * 2;         // per second
+                    last = pkts; lastT = now;
+                    tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+                    tft.drawCentreString(String(rate) + " pkt/s", tftWidth/2, 34, 1);
+                    tft.drawCentreString(String((int)registeredBeacons.size()) + " APs", tftWidth/2, 50, 1);
+                    // activity bar
+                    int w = (int)((rate % 160) + 8); if (w > 160) w = 160;
+                    tft.fillRect((tftWidth-160)/2, 62, w, 10, bruceConfig.priColor);
+                }
+                vTaskDelay(20);
+            }
+            esp_wifi_set_promiscuous(false);
+            tft.drawCentreString("monitor off", tftWidth/2, 84, 1);
         }},
     };
     const int N = sizeof(tools)/sizeof(tools[0]);

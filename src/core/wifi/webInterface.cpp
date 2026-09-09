@@ -26,7 +26,7 @@ const int default_webserverporthttp = 80;
 IPAddress AP_GATEWAY(172, 0, 0, 1); // Gateway
 
 AsyncWebServer *server = nullptr; // initialise webserver
-const char *host = "bruce";
+const char *host = "mopie";
 String uploadFolder = "";
 static bool mdnsRunning = false;
 
@@ -179,7 +179,7 @@ bool checkUserWebAuth(AsyncWebServerRequest *request, bool onFailureReturnLoginP
             int end = c.indexOf(';', start);
             if (end == -1) end = c.length();
             String token = c.substring(start, end);
-            if (bruceConfig.isValidWebUISession(token)) { return true; }
+            if (mopieConfig.isValidWebUISession(token)) { return true; }
         }
     }
     if (onFailureReturnLoginPage) {
@@ -283,7 +283,7 @@ void drawWebUiScreen(bool mode_ap) {
     int padX = 14;
     int currentY = 50;
 
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setTextSize(FP);
 
     if (mode_ap) {
@@ -293,24 +293,24 @@ void drawWebUiScreen(bool mode_ap) {
     }
 
     tft.setCursor(padX, currentY);
-    tft.setTextColor(DEFAULT_ACCENT, bruceConfig.bgColor);
+    tft.setTextColor(DEFAULT_ACCENT, mopieConfig.bgColor);
     tft.print("Agent: http://" + txt + "/ai");
     currentY += LH * FP + 7;
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
 
     tft.setCursor(padX, currentY);
     tft.print("IP:  " + txt);
     currentY += LH * FP + 6;
 
     tft.setCursor(padX, currentY);
-    tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
-    tft.print("Usr: " + String(bruceConfig.webUI.user));
+    tft.setTextColor(mopieConfig.secColor, mopieConfig.bgColor);
+    tft.print("Usr: " + String(mopieConfig.webUI.user));
     currentY += LH * FP + 5;
 
     tft.setCursor(padX, currentY);
-    tft.print("Pwd: " + String(bruceConfig.webUI.pwd));
+    tft.print("Pwd: " + String(mopieConfig.webUI.pwd));
 
-    tft.setTextColor(TFT_RED, bruceConfig.bgColor);
+    tft.setTextColor(TFT_RED, mopieConfig.bgColor);
     tft.setTextSize(FP);
     tft.drawCentreString("open /ai for the Agent chat", tftWidth / 2, tftHeight - 3 * LH, 1);
     tft.drawCentreString("press Esc to stop", tftWidth / 2, tftHeight - 2 * LH, 1);
@@ -362,9 +362,9 @@ void serveWebUIFile(
         response = request->beginResponse(*fs, "MopieWebUI/" + filename, contentType);
     } else {
         if (filename == "theme.css") {
-            String css = ":root{--color:" + color565ToWebHex(bruceConfig.priColor) +
-                         ";--sec-color:" + color565ToWebHex(bruceConfig.secColor) +
-                         ";--background:" + color565ToWebHex(bruceConfig.bgColor) + ";}";
+            String css = ":root{--color:" + color565ToWebHex(mopieConfig.priColor) +
+                         ";--sec-color:" + color565ToWebHex(mopieConfig.secColor) +
+                         ";--background:" + color565ToWebHex(mopieConfig.bgColor) + ";}";
             AsyncWebServerResponse *themeResponse = request->beginResponse(200, "text/css", css);
             request->send(themeResponse);
             return;
@@ -417,13 +417,13 @@ void configureWebServer() {
             String username = request->getParam("username", true)->value();
             String password = request->getParam("password", true)->value();
 
-            if (username == bruceConfig.webUI.user && password == bruceConfig.webUI.pwd) {
+            if (username == mopieConfig.webUI.user && password == mopieConfig.webUI.pwd) {
                 String token = generateToken();
                 AsyncWebServerResponse *response = request->beginResponse(302);
                 response->addHeader("Location", "/");
                 response->addHeader("Set-Cookie", "MOPIESESSION=" + token + "; Path=/; HttpOnly");
                 request->send(response);
-                bruceConfig.addWebUISession(token);
+                mopieConfig.addWebUISession(token);
                 return;
             }
         }
@@ -443,7 +443,7 @@ void configureWebServer() {
                 int end = c.indexOf(';', start);
                 if (end == -1) end = c.length();
                 String token = c.substring(start, end);
-                bruceConfig.removeWebUISession(token);
+                mopieConfig.removeWebUISession(token);
             }
         }
         AsyncWebServerResponse *response = request->beginResponse(302);
@@ -736,7 +736,7 @@ void configureWebServer() {
             if (request->hasArg("usr") && request->hasArg("pwd")) {
                 const char *usr = request->arg("usr").c_str();
                 const char *pwd = request->arg("pwd").c_str();
-                bruceConfig.setWebUICreds(usr, pwd);
+                mopieConfig.setWebUICreds(usr, pwd);
                 request->send(
                     200, "text/plain", "User: " + String(usr) + " configured with password: " + String(pwd)
                 );

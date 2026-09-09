@@ -33,62 +33,62 @@ void LoRaMenu::drawIcon(float scale) {
 
     // Left Leg
     tft.drawWideLine(
-        CALC_X(44), CALC_Y(35), CALC_X(26), CALC_Y(85), lineWidth, bruceConfig.priColor, bruceConfig.priColor
+        CALC_X(44), CALC_Y(35), CALC_X(26), CALC_Y(85), lineWidth, mopieConfig.priColor, mopieConfig.priColor
     );
     // Right Leg
     tft.drawWideLine(
-        CALC_X(56), CALC_Y(35), CALC_X(74), CALC_Y(85), lineWidth, bruceConfig.priColor, bruceConfig.priColor
+        CALC_X(56), CALC_Y(35), CALC_X(74), CALC_Y(85), lineWidth, mopieConfig.priColor, mopieConfig.priColor
     );
 
     // --- CROSS BARS (Unchanged) ---
 
     // Top Cross Bar
     tft.drawWideLine(
-        CALC_X(44), CALC_Y(35), CALC_X(56), CALC_Y(35), lineWidth, bruceConfig.priColor, bruceConfig.priColor
+        CALC_X(44), CALC_Y(35), CALC_X(56), CALC_Y(35), lineWidth, mopieConfig.priColor, mopieConfig.priColor
     );
 
     // Middle Cross Bar
     tft.drawWideLine(
-        CALC_X(35), CALC_Y(65), CALC_X(65), CALC_Y(65), lineWidth, bruceConfig.priColor, bruceConfig.priColor
+        CALC_X(35), CALC_Y(65), CALC_X(65), CALC_Y(65), lineWidth, mopieConfig.priColor, mopieConfig.priColor
     );
 
     // --- X-BRACING TOP (Unchanged) ---
 
     // X-Bracing (Top Section)
     tft.drawWideLine(
-        CALC_X(44), CALC_Y(35), CALC_X(65), CALC_Y(65), lineWidth, bruceConfig.priColor, bruceConfig.priColor
+        CALC_X(44), CALC_Y(35), CALC_X(65), CALC_Y(65), lineWidth, mopieConfig.priColor, mopieConfig.priColor
     );
     tft.drawWideLine(
-        CALC_X(56), CALC_Y(35), CALC_X(35), CALC_Y(65), lineWidth, bruceConfig.priColor, bruceConfig.priColor
+        CALC_X(56), CALC_Y(35), CALC_X(35), CALC_Y(65), lineWidth, mopieConfig.priColor, mopieConfig.priColor
     );
 
     // --- X-BRACING BOTTOM UPDATED (Y changed from 95 to 85) ---
 
     // X-Bracing (Bottom Section)
     tft.drawWideLine(
-        CALC_X(35), CALC_Y(65), CALC_X(74), CALC_Y(85), lineWidth, bruceConfig.priColor, bruceConfig.priColor
+        CALC_X(35), CALC_Y(65), CALC_X(74), CALC_Y(85), lineWidth, mopieConfig.priColor, mopieConfig.priColor
     );
     tft.drawWideLine(
-        CALC_X(65), CALC_Y(65), CALC_X(26), CALC_Y(85), lineWidth, bruceConfig.priColor, bruceConfig.priColor
+        CALC_X(65), CALC_Y(65), CALC_X(26), CALC_Y(85), lineWidth, mopieConfig.priColor, mopieConfig.priColor
     );
 
     // --- REST IS UNCHANGED ---
 
     // ball
     int ballY = CALC_Y(25);
-    tft.fillCircle(cx, ballY, ballRad, bruceConfig.priColor);
+    tft.fillCircle(cx, ballY, ballRad, mopieConfig.priColor);
 
     // waves
     int r1 = scale * 20;
     int r2 = scale * 32;
 
     // Right Side (90 degrees +/-)
-    tft.drawArc(cx, ballY, r1 + lineWidth, r1, 60, 120, bruceConfig.priColor, bruceConfig.bgColor);
-    tft.drawArc(cx, ballY, r2 + lineWidth, r2, 60, 120, bruceConfig.priColor, bruceConfig.bgColor);
+    tft.drawArc(cx, ballY, r1 + lineWidth, r1, 60, 120, mopieConfig.priColor, mopieConfig.bgColor);
+    tft.drawArc(cx, ballY, r2 + lineWidth, r2, 60, 120, mopieConfig.priColor, mopieConfig.bgColor);
 
     // Left Side (270 degrees +/-)
-    tft.drawArc(cx, ballY, r1 + lineWidth, r1, 240, 300, bruceConfig.priColor, bruceConfig.bgColor);
-    tft.drawArc(cx, ballY, r2 + lineWidth, r2, 240, 300, bruceConfig.priColor, bruceConfig.bgColor);
+    tft.drawArc(cx, ballY, r1 + lineWidth, r1, 240, 300, mopieConfig.priColor, mopieConfig.bgColor);
+    tft.drawArc(cx, ballY, r2 + lineWidth, r2, 240, 300, mopieConfig.priColor, mopieConfig.bgColor);
 }
 void LoRaMenu::drawIconAt(int cx, int cy, float scale) {
     // delegate to central scaling glyph — fits the grid cell like every other icon

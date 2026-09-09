@@ -55,12 +55,12 @@ uint8_t active_channels_size = sizeof(pri_wifi_channels_default) / sizeof(pri_wi
 void advertise(uint8_t channel);
 void wakeUp();
 void toggle_all_channels();
-static uint64_t bruceMacToKey(const void *mac);
+static uint64_t mopieMacToKey(const void *mac);
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-static uint64_t bruceMacToKey(const void *mac) {
+static uint64_t mopieMacToKey(const void *mac) {
     const uint8_t *u = (const uint8_t *)mac;
     uint64_t key = 0;
     for (int i = 0; i < 6; ++i) { key = (key << 8) | (uint64_t)u[i]; }
@@ -189,16 +189,16 @@ void dmTargetedDeauth() {
 
     auto &tgt = apList[pick];
     uint8_t tchan = tgt.channel ? tgt.channel : 1;
-    uint64_t tkey = bruceMacToKey(tgt.MAC);
+    uint64_t tkey = mopieMacToKey(tgt.MAC);
     String tgtMac = dmMacStr(tgt.MAC);
 
     // Clear the menu, draw a targeting screen
-    tft.fillScreen(bruceConfig.bgColor);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.drawCentreString("LOCKED ON", tftWidth / 2, 8, 1);
-    tft.setTextColor(TFT_RED, bruceConfig.bgColor);
+    tft.setTextColor(TFT_RED, mopieConfig.bgColor);
     tft.drawCentreString(tgtMac, tftWidth / 2, 30, 1);
-    tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.secColor, mopieConfig.bgColor);
     tft.drawCentreString("Deauthing on ch" + String(tchan) + " ...", tftWidth / 2, 50, 1);
     tft.drawCentreString("PWR to stop", tftWidth / 2, tftHeight - 20, 1);
 
@@ -234,7 +234,7 @@ void dmTargetedDeauth() {
     }
 
     // return to the recon UI
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     setMood(8, "(-@_@)", "Targeting done (" + String(deauthCount) + " deauths)");
     updateUi(true);
 }
@@ -244,8 +244,8 @@ void dmTargetedDeauth() {
 // deauth attempts, handshakes. Pure recon readout, no radio change.
 // ---------------------------------------------------------------------------
 void dmNetStats() {
-    tft.fillScreen(bruceConfig.bgColor);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.drawCentreString("NET STATS", tftWidth / 2, 8, 1);
     tft.setTextSize(1);
 
@@ -267,18 +267,18 @@ void dmNetStats() {
     line("Handshakes: " + String(num_HS));
     line("Decoys:     (pwngrid active)");
 
-    tft.setTextColor(TFT_RED, bruceConfig.bgColor);
+    tft.setTextColor(TFT_RED, mopieConfig.bgColor);
     tft.drawCentreString("PWR to close", tftWidth / 2, tftHeight - 16, 1);
     while (!check(EscPress) && !check(AnyKeyPress)) vTaskDelay(50);
 
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     updateUi(true);
 }
 
 // ---------------------------------------------------------------------------
 // dmSummonRogue — broadcast a fake AP beacon for a captured target, as a lure.
 // Picks any AP from the recon set and summons a rogue twin via Mopie's own
-// beacon builder — a "catch, then lure" follow-up brucegotchi can't do.
+// beacon builder — a "catch, then lure" follow-up pwnagotchi-parity can't do.
 // ---------------------------------------------------------------------------
 void dmSummonRogue() {
     std::vector<BeaconList> apList(registeredBeacons.begin(), registeredBeacons.end());
@@ -297,12 +297,12 @@ void dmSummonRogue() {
     memcpy(bssid, tgt.MAC, 6);
     bssid[0] |= 0x02;   // tweak the local-admin bit so it's recognizably "the twin"
 
-    tft.fillScreen(bruceConfig.bgColor);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.drawCentreString("SUMMONING ROGUE AP", tftWidth / 2, 14, 1);
-    tft.setTextColor(TFT_RED, bruceConfig.bgColor);
+    tft.setTextColor(TFT_RED, mopieConfig.bgColor);
     tft.drawCentreString(dmMacStr((const char *)bssid), tftWidth / 2, 42, 1);
-    tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.secColor, mopieConfig.bgColor);
     tft.drawCentreString("beaconing ch" + String(tgt.channel) + " ...", tftWidth / 2, 60, 1);
 
     uint8_t frame[128];
@@ -316,7 +316,7 @@ void dmSummonRogue() {
         if (fl) sent += mopie_send_raw(frame, fl, tgt.channel, 1);
         vTaskDelay(120);
     }
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     setMood(14, "(T_T)", "Rogue beacon done (" + String(sent) + ")");
     updateUi(true);
 }
@@ -398,7 +398,7 @@ static void interactPhase(MopieState &s) {
                 if (check(SelPress)) break;
                 if (pwnagotchi_exit) break;
 
-                uint64_t key = bruceMacToKey(beacon.MAC);
+                uint64_t key = mopieMacToKey(beacon.MAC);
 
                 if (sniffer_is_handshake_ready(key)) {
                     skipped++;
@@ -484,7 +484,7 @@ static void advertisePhase(MopieState &s) {
 void detective_mopie_start() {
     set_pwnagotchi_exit(false);
 
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     num_HS = 0;
     sniffer_reset_handshake_cache();
     registeredBeacons.clear();
@@ -554,7 +554,7 @@ void detective_mopie_start() {
                 {"Main Menu", lambdaHelper(set_pwnagotchi_exit, true)},
             };
             loopOptions(options);
-            tft.fillScreen(bruceConfig.bgColor);
+            tft.fillScreen(mopieConfig.bgColor);
             drawTopCanvas();
             drawBottomCanvas();
             updateUi(true);

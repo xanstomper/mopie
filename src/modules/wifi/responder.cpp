@@ -195,7 +195,7 @@ void updateHashUI() {
 
     // 1) NTLM count
     tft.setTextSize(FP);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setCursor(10, BORDER_PAD_Y + FM * LH);
     tft.print("NTLM: ");
     tft.setTextSize(2);
@@ -571,7 +571,7 @@ void decodeNetBIOSLabel(const uint8_t *enc32, char *out, size_t outSize) {
 void responder() {
 
     drawMainBorderWithTitle("RESPONDER");
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     if (!wifiConnected) wifiConnectMenu();
 
     netbiosname_str = keyboard("Mopie", 20);
@@ -585,7 +585,7 @@ void responder() {
     dnsDomain = stringTochar(dnsdomain_str);
 
     drawMainBorderWithTitle("RESPONDER"); // draw again after keyboard
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
 
     hashCount = 0;
     // Démarrer l'écoute NBNS (UDP 137)

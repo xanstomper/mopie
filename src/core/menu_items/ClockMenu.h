@@ -11,8 +11,8 @@ public:
     void showSubMenu(void);
     void drawIcon(float scale);
     void drawIconAt(int cx, int cy, float scale);
-    bool hasTheme() { return bruceConfig.theme.clock; }
-    const String& themePath() override { return bruceConfig.theme.paths.clock; }
+    bool hasTheme() { return mopieConfig.theme.clock; }
+    const String& themePath() override { return mopieConfig.theme.paths.clock; }
 };
 
 #endif

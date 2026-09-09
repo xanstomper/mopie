@@ -11,8 +11,8 @@ public:
     void configMenu(void);
     void drawIcon(float scale);
     void drawIconAt(int cx, int cy, float scale);
-    bool hasTheme() { return bruceConfig.theme.nrf; }
-    const String& themePath() override { return bruceConfig.theme.paths.nrf; }
+    bool hasTheme() { return mopieConfig.theme.nrf; }
+    const String& themePath() override { return mopieConfig.theme.paths.nrf; }
 };
 
 #endif

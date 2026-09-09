@@ -37,8 +37,8 @@ void RFMenu::optionsMenu() {
 
     delay(200);
     String txt = "Radio Frequency";
-    if (bruceConfigPins.rfModule == CC1101_SPI_MODULE) txt += " (CC1101)"; // Indicates if CC1101 is connected
-    else txt += " Tx: " + String(bruceConfigPins.rfTx) + " Rx: " + String(bruceConfigPins.rfRx);
+    if (mopieConfigPins.rfModule == CC1101_SPI_MODULE) txt += " (CC1101)"; // Indicates if CC1101 is connected
+    else txt += " Tx: " + String(mopieConfigPins.rfTx) + " Rx: " + String(mopieConfigPins.rfRx);
 
     loopOptions(options, MENU_TYPE_SUBMENU, txt.c_str());
 }

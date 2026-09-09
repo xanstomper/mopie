@@ -54,9 +54,9 @@ const char* getThemeName(CyberTheme theme) {
 void applyTheme(CyberTheme theme) {
     if (theme >= THEME_COUNT) return;
     activeTheme = theme;
-    bruceConfig.priColor = CYBER_THEMES[theme].pri;
-    bruceConfig.secColor = CYBER_THEMES[theme].sec;
-    bruceConfig.bgColor  = CYBER_THEMES[theme].bg;
+    mopieConfig.priColor = CYBER_THEMES[theme].pri;
+    mopieConfig.secColor = CYBER_THEMES[theme].sec;
+    mopieConfig.bgColor  = CYBER_THEMES[theme].bg;
 }
 
 void cycleTheme() {
@@ -67,10 +67,10 @@ void cycleTheme() {
 void drawStatusBar() {
     // 15px compact status bar — dark navy fill, blue base line, corner brackets
     tft.fillRect(0, 0, tftWidth, 15, 0x2004);          // near-black navy
-    tft.drawFastHLine(0, 15, tftWidth, bruceConfig.priColor);
+    tft.drawFastHLine(0, 15, tftWidth, mopieConfig.priColor);
 
     tft.setTextSize(1);
-    tft.setTextColor(bruceConfig.priColor, 0x2004);
+    tft.setTextColor(mopieConfig.priColor, 0x2004);
     tft.setCursor(4, 4);
 
     // Clock or Device branding
@@ -169,12 +169,12 @@ void drawSubmenu(int index, std::vector<Option>& options, const char* title) {
         hdr.toUpperCase();
         tft.setCursor(6, 20);
         tft.print(hdr.substring(0, 22));
-        tft.setTextColor(bruceConfig.priColor, 0x2004);
+        tft.setTextColor(mopieConfig.priColor, 0x2004);
         char cnt[12];
         snprintf(cnt, sizeof(cnt), "%d", total);
         tft.setCursor(tftWidth - 6 - strlen(cnt) * 6, 20);
         tft.print(cnt);
-        tft.drawFastHLine(0, 30, tftWidth, bruceConfig.priColor);
+        tft.drawFastHLine(0, 30, tftWidth, mopieConfig.priColor);
     }
 
     for (int r = 0; r < VISIBLE_ROWS; r++) {
@@ -182,7 +182,7 @@ void drawSubmenu(int index, std::vector<Option>& options, const char* title) {
         int y = START_Y + r * ROW_HEIGHT;
 
         if (optIdx >= total) {
-            tft.fillRect(4, y, ROW_WIDTH, ROW_HEIGHT, bruceConfig.bgColor);
+            tft.fillRect(4, y, ROW_WIDTH, ROW_HEIGHT, mopieConfig.bgColor);
             continue;
         }
 
@@ -191,10 +191,10 @@ void drawSubmenu(int index, std::vector<Option>& options, const char* title) {
 
         if (isSelected) {
             // Full-red inverted bar, white text, left notch
-            tft.fillRect(6, y + 1, ROW_WIDTH - 10, ROW_HEIGHT - 3, bruceConfig.priColor);
-            tft.fillRect(2, y + 5, 4, ROW_HEIGHT - 11, bruceConfig.priColor);  // notch
+            tft.fillRect(6, y + 1, ROW_WIDTH - 10, ROW_HEIGHT - 3, mopieConfig.priColor);
+            tft.fillRect(2, y + 5, 4, ROW_HEIGHT - 11, mopieConfig.priColor);  // notch
             tft.setTextSize(1);
-            tft.setTextColor(TFT_WHITE, bruceConfig.priColor);
+            tft.setTextColor(TFT_WHITE, mopieConfig.priColor);
             tft.setCursor(14, y + 6);
             int maxChars = (ROW_WIDTH - 24) / 6;
             tft.print(opt.label.substring(0, maxChars));
@@ -202,14 +202,14 @@ void drawSubmenu(int index, std::vector<Option>& options, const char* title) {
             // Index e.g. 3/12 right-aligned inside bar
             char numBuf[10];
             snprintf(numBuf, sizeof(numBuf), "%d/%d", optIdx + 1, total);
-            tft.setTextColor(TFT_WHITE, bruceConfig.priColor);
+            tft.setTextColor(TFT_WHITE, mopieConfig.priColor);
             tft.setCursor(ROW_WIDTH - 10 - strlen(numBuf) * 6, y + 6);
             tft.print(numBuf);
         } else {
             // Normal row: light text, subtle hairline
-            tft.fillRect(4, y, ROW_WIDTH - 6, ROW_HEIGHT, bruceConfig.bgColor);
+            tft.fillRect(4, y, ROW_WIDTH - 6, ROW_HEIGHT, mopieConfig.bgColor);
             tft.setTextSize(1);
-            tft.setTextColor(opt.enabled ? TFT_LIGHTGREY : TFT_DARKGREY, bruceConfig.bgColor);
+            tft.setTextColor(opt.enabled ? TFT_LIGHTGREY : TFT_DARKGREY, mopieConfig.bgColor);
             tft.setCursor(14, y + 6);
             int maxChars = (ROW_WIDTH - 24) / 6;
             tft.print(opt.label.substring(0, maxChars));
@@ -221,9 +221,9 @@ void drawSubmenu(int index, std::vector<Option>& options, const char* title) {
     {
         int y = tftHeight - 13;
         tft.fillRect(0, y, tftWidth, 13, 0x2004);
-        tft.drawFastHLine(0, y, tftWidth, bruceConfig.secColor);
+        tft.drawFastHLine(0, y, tftWidth, mopieConfig.secColor);
         tft.setTextSize(1);
-        tft.setTextColor(bruceConfig.secColor, 0x2004);
+        tft.setTextColor(mopieConfig.secColor, 0x2004);
         tft.setCursor(6, y + 3);
         tft.print("M5:sel SIDE:up/dn PWR:back");
     }
@@ -240,7 +240,7 @@ void drawSubmenu(int index, std::vector<Option>& options, const char* title) {
         if (thumbH > trackH) thumbH = trackH;
 
         int thumbY = trackY + (windowStart * (trackH - thumbH)) / ((total > VISIBLE_ROWS) ? (total - VISIBLE_ROWS) : 1);
-        tft.fillRect(trackX, thumbY, 3, thumbH, bruceConfig.priColor);
+        tft.fillRect(trackX, thumbY, 3, thumbH, mopieConfig.priColor);
     }
 }
 

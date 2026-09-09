@@ -51,7 +51,7 @@ void closeLittleFS() {
 bool setupSdCard(uint8_t maxFiles) {
     if (maxFiles < 1) { maxFiles = 1; }
 #ifndef USE_SD_MMC
-    if (bruceConfigPins.SDCARD_bus.sck < 0) {
+    if (mopieConfigPins.SDCARD_bus.sck < 0) {
         sdcardMounted = false;
         return false;
     }
@@ -71,7 +71,7 @@ bool setupSdCard(uint8_t maxFiles) {
 #else
     // Not using InputHandler (SdCard on default &SPI bus)
     if (task) {
-        if (!SD.begin((int8_t)bruceConfigPins.SDCARD_bus.cs, SPI, 4000000UL, "/sd", maxFiles)) result = false;
+        if (!SD.begin((int8_t)mopieConfigPins.SDCARD_bus.cs, SPI, 4000000UL, "/sd", maxFiles)) result = false;
         // Serial.println("Task not activated");
     } else {
         // acquireSPIBus() never begin()s the display's bus (it's already running), so a non-null,
@@ -80,32 +80,32 @@ bool setupSdCard(uint8_t maxFiles) {
         // buildable on boards with a non-SPI (e.g. parallel) display, where that accessor doesn't
         // exist at all.
         SPIClass *bus = acquireSPIBus(
-            bruceConfigPins.SDCARD_bus.sck, bruceConfigPins.SDCARD_bus.miso, bruceConfigPins.SDCARD_bus.mosi
+            mopieConfigPins.SDCARD_bus.sck, mopieConfigPins.SDCARD_bus.miso, mopieConfigPins.SDCARD_bus.mosi
         );
         if (bus != nullptr && bus != &sdcardSPI) {
             Serial.println("SDCard in the same Bus as TFT, using TFT SPI instance");
-            if (!SD.begin(bruceConfigPins.SDCARD_bus.cs, *bus, 4000000UL, "/sd", maxFiles)) {
+            if (!SD.begin(mopieConfigPins.SDCARD_bus.cs, *bus, 4000000UL, "/sd", maxFiles)) {
                 result = false;
                 Serial.println("SDCard in the same Bus as TFT, but failed to mount");
             }
         } else {
             // SDCard on a dedicated bus: it's the anchor/owner of sdcardSPI, so start it here.
             if (!sdcardSPI.begin(
-                    (int8_t)bruceConfigPins.SDCARD_bus.sck,
-                    (int8_t)bruceConfigPins.SDCARD_bus.miso,
-                    (int8_t)bruceConfigPins.SDCARD_bus.mosi,
-                    (int8_t)bruceConfigPins.SDCARD_bus.cs
+                    (int8_t)mopieConfigPins.SDCARD_bus.sck,
+                    (int8_t)mopieConfigPins.SDCARD_bus.miso,
+                    (int8_t)mopieConfigPins.SDCARD_bus.mosi,
+                    (int8_t)mopieConfigPins.SDCARD_bus.cs
                 )) {
                 Serial.println("Failed starting SPI Bus");
             } // start SPI communications
             delay(20);
-            if (!SD.begin((int8_t)bruceConfigPins.SDCARD_bus.cs, sdcardSPI, 4000000UL, "/sd", maxFiles)) {
+            if (!SD.begin((int8_t)mopieConfigPins.SDCARD_bus.cs, sdcardSPI, 4000000UL, "/sd", maxFiles)) {
                 result = false;
                 Serial.println("SDCard in a different Bus, sdcardSPI failed to mount");
 #if defined(ARDUINO_M5STICK_C_PLUS) || defined(ARDUINO_M5STICK_C_PLUS2)
                 // If using Shared SPI, do not stop the bus if SDCard is not present
                 // If using Legacy, release the pins from this SPI Bus
-                if (bruceConfigPins.SDCARD_bus.miso != bruceConfigPins.CC1101_bus.miso) sdcardSPI.end();
+                if (mopieConfigPins.SDCARD_bus.miso != mopieConfigPins.CC1101_bus.miso) sdcardSPI.end();
 #endif
             }
             Serial.println("SDCard in a different Bus, using sdcardSPI instance");
@@ -117,10 +117,10 @@ bool setupSdCard(uint8_t maxFiles) {
         Serial.println("SDCARD NOT mounted, check wiring and format");
         Serial.printf(
             "Pins: SCK=%d, MISO=%d, MOSI=%d, CS=%d\n",
-            bruceConfigPins.SDCARD_bus.sck,
-            bruceConfigPins.SDCARD_bus.miso,
-            bruceConfigPins.SDCARD_bus.mosi,
-            bruceConfigPins.SDCARD_bus.cs
+            mopieConfigPins.SDCARD_bus.sck,
+            mopieConfigPins.SDCARD_bus.miso,
+            mopieConfigPins.SDCARD_bus.mosi,
+            mopieConfigPins.SDCARD_bus.cs
         );
         sdcardMounted = false;
         return false;
@@ -250,7 +250,7 @@ bool copyToFs(FS from, FS to, String path, bool draw) {
     // heap-allocated (not stack) to keep this buffer off the task stack; freed before
     // every return below
     uint8_t *buff = (uint8_t *)malloc(bufSize);
-    // tft.drawRect(5,tftHeight-12, (tftWidth-10), 9, bruceConfig.priColor);
+    // tft.drawRect(5,tftHeight-12, (tftWidth-10), 9, mopieConfig.priColor);
     while ((bytesRead = source.read(buff, bufSize)) > 0) {
         if (dest.write(buff, bytesRead) != bytesRead) {
             // Serial.println("Falha ao escrever no arquivo de destino");
@@ -271,7 +271,7 @@ bool copyToFs(FS from, FS to, String path, bool draw) {
                     0,
                     int(rad),
                     ALCOLOR,
-                    bruceConfig.bgColor,
+                    mopieConfig.bgColor,
                     true
                 );
         }
@@ -332,7 +332,7 @@ bool pasteFile(FS fs, String path) {
     int prog = 0;
     const int bufSize = 1024;
     uint8_t buff[1024] = {0};
-    // tft.drawRect(5,tftHeight-12, (tftWidth-10), 9, bruceConfig.priColor);
+    // tft.drawRect(5,tftHeight-12, (tftWidth-10), 9, mopieConfig.priColor);
     while ((bytesRead = sourceFile.read(buff, bufSize)) > 0) {
         if (destFile.write(buff, bytesRead) != bytesRead) {
             // Serial.println("Falha ao escrever no arquivo de destino");
@@ -350,10 +350,10 @@ bool pasteFile(FS fs, String path) {
                 0,
                 int(rad),
                 ALCOLOR,
-                bruceConfig.bgColor,
+                mopieConfig.bgColor,
                 true
             );
-            // tft.fillRect(7,tftHeight-10, (tftWidth-14)*prog/tot, 5, bruceConfig.priColor);
+            // tft.fillRect(7,tftHeight-10, (tftWidth-14)*prog/tot, 5, mopieConfig.priColor);
         }
     }
 
@@ -620,8 +620,8 @@ String loopSD(FS &fs, bool filePicker, const String &allowed_ext, String rootPat
     String Folder = rootPath;
     String PreFolder = rootPath;
     tft.drawPixel(0, 0, 0);
-    tft.fillScreen(bruceConfig.bgColor); // TODO: Does only the T-Embed CC1101 need this?
-    tft.drawRoundRect(5, 5, tftWidth - 10, tftHeight - 10, 5, bruceConfig.priColor);
+    tft.fillScreen(mopieConfig.bgColor); // TODO: Does only the T-Embed CC1101 need this?
+    tft.drawRoundRect(5, 5, tftWidth - 10, tftHeight - 10, 5, mopieConfig.priColor);
     if (&fs == &SD) {
         if (!setupSdCard()) {
             displayError("Fail Mounting SD", true);
@@ -648,8 +648,8 @@ String loopSD(FS &fs, bool filePicker, const String &allowed_ext, String rootPat
         if (redraw) {
             if (strcmp(PreFolder.c_str(), Folder.c_str()) != 0 || reload) {
                 index = 0;
-                tft.fillScreen(bruceConfig.bgColor);
-                tft.drawRoundRect(5, 5, tftWidth - 10, tftHeight - 10, 5, bruceConfig.priColor);
+                tft.fillScreen(mopieConfig.bgColor);
+                tft.drawRoundRect(5, 5, tftWidth - 10, tftHeight - 10, 5, mopieConfig.priColor);
                 Serial.println("reload to read: " + Folder);
                 readFs(fs, Folder, allowed_ext);
                 PreFolder = Folder;
@@ -777,7 +777,7 @@ String loopSD(FS &fs, bool filePicker, const String &allowed_ext, String rootPat
                         vTaskDelay(pdMS_TO_TICKS(1));
                     } // wait for SEL release to avoid repeated activations
                     loopOptions(options);
-                    tft.drawRoundRect(5, 5, tftWidth - 10, tftHeight - 10, 5, bruceConfig.priColor);
+                    tft.drawRoundRect(5, 5, tftWidth - 10, tftHeight - 10, 5, mopieConfig.priColor);
                     reload = true;
                     redraw = true;
                 } else if (fileList[index].folder == false && fileList[index].operation == false) {
@@ -793,7 +793,7 @@ String loopSD(FS &fs, bool filePicker, const String &allowed_ext, String rootPat
                         vTaskDelay(pdMS_TO_TICKS(1));
                     } // wait for SEL release to avoid repeated activations
                     loopOptions(options);
-                    tft.drawRoundRect(5, 5, tftWidth - 10, tftHeight - 10, 5, bruceConfig.priColor);
+                    tft.drawRoundRect(5, 5, tftWidth - 10, tftHeight - 10, 5, mopieConfig.priColor);
                     reload = true;
                     redraw = true;
                 }
@@ -970,7 +970,7 @@ String loopSD(FS &fs, bool filePicker, const String &allowed_ext, String rootPat
                         result = filepath;
                         break;
                     }
-                    tft.drawRoundRect(5, 5, tftWidth - 10, tftHeight - 10, 5, bruceConfig.priColor);
+                    tft.drawRoundRect(5, 5, tftWidth - 10, tftHeight - 10, 5, mopieConfig.priColor);
                     reload = true;
                     redraw = true;
                 } else {

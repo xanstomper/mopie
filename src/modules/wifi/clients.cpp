@@ -149,7 +149,7 @@ void startSessionLog(ClientProtocol protocol) {
     withClientLock([&]() {
         closeSessionLogUnlocked();
 
-        if (!bruceConfig.TerminalLog || !sdcardMounted) return;
+        if (!mopieConfig.TerminalLog || !sdcardMounted) return;
 
         if (!SD.exists("Mopie")) SD.mkdir("Mopie");
         if (!SD.exists("Mopie/Terminal")) SD.mkdir("Mopie/Terminal");
@@ -391,16 +391,16 @@ bool isSessionConnecting() {
 
 void resetClientScreen(const char *title) {
     (void)title;
-    tft.fillScreen(bruceConfig.bgColor);
-    tft.drawRect(0, 0, tftWidth, tftHeight, bruceConfig.priColor);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
+    tft.drawRect(0, 0, tftWidth, tftHeight, mopieConfig.priColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setTextSize(FP);
     tft.setCursor(TERMINAL_PAD_X, TERMINAL_PAD_Y);
     String context = getQueuedPromptContext();
     if (!context.isEmpty()) {
-        tft.setTextColor(TFT_CYAN, bruceConfig.bgColor);
+        tft.setTextColor(TFT_CYAN, mopieConfig.bgColor);
         tft.println(context);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.setCursor(TERMINAL_PAD_X, tft.getCursorY());
     }
     cursorY = tft.getCursorY();
@@ -515,11 +515,11 @@ void redrawCurrentCommandLine() {
     int lineY = tft.getCursorY();
     if (lineY < TERMINAL_PAD_Y) lineY = TERMINAL_PAD_Y;
 
-    tft.fillRect(TERMINAL_PAD_X, lineY, tftWidth - (TERMINAL_PAD_X * 2), lineHeight, bruceConfig.bgColor);
+    tft.fillRect(TERMINAL_PAD_X, lineY, tftWidth - (TERMINAL_PAD_X * 2), lineHeight, mopieConfig.bgColor);
     tft.setCursor(TERMINAL_PAD_X, lineY);
-    tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+    tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
     tft.print(commandBuffer);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     cursorY = tft.getCursorY();
 }
 
@@ -595,9 +595,9 @@ void renderPrompt(bool forceNewLine) {
         if (!promptPrefix.isEmpty()) commandBuffer = promptPrefix;
     }
     if (forceNewLine) ensureCursorOnFreshLine();
-    tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+    tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
     tft.print(commandBuffer);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     cursorY = tft.getCursorY();
 }
 
@@ -657,7 +657,7 @@ int getTerminalRows() {
 
 void renderVisibleText(const String &title, const String &text, bool appendNewline) {
     ensureCursorOnFreshLine();
-    tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+    tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
     for (size_t i = 0; i < text.length(); ++i) {
         if (tft.getCursorX() > tftWidth - TERMINAL_PAD_X - (FP * LW)) {
             tft.println();
@@ -667,7 +667,7 @@ void renderVisibleText(const String &title, const String &text, bool appendNewli
         if (tft.getCursorY() > tftHeight - TERMINAL_PAD_Y - (FP * LH)) {
             resetClientScreen(title.c_str());
             renderPrompt();
-            tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+            tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
         }
         if (tft.getCursorX() == 0) tft.setCursor(TERMINAL_PAD_X, tft.getCursorY());
     }
@@ -739,7 +739,7 @@ void renderSessionOutput(const String &title, const String &output) {
     }
 
     cursorY = tft.getCursorY();
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
 }
 
 void finishSessionUi(const String &title) {
@@ -1102,7 +1102,7 @@ void runSessionUiLoop(const String &title) {
                         setTerminalLiveInput(liveInput);
                         queueSessionCommand(String(c));
                     }
-                    tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+                    tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
                     tft.print(c);
                 }
 
@@ -1169,9 +1169,9 @@ void runSessionUiLoop(const String &title) {
                 tft.setTextSize(FP);
                 appendSessionCommandToLog(message);
                 queueSessionCommand(message + "\r");
-                tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+                tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
                 tft.println("> " + message);
-                tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+                tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
             }
             resetCommandBufferToPrompt();
             renderPrompt();

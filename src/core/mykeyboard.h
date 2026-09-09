@@ -12,7 +12,7 @@ String num_keyboard(
     const String &mytext, int maxSize = 76, const String &msg = "Insert your number:", bool mask_input = false
 );
 
-// Opens a menu to pick the keyboard language and saves the choice to bruceConfig
+// Opens a menu to pick the keyboard language and saves the choice to mopieConfig
 void setKeyboardLanguage();
 
 void __attribute__((weak)) powerOff();

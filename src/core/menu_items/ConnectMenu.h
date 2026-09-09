@@ -10,8 +10,8 @@ public:
     void optionsMenu(void);
     void drawIcon(float scale);
     void drawIconAt(int cx, int cy, float scale);
-    bool hasTheme() { return bruceConfig.theme.connect; }
-    const String& themePath() override { return bruceConfig.theme.paths.connect; }
+    bool hasTheme() { return mopieConfig.theme.connect; }
+    const String& themePath() override { return mopieConfig.theme.paths.connect; }
 };
 
 #endif

@@ -97,7 +97,7 @@ void BLENinebot::clientDisconnect() {
 
 void BLENinebot::setup() {
     tft.setTextSize(1);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
 
     NimBLEDevice::init("");
     pBLEScan = NimBLEDevice::getScan();

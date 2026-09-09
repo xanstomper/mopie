@@ -66,11 +66,11 @@ void ReverseShell() {
     };
 
     // ── Setup ──────────────────────────────────────────────────
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     tft.setTextSize(FM);
-    tft.setTextColor(TFT_RED, bruceConfig.bgColor);
+    tft.setTextColor(TFT_RED, mopieConfig.bgColor);
     tft.drawCentreString("Reverse Shell", tftWidth / 2, 10, 1);
-    tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+    tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
     tft.setTextSize(FP);
     tft.setCursor(15, 33);
     tft.println("Developed by Fourier & Ninja-jr");
@@ -82,13 +82,13 @@ void ReverseShell() {
         return;
     }
 
-    // ── AP Password: bruce ─────────────────────────────────────
-    if (!WiFi.softAP("MopieShell", "bruce")) {
+    // ── AP Password: mopie ─────────────────────────────────────
+    if (!WiFi.softAP("MopieShell", "mopie")) {
         tft.println("Failed to start AP");
         return;
     }
 
-    tft.println("Wi-Fi AP Started: MopieShell (pass: bruce)");
+    tft.println("Wi-Fi AP Started: MopieShell (pass: mopie)");
     tft.println("IP: " + apGateway.toString());
 
     tcpServer.begin();

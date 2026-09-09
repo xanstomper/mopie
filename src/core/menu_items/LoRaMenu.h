@@ -14,8 +14,8 @@ public:
     void optionsMenu(void);
     void drawIcon(float scale);
     void drawIconAt(int cx, int cy, float scale);
-    bool hasTheme() { return bruceConfig.theme.lora; }
-    const String& themePath() override { return bruceConfig.theme.paths.lora; }
+    bool hasTheme() { return mopieConfig.theme.lora; }
+    const String& themePath() override { return mopieConfig.theme.paths.lora; }
 
 private:
     void configMenu(void);

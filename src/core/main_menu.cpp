@@ -69,7 +69,7 @@ void MainMenu::begin(void) {
 
     struct GridItem { String name; int glyph; MenuItemInterface *item; };
     std::vector<GridItem> items;
-    std::vector<String> disabled = bruceConfig.disabledMenus;
+    std::vector<String> disabled = mopieConfig.disabledMenus;
     for (int i = 0; i < _totalItems; i++) {
         String itemName = _menuItems[i]->getName();
         if (find(disabled.begin(), disabled.end(), itemName) == disabled.end()) {
@@ -112,13 +112,13 @@ void MainMenu::begin(void) {
         int cy = y + CELL_H / 2;
 
         // clear cell
-        tft.fillRect(x, y, CELL_W - 1, CELL_H - 1, bruceConfig.bgColor);
+        tft.fillRect(x, y, CELL_W - 1, CELL_H - 1, mopieConfig.bgColor);
 
         // selection backdrop + bracket corners
         if (selected) {
             tft.fillRect(x + 1, y + 1, CELL_W - 3, CELL_H - 3, 0x3000);  // dark red tint
             const int L = 5;
-            uint16_t c = bruceConfig.priColor;
+            uint16_t c = mopieConfig.priColor;
             tft.drawFastHLine(x + 2, y + 2, L, c);              tft.drawFastVLine(x + 2, y + 2, L, c);
             tft.drawFastHLine(x + CELL_W - 3 - L, y + 2, L, c); tft.drawFastVLine(x + CELL_W - 3, y + 2, L, c);
             tft.drawFastHLine(x + 2, y + CELL_H - 3, L, c);     tft.drawFastVLine(x + 2, y + CELL_H - 3 - L, L, c);
@@ -130,7 +130,7 @@ void MainMenu::begin(void) {
 
     auto drawLabel = [&](int i) {
         tft.fillRect(0, tftHeight - 13, tftWidth, 13, 0x2004);
-        tft.drawFastHLine(0, tftHeight - 13, tftWidth, bruceConfig.priColor);
+        tft.drawFastHLine(0, tftHeight - 13, tftWidth, mopieConfig.priColor);
         tft.setTextSize(1);
         tft.setTextColor(TFT_WHITE, 0x2004);
         tft.drawCentreString(items[i].name.substring(0, 22), tftWidth / 2, tftHeight - 10, 1);
@@ -140,14 +140,14 @@ void MainMenu::begin(void) {
         int dx0 = tftWidth - 6 - pages * 8;
         for (int p = 0; p < pages; p++)
             tft.fillCircle(dx0 + p * 8, 23, 2,
-                (p == sel / PER_PAGE) ? bruceConfig.priColor : 0x8C41);
+                (p == sel / PER_PAGE) ? mopieConfig.priColor : 0x8C41);
     };
 
     auto drawChrome = [&]() {
         drawStatusBar();
         // header
         tft.fillRect(0, 16, tftWidth, 15, 0x2004);
-        tft.setTextColor(bruceConfig.priColor, 0x2004);
+        tft.setTextColor(mopieConfig.priColor, 0x2004);
         tft.setTextSize(1);
         tft.setCursor(6, 20);
         tft.print("MOPIE");
@@ -156,7 +156,7 @@ void MainMenu::begin(void) {
         for (int p = 0; p < pages; p++) {
             int cur = sel / PER_PAGE;
             tft.fillCircle(dx + p * 8, 23, 2,
-                (p == cur) ? bruceConfig.priColor : 0x8C41);
+                (p == cur) ? mopieConfig.priColor : 0x8C41);
         }
     };
 
@@ -168,7 +168,7 @@ void MainMenu::begin(void) {
 
         int curPage = sel / PER_PAGE;
         if (redrawAll) {
-            tft.fillScreen(bruceConfig.bgColor);
+            tft.fillScreen(mopieConfig.bgColor);
             drawChrome();
             int base = curPage * PER_PAGE;
             for (int i = base; i < base + PER_PAGE && i < total; i++)
@@ -176,7 +176,7 @@ void MainMenu::begin(void) {
             // blank unused cells
             for (int i = total; i < base + PER_PAGE; i++) {
                 int x, y; cellXY(i, x, y);
-                tft.fillRect(x, y, CELL_W - 1, CELL_H - 1, bruceConfig.bgColor);
+                tft.fillRect(x, y, CELL_W - 1, CELL_H - 1, mopieConfig.bgColor);
             }
             drawLabel(sel);
             redrawAll = false;
@@ -221,7 +221,7 @@ void MainMenu::begin(void) {
         if (check(SelPress)) {
             _currentIndex = sel;
             items[sel].item->optionsMenu();
-            tft.fillScreen(bruceConfig.bgColor);
+            tft.fillScreen(mopieConfig.bgColor);
             return;   // main loop calls begin() again -> full grid redraw
         }
 
@@ -244,20 +244,20 @@ RESTART: // using gotos to avoid stackoverflow after many choices
     options.clear();
     for (auto item : items) {
         String label = item->getName();
-        std::vector<String> l = bruceConfig.disabledMenus;
+        std::vector<String> l = mopieConfig.disabledMenus;
         bool enabled = find(l.begin(), l.end(), label) == l.end();
         options.push_back(
             {label,
              [this, label, enabled]() {
-                 if (enabled) bruceConfig.addDisabledMenu(label);
-                 else bruceConfig.removeDisabledMenu(label);
+                 if (enabled) mopieConfig.addDisabledMenu(label);
+                 else mopieConfig.removeDisabledMenu(label);
              },
              enabled}
         );
     }
-    options.push_back({"Show All", [=]() { bruceConfig.disabledMenus.clear(); }, true});
+    options.push_back({"Show All", [=]() { mopieConfig.disabledMenus.clear(); }, true});
     addOptionToMainMenu();
     index = loopOptions(options, index);
-    bruceConfig.saveFile();
+    mopieConfig.saveFile();
     if (!returnToMenu) goto RESTART;
 }

@@ -14,12 +14,12 @@ public:
     virtual void drawIconAt(int cx, int cy, float scale = 1) { (void)cx; (void)cy; drawIcon(scale); }
     virtual void drawIconImg() {
         drawImg(
-            *bruceConfig.themeFS(),
-            bruceConfig.getThemeItemImg(themePath()),  // const String& - no heap alloc
+            *mopieConfig.themeFS(),
+            mopieConfig.getThemeItemImg(themePath()),  // const String& - no heap alloc
             0,
             imgCenterY,
             true,
-            bruceConfig.theme.gifDuration,
+            mopieConfig.theme.gifDuration,
             false
         );
     }
@@ -30,17 +30,17 @@ public:
     String getName() const { return String(_name); }
 
     void draw(float scale = 1) {
-        if (rotation != bruceConfigPins.rotation) resetCoordinates();
+        if (rotation != mopieConfigPins.rotation) resetCoordinates();
         if (!checkTheme()) {
-            tft.fillRect(0, 27, tftWidth, tftHeight - 27, bruceConfig.bgColor);
+            tft.fillRect(0, 27, tftWidth, tftHeight - 27, mopieConfig.bgColor);
             drawCornerBrackets();
             drawIcon(scale);
             drawTitle(scale);
         } else {
-            if (bruceConfig.theme.label)
+            if (mopieConfig.theme.label)
                 drawTitle(scale); // If using .GIF, labels are draw after complete, which takes some time
             drawIconImg();
-            if (bruceConfig.theme.label) drawTitle(scale); // Makes sure to draw over the image
+            if (mopieConfig.theme.label) drawTitle(scale); // Makes sure to draw over the image
         }
         drawStatusBar();
     }
@@ -53,7 +53,7 @@ public:
         int y0 = iconAreaY - m;
         int x1 = iconAreaX + iconAreaW + m;
         int y1 = iconAreaY + iconAreaH + m;
-        uint16_t c = bruceConfig.priColor;
+        uint16_t c = mopieConfig.priColor;
 
         // top-left
         tft.drawFastHLine(x0, y0, L, c); tft.drawFastVLine(x0, y0, L, c);
@@ -66,9 +66,9 @@ public:
     }
 
     void drawArrows(float scale = 1) {
-        tft.fillRect(arrowAreaX, iconAreaY, arrowAreaW, iconAreaH, bruceConfig.bgColor);
+        tft.fillRect(arrowAreaX, iconAreaY, arrowAreaW, iconAreaH, mopieConfig.bgColor);
         tft.fillRect(
-            tftWidth - arrowAreaX - arrowAreaW, iconAreaY, arrowAreaW, iconAreaH, bruceConfig.bgColor
+            tftWidth - arrowAreaX - arrowAreaW, iconAreaY, arrowAreaW, iconAreaH, mopieConfig.bgColor
         );
 
         int arrowSize = scale * 10;
@@ -84,8 +84,8 @@ public:
             arrowX + arrowSize,
             arrowY + arrowSize,
             lineWidth,
-            bruceConfig.priColor,
-            bruceConfig.bgColor
+            mopieConfig.priColor,
+            mopieConfig.bgColor
         );
         tft.drawWideLine(
             arrowX,
@@ -93,8 +93,8 @@ public:
             arrowX + arrowSize,
             arrowY - arrowSize,
             lineWidth,
-            bruceConfig.priColor,
-            bruceConfig.bgColor
+            mopieConfig.priColor,
+            mopieConfig.bgColor
         );
 
         // Right Arrow
@@ -104,8 +104,8 @@ public:
             tftWidth - arrowX - arrowSize,
             arrowY + arrowSize,
             lineWidth,
-            bruceConfig.priColor,
-            bruceConfig.bgColor
+            mopieConfig.priColor,
+            mopieConfig.bgColor
         );
         tft.drawWideLine(
             tftWidth - arrowX,
@@ -113,8 +113,8 @@ public:
             tftWidth - arrowX - arrowSize,
             arrowY - arrowSize,
             lineWidth,
-            bruceConfig.priColor,
-            bruceConfig.bgColor
+            mopieConfig.priColor,
+            mopieConfig.bgColor
         );
     }
 
@@ -123,7 +123,7 @@ public:
 
         tft.setTextSize(FM);
         tft.drawPixel(0, 0, 0);
-        tft.fillRect(arrowAreaX, titleY, tftWidth - 2 * arrowAreaX, LH * FM, bruceConfig.bgColor);
+        tft.fillRect(arrowAreaX, titleY, tftWidth - 2 * arrowAreaX, LH * FM, mopieConfig.bgColor);
         int nchars = (tftWidth - 16) / (LW * FM);
         tft.drawCentreString(getName().substring(0, nchars), iconCenterX, titleY, 1);
     }
@@ -150,9 +150,9 @@ protected:
     MenuItemInterface(const char *name) : _name(name) {}
 
     void clearIconArea(void) {
-        tft.fillRect(iconAreaX, iconAreaY, iconAreaW, iconAreaH, bruceConfig.bgColor);
+        tft.fillRect(iconAreaX, iconAreaY, iconAreaW, iconAreaH, mopieConfig.bgColor);
     }
-    void clearImgArea(void) { tft.fillRect(7, 27, tftWidth - 14, tftHeight - 34, bruceConfig.bgColor); }
+    void clearImgArea(void) { tft.fillRect(7, 27, tftWidth - 14, tftHeight - 34, mopieConfig.bgColor); }
     void resetCoordinates(void) {
         // Recalculate Center and ared due to portrait/landscape changings
         if (tftWidth > tftHeight) {
@@ -176,7 +176,7 @@ protected:
         arrowAreaX = BORDER_PAD_X;
         arrowAreaW = iconAreaX - arrowAreaX;
 
-        rotation = bruceConfigPins.rotation;
+        rotation = mopieConfigPins.rotation;
     }
 
 private:

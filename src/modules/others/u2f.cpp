@@ -1668,9 +1668,9 @@ U2fHidDevice &u2fDevice() {
 }
 
 void drawU2fStatusScreen() {
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     tft.setTextSize(2);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setCursor(6, 8);
     tft.print("USB U2F");
 
@@ -1684,7 +1684,7 @@ void drawU2fStatusScreen() {
 }
 
 void updateU2fRuntimeInfo(const U2fHidDevice &device) {
-    tft.fillRect(0, 84, tftWidth, tftHeight - 84, bruceConfig.bgColor);
+    tft.fillRect(0, 84, tftWidth, tftHeight - 84, mopieConfig.bgColor);
     tft.setTextSize(2);
     tft.setCursor(6, 94);
     tft.print(device.waitingForPresence() ? "Confirm now" : "Waiting...");

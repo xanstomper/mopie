@@ -72,13 +72,13 @@ void SurveillanceMenu::drawIcon(float scale) {
     if (radius < 10) radius = 10;
 
     // Draw concentric radar circles
-    tft.drawCircle(iconCenterX, iconCenterY, radius, bruceConfig.priColor);
-    tft.drawCircle(iconCenterX, iconCenterY, radius * 2 / 3, bruceConfig.secColor);
-    tft.drawCircle(iconCenterX, iconCenterY, radius / 3, bruceConfig.secColor);
+    tft.drawCircle(iconCenterX, iconCenterY, radius, mopieConfig.priColor);
+    tft.drawCircle(iconCenterX, iconCenterY, radius * 2 / 3, mopieConfig.secColor);
+    tft.drawCircle(iconCenterX, iconCenterY, radius / 3, mopieConfig.secColor);
 
     // Crosshairs
-    tft.drawFastHLine(iconCenterX - radius - 4, iconCenterY, (radius + 4) * 2, bruceConfig.secColor);
-    tft.drawFastVLine(iconCenterX, iconCenterY - radius - 4, (radius + 4) * 2, bruceConfig.secColor);
+    tft.drawFastHLine(iconCenterX - radius - 4, iconCenterY, (radius + 4) * 2, mopieConfig.secColor);
+    tft.drawFastVLine(iconCenterX, iconCenterY - radius - 4, (radius + 4) * 2, mopieConfig.secColor);
 
     // Target blip (Red)
     int blipX = iconCenterX + radius / 2;
@@ -225,7 +225,7 @@ void SurveillanceMenu::runRadarHud() {
     }
 
     engine.stopScan();
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
 }
 
 void SurveillanceMenu::runThreatScanner() {
@@ -303,7 +303,7 @@ void SurveillanceMenu::runThreatScanner() {
     }
 
     engine.stopScan();
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
 }
 
 void SurveillanceMenu::showThreatDetails(const Surveillance::DetectedThreat& threat) {

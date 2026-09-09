@@ -15,11 +15,11 @@
 
 namespace {
 void drawKitHeader(int sel, int count) {
-    tft.fillScreen(bruceConfig.bgColor);
-    tft.fillRect(0, 0, tftWidth, 12, bruceConfig.priColor);
-    tft.setTextColor(TFT_BLACK, bruceConfig.priColor);
+    tft.fillScreen(mopieConfig.bgColor);
+    tft.fillRect(0, 0, tftWidth, 12, mopieConfig.priColor);
+    tft.setTextColor(TFT_BLACK, mopieConfig.priColor);
     tft.drawCentreString("MOPIE ASSAULT KIT", tftWidth / 2, 2, 1);
-    tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.secColor, mopieConfig.bgColor);
     tft.drawString("[" + String(sel + 1) + "/" + String(count) + "]", 4, tftHeight - 10, 1);
 }
 }  // namespace
@@ -30,10 +30,10 @@ void mopieAssaultKit() {
     // M5StickC Plus: 520KB RAM. Warn early if heap is too tight for the heavy
     // sweep tools (each opens promiscuous TX) — better than a watchdog reboot.
     if (ESP.getFreeHeap() < 60000) {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(TFT_RED, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(TFT_RED, mopieConfig.bgColor);
         tft.drawCentreString("LOW HEAP: " + String(ESP.getFreeHeap()) + " B", tftWidth / 2, 24, 1);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("Risk of watchdog reboot", tftWidth / 2, 44, 1);
         tft.drawCentreString("PWR to back out", tftWidth / 2, 66, 1);
         unsigned long t0 = millis();
@@ -47,8 +47,8 @@ void mopieAssaultKit() {
             static const char *funny[] = {"FREE_WIFI_5G","FBI_VAN","Skynet_Backup","NSA_Truck","Dont_Connect"};
             const int N = sizeof(funny)/sizeof(funny[0]);
             uint8_t bssid[6] = {0x02,0,0,0,0,0};
-            tft.fillScreen(bruceConfig.bgColor);
-            tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+            tft.fillScreen(mopieConfig.bgColor);
+            tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
             tft.drawCentreString("SSID Blast running", tftWidth/2, 20, 1);
             unsigned long t0 = millis();
             while (!check(EscPress) && millis()-t0 < 10000) {
@@ -81,11 +81,11 @@ void mopieAssaultKit() {
             // radar (each bar = deauth bursts fired on that channel).
             uint8_t ap[6] = {0x02,0,0,0,0,0}, df[26], bc[6] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
             mopie_build_deauth(df, ap, bc, 0x0001);
-            tft.fillScreen(bruceConfig.bgColor);
-            tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+            tft.fillScreen(mopieConfig.bgColor);
+            tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
             tft.drawCentreString("DEAUTH RADAR", tftWidth/2, 8, 1);
             tft.drawString("ch:", 4, 22, 1);
-            tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+            tft.setTextColor(mopieConfig.secColor, mopieConfig.bgColor);
             int counts[12] = {0};
             unsigned long t0 = millis();
             uint8_t ch = 1;
@@ -95,8 +95,8 @@ void mopieAssaultKit() {
                 // spectral bar for current channel
                 int h = 26 + (counts[ch] % 40);
                 if (h > 72) h = 72;
-                tft.fillRect(26 + (ch-1)*17, 70 - h, 14, h, bruceConfig.priColor);
-                tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+                tft.fillRect(26 + (ch-1)*17, 70 - h, 14, h, mopieConfig.priColor);
+                tft.setTextColor(mopieConfig.secColor, mopieConfig.bgColor);
                 tft.drawCentreString(String(ch), 33 + (ch-1)*17, 78, 1);
                 ch = (ch % 11) + 1;
                 vTaskDelay(55);
@@ -107,10 +107,10 @@ void mopieAssaultKit() {
             // SSID so the zone looks "occupied" by a fake network.
             uint8_t bssid[6] = {0x02,0,0,0,0,0}, bc[6]={0xFF,0xFF,0xFF,0xFF,0xFF,0xFF}, df[26];
             mopie_build_deauth(df, bssid, bc, 0x0001);
-            tft.fillScreen(bruceConfig.bgColor);
-            tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+            tft.fillScreen(mopieConfig.bgColor);
+            tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
             tft.drawCentreString("SWEEP BEACON", tftWidth/2, 12, 1);
-            tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+            tft.setTextColor(mopieConfig.secColor, mopieConfig.bgColor);
             tft.drawCentreString("deauth + decoy beacon", tftWidth/2, 34, 1);
             unsigned long t0 = millis();
             uint8_t ch = 1;
@@ -129,8 +129,8 @@ void mopieAssaultKit() {
         }},
         {"Sig Monitor",  "live radio activity", []() {
             // Defensive recon: promiscuous capture, live packet-rate + AP count.
-            tft.fillScreen(bruceConfig.bgColor);
-            tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+            tft.fillScreen(mopieConfig.bgColor);
+            tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
             tft.drawCentreString("SIG MONITOR", tftWidth/2, 8, 1);
             esp_wifi_set_promiscuous(true);
             esp_wifi_set_promiscuous_rx_cb(nullptr);   // capture raw only, no pcap
@@ -142,12 +142,12 @@ void mopieAssaultKit() {
                     uint32_t pkts = wifiPktCount;
                     uint32_t rate = (pkts - last) * 2;         // per second
                     last = pkts; lastT = now;
-                    tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+                    tft.setTextColor(mopieConfig.secColor, mopieConfig.bgColor);
                     tft.drawCentreString(String(rate) + " pkt/s", tftWidth/2, 34, 1);
                     tft.drawCentreString(String((int)registeredBeacons.size()) + " APs", tftWidth/2, 50, 1);
                     // activity bar
                     int w = (int)((rate % 160) + 8); if (w > 160) w = 160;
-                    tft.fillRect((tftWidth-160)/2, 62, w, 10, bruceConfig.priColor);
+                    tft.fillRect((tftWidth-160)/2, 62, w, 10, mopieConfig.priColor);
                 }
                 vTaskDelay(20);
             }
@@ -160,12 +160,12 @@ void mopieAssaultKit() {
     drawKitHeader(sel, N);
     for (int i = 0; i < N; i++) {
         int y = 20 + i * 24;
-        tft.setTextColor(i == sel ? bruceConfig.priColor : bruceConfig.secColor, bruceConfig.bgColor);
+        tft.setTextColor(i == sel ? mopieConfig.priColor : mopieConfig.secColor, mopieConfig.bgColor);
         tft.drawString(String(i == sel ? "> " : "  ") + String(tools[i].name), 6, y, 1);
-        tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+        tft.setTextColor(mopieConfig.secColor, mopieConfig.bgColor);
         tft.drawString(String(tools[i].effect), tftWidth / 2, y, 1);
     }
-    tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.secColor, mopieConfig.bgColor);
     tft.drawCentreString("M5:run  SIDE:up/dn  PWR:back", tftWidth / 2, tftHeight - 2, 1);
 
     while (!check(EscPress)) {
@@ -174,14 +174,14 @@ void mopieAssaultKit() {
             drawKitHeader(sel, N);
             for (int i = 0; i < N; i++) {
                 int y = 20 + i * 24;
-                tft.setTextColor(i == sel ? bruceConfig.priColor : bruceConfig.secColor, bruceConfig.bgColor);
+                tft.setTextColor(i == sel ? mopieConfig.priColor : mopieConfig.secColor, mopieConfig.bgColor);
                 tft.drawString(String(i == sel ? "> " : "  ") + String(tools[i].name), 6, y, 1);
-                tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+                tft.setTextColor(mopieConfig.secColor, mopieConfig.bgColor);
                 tft.drawString(String(tools[i].effect), tftWidth / 2, y, 1);
             }
         } else if (check(NextPress)) { sel = (sel + 1) % N; drawKitHeader(sel, N); }
         else if (check(PrevPress)) { sel = (sel + N - 1) % N; drawKitHeader(sel, N); }
         vTaskDelay(20);
     }
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
 }

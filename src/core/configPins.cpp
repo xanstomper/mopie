@@ -22,7 +22,7 @@ String getMacAddress() {
     return String(macStr);
 }
 
-void BruceConfigPins::fromJson(JsonObject obj) {
+void MopieConfigPins::fromJson(JsonObject obj) {
     int count = 0;
     String mac = getMacAddress();
 
@@ -239,7 +239,7 @@ void BruceConfigPins::fromJson(JsonObject obj) {
     if (count > 0) saveFile();
 }
 
-void BruceConfigPins::toJson(JsonObject obj) const {
+void MopieConfigPins::toJson(JsonObject obj) const {
     JsonObject root = obj[getMacAddress()].to<JsonObject>();
 
     root["rot"] = rotation;
@@ -289,7 +289,7 @@ void BruceConfigPins::toJson(JsonObject obj) const {
     gps_bus.toJson(_gps);
 }
 
-void BruceConfigPins::loadFile(JsonDocument &jsonDoc, bool checkFS) {
+void MopieConfigPins::loadFile(JsonDocument &jsonDoc, bool checkFS) {
     FS *fs;
     if (checkFS) {
         if (!getFsStorage(fs)) return;
@@ -316,7 +316,7 @@ void BruceConfigPins::loadFile(JsonDocument &jsonDoc, bool checkFS) {
     serializeJsonPretty(jsonDoc, Serial);
 }
 
-void BruceConfigPins::fromFile(bool checkFS) {
+void MopieConfigPins::fromFile(bool checkFS) {
     JsonDocument jsonDoc;
     loadFile(jsonDoc, checkFS);
 
@@ -324,7 +324,7 @@ void BruceConfigPins::fromFile(bool checkFS) {
     jsonDoc.clear();
 }
 
-void BruceConfigPins::createFile() {
+void MopieConfigPins::createFile() {
     JsonDocument jsonDoc;
     toJson(jsonDoc.to<JsonObject>());
     serializeJsonPretty(jsonDoc, Serial);
@@ -349,7 +349,7 @@ void BruceConfigPins::createFile() {
     if (sdcardMounted) copyToFs(LittleFS, SD, filepath, false);
 }
 
-void BruceConfigPins::saveFile() {
+void MopieConfigPins::saveFile() {
     JsonDocument jsonDoc;
     loadFile(jsonDoc);
 
@@ -376,14 +376,14 @@ void BruceConfigPins::saveFile() {
     if (sdcardMounted) copyToFs(LittleFS, SD, filepath, false);
 }
 
-void BruceConfigPins::factoryReset() {
+void MopieConfigPins::factoryReset() {
     FS *fs = &LittleFS;
     fs->rename(String(filepath), "/bak." + String(filepath).substring(1));
     // don't try to mount SD Card if not previously mounted
     if (sdcardMounted) SD.rename(String(filepath), "/bak." + String(filepath).substring(1));
 }
 
-void BruceConfigPins::validateConfig() {
+void MopieConfigPins::validateConfig() {
     validateRotationValue();
     validateRfScanRangeValue();
     validateRfModuleValue();
@@ -404,61 +404,61 @@ void BruceConfigPins::validateConfig() {
     validateUARTPins(gps_bus);
 }
 #if !defined(LITE_VERSION)
-void BruceConfigPins::setLoRaPins(SPIPins value) {
+void MopieConfigPins::setLoRaPins(SPIPins value) {
     LoRa_bus = value;
     validateSpiPins(LoRa_bus);
     saveFile();
 }
-void BruceConfigPins::setW5500Pins(SPIPins value) {
+void MopieConfigPins::setW5500Pins(SPIPins value) {
     LoRa_bus = value;
     validateSpiPins(W5500_bus);
     saveFile();
 }
-void BruceConfigPins::setSR25RPins(SPIPins value) {
+void MopieConfigPins::setSR25RPins(SPIPins value) {
     ST25R_bus = value;
     validateSpiPins(ST25R_bus);
     saveFile();
 }
 #endif
-void BruceConfigPins::setCC1101Pins(SPIPins value) {
+void MopieConfigPins::setCC1101Pins(SPIPins value) {
     CC1101_bus = value;
     validateSpiPins(CC1101_bus);
     saveFile();
 }
 
-void BruceConfigPins::setNrf24Pins(SPIPins value) {
+void MopieConfigPins::setNrf24Pins(SPIPins value) {
     NRF24_bus = value;
     validateSpiPins(NRF24_bus);
     saveFile();
 }
 
-void BruceConfigPins::setPn532Pins(SPIPins value) {
+void MopieConfigPins::setPn532Pins(SPIPins value) {
     PN532_bus = value;
     validateSpiPins(PN532_bus);
     saveFile();
 }
 
-void BruceConfigPins::setSDCardPins(SPIPins value) {
+void MopieConfigPins::setSDCardPins(SPIPins value) {
     SDCARD_bus = value;
     validateSpiPins(SDCARD_bus);
     saveFile();
 }
 
-void BruceConfigPins::setSpiPins(SPIPins value) {
+void MopieConfigPins::setSpiPins(SPIPins value) {
     validateSpiPins(value);
     saveFile();
 }
 
-void BruceConfigPins::setI2CPins(I2CPins value) {
+void MopieConfigPins::setI2CPins(I2CPins value) {
     validateI2CPins(value);
     saveFile();
 }
 
-void BruceConfigPins::setUARTPins(UARTPins value) {
+void MopieConfigPins::setUARTPins(UARTPins value) {
     validateUARTPins(value);
     saveFile();
 }
-void BruceConfigPins::validateSpiPins(SPIPins value) {
+void MopieConfigPins::validateSpiPins(SPIPins value) {
     if (value.sck < 0 || value.sck > GPIO_PIN_COUNT) value.sck = GPIO_NUM_NC;
     if (value.miso < 0 || value.miso > GPIO_PIN_COUNT) value.miso = GPIO_NUM_NC;
     if (value.mosi < 0 || value.mosi > GPIO_PIN_COUNT) value.mosi = GPIO_NUM_NC;
@@ -467,95 +467,95 @@ void BruceConfigPins::validateSpiPins(SPIPins value) {
     if (value.io2 < 0 || value.io2 > GPIO_PIN_COUNT) value.io2 = GPIO_NUM_NC;
 }
 
-void BruceConfigPins::validateI2CPins(I2CPins value) {
+void MopieConfigPins::validateI2CPins(I2CPins value) {
     if (value.sda < 0 || value.sda > GPIO_PIN_COUNT) value.sda = GPIO_NUM_NC;
     if (value.scl < 0 || value.scl > GPIO_PIN_COUNT) value.scl = GPIO_NUM_NC;
 }
 
-void BruceConfigPins::validateUARTPins(UARTPins value) {
+void MopieConfigPins::validateUARTPins(UARTPins value) {
     if (value.rx < 0 || value.rx > GPIO_PIN_COUNT) value.rx = GPIO_NUM_NC;
     if (value.tx < 0 || value.tx > GPIO_PIN_COUNT) value.tx = GPIO_NUM_NC;
 }
 
-void BruceConfigPins::setRotation(int value) {
+void MopieConfigPins::setRotation(int value) {
     rotation = value;
     validateRotationValue();
     saveFile();
 }
 
-void BruceConfigPins::validateRotationValue() {
+void MopieConfigPins::validateRotationValue() {
     if (rotation < 0 || rotation > 3) rotation = 1;
 }
 
-void BruceConfigPins::setBleName(String value) {
+void MopieConfigPins::setBleName(String value) {
     bleName = value;
     saveFile();
 }
 
-void BruceConfigPins::setIrTxPin(int value) {
+void MopieConfigPins::setIrTxPin(int value) {
     irTx = value;
     saveFile();
 }
 
-void BruceConfigPins::setIrTxRepeats(uint8_t value) {
+void MopieConfigPins::setIrTxRepeats(uint8_t value) {
     irTxRepeats = value;
     saveFile();
 }
 
-void BruceConfigPins::setIrRxPin(int value) {
+void MopieConfigPins::setIrRxPin(int value) {
     irRx = value;
     saveFile();
 }
 
-void BruceConfigPins::setRfTxPin(int value) {
+void MopieConfigPins::setRfTxPin(int value) {
     rfTx = value;
     saveFile();
 }
 
-void BruceConfigPins::setRfRxPin(int value) {
+void MopieConfigPins::setRfRxPin(int value) {
     rfRx = value;
     saveFile();
 }
 
-void BruceConfigPins::setRfModule(RFModules value) {
+void MopieConfigPins::setRfModule(RFModules value) {
     rfModule = value;
     validateRfModuleValue();
     saveFile();
 }
 
-void BruceConfigPins::validateRfModuleValue() {
+void MopieConfigPins::validateRfModuleValue() {
     if (rfModule != M5_RF_MODULE && rfModule != CC1101_SPI_MODULE) { rfModule = M5_RF_MODULE; }
 }
 
-void BruceConfigPins::setRfFreq(float value, int fxdFreq) {
+void MopieConfigPins::setRfFreq(float value, int fxdFreq) {
     rfFreq = value;
     if (fxdFreq >= 1) rfFxdFreq = 1;
     saveFile();
 }
 
-void BruceConfigPins::setRfFxdFreq(float value) {
+void MopieConfigPins::setRfFxdFreq(float value) {
     rfFxdFreq = value > 0 ? 1 : 0;
     saveFile();
 }
 
-void BruceConfigPins::setRfScanRange(int value, int fxdFreq) {
+void MopieConfigPins::setRfScanRange(int value, int fxdFreq) {
     rfScanRange = value;
     rfFxdFreq = fxdFreq;
     validateRfScanRangeValue();
     saveFile();
 }
 
-void BruceConfigPins::validateRfScanRangeValue() {
+void MopieConfigPins::validateRfScanRangeValue() {
     if (rfScanRange < 0 || rfScanRange > 3) rfScanRange = 3;
 }
 
-void BruceConfigPins::setRfidModule(RFIDModules value) {
+void MopieConfigPins::setRfidModule(RFIDModules value) {
     rfidModule = value;
     validateRfidModuleValue();
     saveFile();
 }
 
-void BruceConfigPins::validateRfidModuleValue() {
+void MopieConfigPins::validateRfidModuleValue() {
     if (
         rfidModule != M5_RFID2_MODULE && rfidModule != PN532_I2C_MODULE && rfidModule != PN532_SPI_MODULE &&
         rfidModule != RC522_SPI_MODULE && rfidModule != PN532_I2C_SPI_MODULE
@@ -567,19 +567,19 @@ void BruceConfigPins::validateRfidModuleValue() {
     }
 }
 
-void BruceConfigPins::setiButtonPin(int value) {
+void MopieConfigPins::setiButtonPin(int value) {
     if (value < GPIO_NUM_MAX) {
         iButton = value;
         saveFile();
     } else log_e("iButton: Gpio pin not set, incompatible with this device\n");
 }
-void BruceConfigPins::setGpsBaudrate(int value) {
+void MopieConfigPins::setGpsBaudrate(int value) {
     gpsBaudrate = value;
     validateGpsBaudrateValue();
     saveFile();
 }
 
-void BruceConfigPins::validateGpsBaudrateValue() {
+void MopieConfigPins::validateGpsBaudrateValue() {
     if (gpsBaudrate != 9600 && gpsBaudrate != 19200 && gpsBaudrate != 57600 && gpsBaudrate != 38400 &&
         gpsBaudrate != 115200)
         gpsBaudrate = 9600;

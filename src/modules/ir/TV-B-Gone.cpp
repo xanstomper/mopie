@@ -124,11 +124,11 @@ void checkIrTxPin() {
     // The M5StickC Plus has NO on-board IR LED. TXLED (GPIO 9) is the visible
     // front LED — it cannot drive a real IR emitter. So a "Default" (TXLED) pin
     // means the user has NOT wired an IR LED, and TV-B-Gone will do nothing.
-    if (bruceConfigPins.irTx == TXLED || bruceConfigPins.irTx <= 0) {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(TFT_RED, bruceConfig.bgColor);
+    if (mopieConfigPins.irTx == TXLED || mopieConfigPins.irTx <= 0) {
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(TFT_RED, mopieConfig.bgColor);
         tft.drawCentreString("NO IR LED ENABLED", tftWidth / 2, 12, 1);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("This board has no IR emitter.", tftWidth / 2, 34, 1);
         tft.drawCentreString("Wire an IR LED, then pick its pin:", tftWidth / 2, 48, 1);
         tft.drawCentreString("  G26 or G25 or Grove", tftWidth / 2, 62, 1);
@@ -138,10 +138,10 @@ void checkIrTxPin() {
     }
     // validate final pin is in the known set
     for (auto pin : pins) {
-        if (pin.second == bruceConfigPins.irTx) return;
+        if (pin.second == mopieConfigPins.irTx) return;
     }
     // still not a known IR pin — reset to an IR-capable default and warn
-    if (!pins.empty()) bruceConfigPins.setIrTxPin(pins[0].second);
+    if (!pins.empty()) mopieConfigPins.setIrTxPin(pins[0].second);
 }
 
 // Mutex setup - one-time initialization
@@ -262,9 +262,9 @@ void StartTvBGone() {
     PPM.enableOTG();
 #endif
     checkIrTxPin();
-    IRsend irsend(bruceConfigPins.irTx);
+    IRsend irsend(mopieConfigPins.irTx);
     irsend.begin();
-    setup_ir_pin(bruceConfigPins.irTx, OUTPUT);
+    setup_ir_pin(mopieConfigPins.irTx, OUTPUT);
 
     // determine region
     options = {
@@ -314,7 +314,7 @@ void StartTvBGone() {
         }
 
         // turnoff LED
-        digitalWrite(bruceConfigPins.irTx, LED_OFF);
+        digitalWrite(mopieConfigPins.irTx, LED_OFF);
 
 #ifdef USE_BOOST
         /// DISABLE 5V OUTPUT

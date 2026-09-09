@@ -11,8 +11,8 @@ public:
     void wardrivingMenu(void);
     void drawIcon(float scale);
     void drawIconAt(int cx, int cy, float scale);
-    bool hasTheme() { return bruceConfig.theme.gps; }
-    const String& themePath() override { return bruceConfig.theme.paths.gps; }
+    bool hasTheme() { return mopieConfig.theme.gps; }
+    const String& themePath() override { return mopieConfig.theme.paths.gps; }
 
 private:
     void configMenu(void);

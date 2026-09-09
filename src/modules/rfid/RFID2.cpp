@@ -447,7 +447,7 @@ int RFID2::read_mifare_classic_data_sector(byte sector) {
 }
 
 int RFID2::authenticate_mifare_classic(byte block) {
-    bruceConfig.ensureMifareKeysLoaded();
+    mopieConfig.ensureMifareKeysLoaded();
     byte statusA = 0;
     byte statusB = 0;
 
@@ -466,7 +466,7 @@ int RFID2::authenticate_mifare_classic(byte block) {
     }
 
     if (statusA != MFRC522::StatusCode::STATUS_OK) {
-        for (const auto &mifKey : bruceConfig.mifareKeys) {
+        for (const auto &mifKey : mopieConfig.mifareKeys) {
             for (size_t i = 0; i < mifKey.length(); i += 2) {
                 keyA.keyByte[i / 2] = strtoul(mifKey.substring(i, i + 2).c_str(), NULL, 16);
             }
@@ -492,7 +492,7 @@ int RFID2::authenticate_mifare_classic(byte block) {
     }
 
     if (statusB != MFRC522::StatusCode::STATUS_OK) {
-        for (const auto &mifKey : bruceConfig.mifareKeys) {
+        for (const auto &mifKey : mopieConfig.mifareKeys) {
             for (size_t i = 0; i < mifKey.length(); i += 2) {
                 keyB.keyByte[i / 2] = strtoul(mifKey.substring(i, i + 2).c_str(), NULL, 16);
             }

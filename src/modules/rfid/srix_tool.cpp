@@ -173,7 +173,7 @@ void SRIXTool::show_main_menu() {
         return;
     }
 
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setTextSize(FP);
 
     padprintln("SRIX Tool for SRIX4K/512 v1.3");
@@ -190,9 +190,9 @@ void SRIXTool::show_main_menu() {
     padprintln("- PN532 module info");
     padprintln("");
 
-    tft.setTextColor(getColorVariation(bruceConfig.priColor), bruceConfig.bgColor);
+    tft.setTextColor(getColorVariation(mopieConfig.priColor), mopieConfig.bgColor);
     padprintln("Press [OK] to open menu");
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
 
     _screen_drawn = true;
 }
@@ -307,12 +307,12 @@ void SRIXTool::read_tag() {
     padprintln("");
     padprintln("");
     displaySuccess("Tag read successfully!");
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     padprintln("");
 
-    tft.setTextColor(getColorVariation(bruceConfig.priColor), bruceConfig.bgColor);
+    tft.setTextColor(getColorVariation(mopieConfig.priColor), mopieConfig.bgColor);
     padprintln("Press [OK] for Main Menu");
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
 
     _tag_read = true;
     _lastReadTime = millis();
@@ -431,7 +431,7 @@ void SRIXTool::write_tag() {
         padprintln("No blocks written");
     }
 
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     _lastReadTime = millis();
     delayWithReturn(3000);
     set_state(IDLE_MODE);
@@ -455,7 +455,7 @@ void SRIXTool::read_uid() {
 
     if (!nfc->SRIX_get_uid(_uid)) {
         displayError("Failed to read UID!");
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         delay(2000);
         set_state(READ_UID_MODE);
         return;
@@ -474,7 +474,7 @@ void SRIXTool::read_uid() {
         uid_parts[group].toUpperCase();
     }
 
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setTextSize(FM);
     // Build and print directly
     String uid_line = "UID: ";
@@ -490,9 +490,9 @@ void SRIXTool::read_uid() {
     tft.setTextSize(FP);
     padprintln("");
 
-    tft.setTextColor(getColorVariation(bruceConfig.priColor), bruceConfig.bgColor);
+    tft.setTextColor(getColorVariation(mopieConfig.priColor), mopieConfig.bgColor);
     padprintln("Press [OK] for Main Menu");
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
 
     _lastReadTime = millis();
     _screen_drawn = true;
@@ -508,13 +508,13 @@ void SRIXTool::show_pn_info() {
     uint32_t ver = nfc->getFirmwareVersion();
     if (!ver) {
         displayError("Failed to read firmware!");
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         delay(2000);
         set_state(IDLE_MODE);
         return;
     }
 
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setTextSize(FM);
     padprintln("PN532 Info:");
     tft.setTextSize(FP);
@@ -817,7 +817,7 @@ void SRIXTool::load_file_data(FS *fs, const String &filepath) {
     _screen_drawn = false;
 
     display_banner();
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setTextSize(FM);
     padprintln("File:");
     padprintln(filename); // Rewrite for long filename
@@ -828,10 +828,10 @@ void SRIXTool::load_file_data(FS *fs, const String &filepath) {
     padprintln("");
     tft.setTextSize(FP);
 
-    tft.setTextColor(getColorVariation(bruceConfig.priColor), bruceConfig.bgColor);
+    tft.setTextColor(getColorVariation(mopieConfig.priColor), mopieConfig.bgColor);
     padprintln("Press [OK] to open menu");
     padprintln("Select 'Write tag' to write");
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
 
     _lastReadTime = millis();
     _screen_drawn = true;
@@ -857,7 +857,7 @@ SRIXTool::SRIXTool(bool headless_mode) {
     memset(_uid, 0, sizeof(_uid));
 
     SRIX_LOG(
-        "[SRIX] I2C pins: SDA=%d, SCL=%d", bruceConfigPins.i2c_bus.sda, bruceConfigPins.i2c_bus.scl
+        "[SRIX] I2C pins: SDA=%d, SCL=%d", mopieConfigPins.i2c_bus.sda, mopieConfigPins.i2c_bus.scl
     );
 
     TwoWire *Wire = acquireI2CBus();

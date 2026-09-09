@@ -65,7 +65,7 @@ char strAddl[200];
 
 void ble_info(const String &name, const String &address, const String &signal) {
     drawMainBorder();
-    tft.setTextColor(bruceConfig.priColor);
+    tft.setTextColor(mopieConfig.priColor);
     tft.drawCentreString("-=Information=-", tftWidth / 2, 28, SMOOTH_FONT);
     tft.drawString("Name: " + name, 10, 48);
     tft.drawString("Adresse: " + address, 10, 66);
@@ -292,7 +292,7 @@ bool initBLEServer() {
 
 void disPlayBLESend() {
     uint8_t senddata[2] = {0};
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     drawMainBorder();
     tft.setTextSize(1);
 
@@ -317,7 +317,7 @@ void disPlayBLESend() {
             if (!wasConnected) {
                 tft.fillRect(10, 26, tftWidth - 20, tftHeight - 36, TFT_BLACK);
                 drawBLE_beacon(180, 28, TFT_BLUE);
-                tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+                tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
                 tft.setTextSize(FM);
                 tft.setCursor(12, 50);
                 tft.printf("BLE Send\n");

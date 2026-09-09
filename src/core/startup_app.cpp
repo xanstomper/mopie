@@ -47,7 +47,7 @@ StartupApp::StartupApp() {
         FS *fs = nullptr;
         getScriptsFolder(fs);
         if (fs == nullptr) return;
-        run_bjs_script_headless(*fs, bruceConfig.startupAppJSInterpreterFile);
+        run_bjs_script_headless(*fs, mopieConfig.startupAppJSInterpreterFile);
     };
 #endif
 }
@@ -62,7 +62,7 @@ bool StartupApp::startApp(const String &appName) const {
     it->second();
 
     delay(200);
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
 
     return true;
 }

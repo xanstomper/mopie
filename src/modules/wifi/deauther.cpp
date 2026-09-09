@@ -126,7 +126,7 @@ WiFiState saveWiFiState() {
 
 bool reconnectToWiFi(const String &ssid, const String &bssid) {
     if (ssid.length() == 0) return false;
-    String password = bruceConfig.getWifiPassword(ssid);
+    String password = mopieConfig.getWifiPassword(ssid);
     if (password == "") return false;
     if (!(WiFi.getMode() & WIFI_MODE_STA)) return false;
     WiFi.begin(ssid, password);
@@ -151,7 +151,7 @@ void restoreWiFiState(const WiFiState &state) {
     vTaskDelay(pdMS_TO_TICKS(50));
     if (state.was_connected && state.ssid.length() > 0) { reconnectToWiFi(state.ssid, state.bssid); }
     if (state.ap_active && state.ap_ssid.length() > 0) {
-        WiFi.softAP(state.ap_ssid.c_str(), bruceConfig.wifiAp.pwd, state.channel, 0, 4, false);
+        WiFi.softAP(state.ap_ssid.c_str(), mopieConfig.wifiAp.pwd, state.channel, 0, 4, false);
     }
 
     if (WiFi.isConnected()) {

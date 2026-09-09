@@ -50,7 +50,7 @@ void displayScrollingText(const String &text, Opt_Coord &coord, bool highlight) 
             coord.y,
             (coord.size - 1) * LW * tft.getTextSize(),
             LH * tft.getTextSize(),
-            highlight ? coord.fgcolor : bruceConfig.bgColor
+            highlight ? coord.fgcolor : mopieConfig.bgColor
         ); // Clear display area
         tft.setCursor(coord.x, coord.y);
         tft.print(scrollingPart);
@@ -355,7 +355,7 @@ void displaySuccess(const String &txt, bool waitKeyPress) {
 }
 
 void displayTextLine(const String &txt, bool waitKeyPress) {
-    displayRedStripe(txt, getComplementaryColor2(bruceConfig.priColor), bruceConfig.priColor);
+    displayRedStripe(txt, getComplementaryColor2(mopieConfig.priColor), mopieConfig.priColor);
     Serial.println("MESSAGE: " + txt);
 #ifndef HAS_SCREEN
     return;
@@ -556,7 +556,7 @@ int loopOptions(
             tftWidth * 0.8,
             (FM * 8 + 4) * menuSize + 10,
             5,
-            bruceConfig.bgColor
+            mopieConfig.bgColor
         );
     if (index >= options.size()) index = 0;
     bool firstRender = true;
@@ -568,8 +568,8 @@ int loopOptions(
         if (exit) break;
         if (menuType == MENU_TYPE_MAIN) {
             checkReboot();
-            if (devModeCounter >= 5 && !bruceConfig.devMode) {
-                bruceConfig.setDevMode(true);
+            if (devModeCounter >= 5 && !mopieConfig.devMode) {
+                mopieConfig.setDevMode(true);
                 displayInfo("Dev Mode Enabled", true);
             }
             if (millis() - _clock_bat_timer > 30000) {
@@ -595,9 +595,9 @@ int loopOptions(
                     coord = drawOptions(
                         index,
                         options,
-                        bruceConfig.priColor,
-                        bruceConfig.secColor,
-                        bruceConfig.bgColor,
+                        mopieConfig.priColor,
+                        mopieConfig.secColor,
+                        mopieConfig.bgColor,
                         firstRender
                     );
             }
@@ -649,7 +649,7 @@ int loopOptions(
             while (rotarySteps < 0) {
                 int nextEnabled = findNextEnabled(index, +1);
                 if (nextEnabled < 0) break;
-                if (!bruceConfig.devMode && nextEnabled <= index) devModeCounter++;
+                if (!mopieConfig.devMode && nextEnabled <= index) devModeCounter++;
                 index = nextEnabled;
                 rotarySteps++;
                 redraw = true;
@@ -682,13 +682,13 @@ int loopOptions(
                             15,
                             0,
                             360 * (millis() - (_tmp + 200)) / 500,
-                            getColorVariation(bruceConfig.priColor),
-                            bruceConfig.bgColor
+                            getColorVariation(mopieConfig.priColor),
+                            mopieConfig.bgColor
                         );
                     vTaskDelay(10 / portTICK_RATE_MS);
                 }
                 tft.drawArc(
-                    tftWidth / 2, tftHeight / 2, 25, 15, 0, 360, bruceConfig.bgColor, bruceConfig.bgColor
+                    tftWidth / 2, tftHeight / 2, 25, 15, 0, 360, mopieConfig.bgColor, mopieConfig.bgColor
                 );
                 LongPress = false;
 #endif
@@ -707,7 +707,7 @@ int loopOptions(
             if (check(NextPress) || check(DownPress)) {
                 int nextEnabled = findNextEnabled(index, +1);
                 if (nextEnabled >= 0) {
-                    if (!bruceConfig.devMode && nextEnabled <= index) devModeCounter++;
+                    if (!mopieConfig.devMode && nextEnabled <= index) devModeCounter++;
                     index = nextEnabled;
                 }
                 redraw = true;
@@ -751,11 +751,11 @@ int loopOptions(
 void progressHandler(int progress, size_t total, const String &message) {
     int barWidth = map(progress, 0, total, 0, tftWidth - 40);
     if (barWidth < 3) {
-        tft.fillRect(6, 27, tftWidth - 12, tftHeight - 33, bruceConfig.bgColor);
-        tft.drawRect(18, tftHeight - 47, tftWidth - 36, 17, bruceConfig.priColor);
-        displayRedStripe(message, TFT_WHITE, bruceConfig.priColor);
+        tft.fillRect(6, 27, tftWidth - 12, tftHeight - 33, mopieConfig.bgColor);
+        tft.drawRect(18, tftHeight - 47, tftWidth - 36, 17, mopieConfig.priColor);
+        displayRedStripe(message, TFT_WHITE, mopieConfig.priColor);
     }
-    tft.fillRect(20, tftHeight - 45, barWidth, 13, bruceConfig.priColor);
+    tft.fillRect(20, tftHeight - 45, barWidth, 13, mopieConfig.priColor);
 }
 
 /***************************************************************************************
@@ -779,7 +779,7 @@ Opt_Coord drawOptions(
     // drawStatusBar();
 
     int32_t optionsTopY = tftHeight / 2 - menuSize * (FM * 8 + 4) / 2 - 5;
-    tft.drawPixel(0, 0, bruceConfig.bgColor);
+    tft.drawPixel(0, 0, mopieConfig.bgColor);
     if (firstRender) {
         tft.fillRoundRect(
             tftWidth * 0.10, optionsTopY, tftWidth * 0.8, (FM * 8 + 4) * menuSize + 10, 5, bgcolor
@@ -815,13 +815,13 @@ Opt_Coord drawOptions(
             // Erase previously highlited element,
             if (i == last_index) {
                 tft.fillRoundRect(
-                    tftWidth * 0.10 + 2, cursorY + 2, tftWidth * 0.8 - 4, FM * LH + 2, 3, bruceConfig.bgColor
+                    tftWidth * 0.10 + 2, cursorY + 2, tftWidth * 0.8 - 4, FM * LH + 2, 3, mopieConfig.bgColor
                 );
             }
             // Draw selection highlight bar
             if (i == index) {
                 tft.fillRoundRect(
-                    tftWidth * 0.10 + 2, cursorY + 2, tftWidth * 0.8 - 4, FM * LH + 2, 3, bruceConfig.priColor
+                    tftWidth * 0.10 + 2, cursorY + 2, tftWidth * 0.8 - 4, FM * LH + 2, 3, mopieConfig.priColor
                 );
             }
 
@@ -842,7 +842,7 @@ Opt_Coord drawOptions(
             tft.setCursor(tftWidth * 0.10 + 5, tft.getCursorY() + 4);
 
             // Draw text with appropriate colors for selection
-            if (i == index) { tft.setTextColor(bgcolor, bruceConfig.priColor); }
+            if (i == index) { tft.setTextColor(bgcolor, mopieConfig.priColor); }
             tft.println(text.substring(0, (tftWidth * 0.8 - 10) / (LW * FM) - 1));
 
             // Reset text color for next item
@@ -871,10 +871,10 @@ void drawSubmenu(int index, std::vector<Option> &options, const char *title) {
 #endif
     drawStatusBar();
     int menuSize = options.size();
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setTextSize(FP);
     tft.drawPixel(0, 0, 0);
-    tft.fillRect(6, 30, tftWidth - 12, 8 * FP, bruceConfig.bgColor);
+    tft.fillRect(6, 30, tftWidth - 12, 8 * FP, mopieConfig.bgColor);
     tft.drawString(title, 12, 30);
 
     // middle of the drawing area
@@ -891,36 +891,36 @@ void drawSubmenu(int index, std::vector<Option> &options, const char *title) {
     // Previous item
     int firstIndex = index - 1 >= 0 ? index - 1 : menuSize - 1;
     const char *firstOption = options[firstIndex].label.c_str();
-    tft.setTextColor(options[firstIndex].enabled ? bruceConfig.secColor : TFT_DARKGREY);
-    tft.fillRect(6, middle_up, tftWidth - 12, 8 * FM, bruceConfig.bgColor);
+    tft.setTextColor(options[firstIndex].enabled ? mopieConfig.secColor : TFT_DARKGREY);
+    tft.fillRect(6, middle_up, tftWidth - 12, 8 * FM, mopieConfig.bgColor);
     tft.drawCentreString(firstOption, tftWidth / 2, middle_up, SMOOTH_FONT);
 
     // Selected item
     int selectedTextSize = options[index].label.length() <= tftWidth / (LW * FG) - 1 ? FG : FM;
     tft.setTextSize(selectedTextSize);
-    tft.setTextColor(options[index].enabled ? bruceConfig.priColor : TFT_DARKGREY);
-    tft.fillRect(6, middle - FG * LH / 2 - 1, tftWidth - 12, FG * LH + 5, bruceConfig.bgColor);
+    tft.setTextColor(options[index].enabled ? mopieConfig.priColor : TFT_DARKGREY);
+    tft.fillRect(6, middle - FG * LH / 2 - 1, tftWidth - 12, FG * LH + 5, mopieConfig.bgColor);
     tft.drawCentreString(options[index].label, tftWidth / 2, middle - selectedTextSize * LH / 2, SMOOTH_FONT);
     tft.drawFastHLine(
         tftWidth / 2 - strlen(options[index].label.c_str()) * selectedTextSize * LW / 2,
         middle + selectedTextSize * LH / 2 + 1,
         strlen(options[index].label.c_str()) * selectedTextSize * LW,
-        bruceConfig.priColor
+        mopieConfig.priColor
     );
     // Next Item
     int thirdIndex = index + 1 < menuSize ? index + 1 : 0;
     const char *thirdOption = options[thirdIndex].label.c_str();
     tft.setTextSize(FM);
-    tft.setTextColor(options[thirdIndex].enabled ? bruceConfig.secColor : TFT_DARKGREY);
-    tft.fillRect(6, middle_down, tftWidth - 12, 8 * FM, bruceConfig.bgColor);
+    tft.setTextColor(options[thirdIndex].enabled ? mopieConfig.secColor : TFT_DARKGREY);
+    tft.fillRect(6, middle_down, tftWidth - 12, 8 * FM, mopieConfig.bgColor);
     tft.drawCentreString(thirdOption, tftWidth / 2, middle_down, SMOOTH_FONT);
 
-    tft.fillRect(tftWidth - 5, 0, 5, tftHeight, bruceConfig.bgColor);
-    tft.fillRect(tftWidth - 5, index * tftHeight / menuSize, 5, tftHeight / menuSize, bruceConfig.priColor);
+    tft.fillRect(tftWidth - 5, 0, 5, tftHeight, mopieConfig.bgColor);
+    tft.fillRect(tftWidth - 5, index * tftHeight / menuSize, 5, tftHeight / menuSize, mopieConfig.priColor);
 
 #if defined(HAS_TOUCH)
     tft.drawCentreString("\\/", tftWidth / 2, middle_down + (FM * LH + 6), 1);
-    tft.setTextColor(getColorVariation(bruceConfig.priColor), bruceConfig.bgColor);
+    tft.setTextColor(getColorVariation(mopieConfig.priColor), mopieConfig.bgColor);
     tft.drawString("[ x ]", 7, 7, 1);
     TouchFooter();
 #endif
@@ -934,14 +934,14 @@ void drawStatusBar() {
     uint8_t bat = getBattery();
     if (bat > 0) drawBatteryStatus(bat);
 
-    if (bruceConfig.theme.border) {
-        tft.drawRoundRect(5, 5, tftWidth - 10, tftHeight - 10, 5, bruceConfig.priColor);
-        tft.drawLine(5, 25, tftWidth - 6, 25, bruceConfig.priColor);
+    if (mopieConfig.theme.border) {
+        tft.drawRoundRect(5, 5, tftWidth - 10, tftHeight - 10, 5, mopieConfig.priColor);
+        tft.drawLine(5, 25, tftWidth - 6, 25, mopieConfig.priColor);
     }
 
     if (clock_set) {
-        setTftDisplay(12, 12, bruceConfig.priColor, 1, bruceConfig.bgColor);
-        tft.fillRect(12, 12, 60, LH, bruceConfig.bgColor);
+        setTftDisplay(12, 12, mopieConfig.priColor, 1, mopieConfig.bgColor);
+        tft.fillRect(12, 12, 60, LH, mopieConfig.bgColor);
 #if defined(HAS_RTC)
         updateTimeStr(_rtc.getTimeStruct());
 #else
@@ -949,7 +949,7 @@ void drawStatusBar() {
 #endif
         tft.print(timeStr);
     } else {
-        setTftDisplay(12, 12, bruceConfig.priColor, 1, bruceConfig.bgColor);
+        setTftDisplay(12, 12, mopieConfig.priColor, 1, mopieConfig.bgColor);
         tft.print("MOPIE " + String(MOPIE_VERSION));
     }
 
@@ -978,37 +978,37 @@ void drawStatusBar() {
 
         if (showSD) {
             int x = sx + idx * (IW + GAP);
-            tft.fillRect(x, iy, IW, IH, bruceConfig.bgColor);
+            tft.fillRect(x, iy, IW, IH, mopieConfig.bgColor);
             drawSdSmall(x, iy);
             idx++;
         }
         if (showGPS) {
             int x = sx + idx * (IW + GAP);
-            tft.fillRect(x, iy, IW, IH, bruceConfig.bgColor);
+            tft.fillRect(x, iy, IW, IH, mopieConfig.bgColor);
             drawGpsSmall(x, iy);
             idx++;
         }
         if (showWifi) {
             int x = sx + idx * (IW + GAP);
-            tft.fillRect(x, iy, IW, IH, bruceConfig.bgColor);
+            tft.fillRect(x, iy, IW, IH, mopieConfig.bgColor);
             drawWifiSmall(x, iy);
             idx++;
         }
         if (showWeb) {
             int x = sx + idx * (IW + GAP);
-            tft.fillRect(x, iy, IW, IH, bruceConfig.bgColor);
+            tft.fillRect(x, iy, IW, IH, mopieConfig.bgColor);
             drawWebUISmall(x, iy);
             idx++;
         }
         if (showBLE) {
             int x = sx + idx * (IW + GAP);
-            tft.fillRect(x, iy, IW, IH, bruceConfig.bgColor);
+            tft.fillRect(x, iy, IW, IH, mopieConfig.bgColor);
             drawBLESmall(x, iy);
             idx++;
         }
         if (showWG) {
             int x = sx + idx * (IW + GAP);
-            tft.fillRect(x, iy, IW, IH, bruceConfig.bgColor);
+            tft.fillRect(x, iy, IW, IH, mopieConfig.bgColor);
             drawWireguardStatus(x, iy);
             idx++;
         }
@@ -1018,9 +1018,9 @@ void drawStatusBar() {
 void drawMainBorder(bool clear) {
     if (clear) {
         tft.drawPixel(0, 0, 0);
-        tft.fillScreen(bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
     }
-    setTftDisplay(12, 12, bruceConfig.priColor, 1, bruceConfig.bgColor);
+    setTftDisplay(12, 12, mopieConfig.priColor, 1, mopieConfig.bgColor);
     tft.setTextDatum(0);
 
     // if(wifiConnected) {tft.print(timeStr);} else {tft.print("MOPIE");}
@@ -1040,7 +1040,7 @@ void drawMainBorderWithTitle(const String &title, bool clear) {
 void printTitle(const String &title) {
     String t = title;
     t.toUpperCase();
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
 
     // Scale down title font if it doesn't fit the screen width
     int titleSize = FM;
@@ -1057,7 +1057,7 @@ void printTitle(const String &title) {
 
 void printSubtitle(const String &subtitle, bool withLine) {
     int16_t cursorX = (tftWidth - (subtitle.length() * FP * LW)) / 2;
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setTextSize(FP);
 
     tft.setCursor(cursorX, BORDER_PAD_Y + FM * LH);
@@ -1078,7 +1078,7 @@ void printFootnote(const String &text) {
 }
 
 void printCenterFootnote(const String &text) {
-    tft.fillRect(10, tftHeight - BORDER_PAD_X - FP * LH, tftWidth - 20, FP * LH, bruceConfig.bgColor);
+    tft.fillRect(10, tftHeight - BORDER_PAD_X - FP * LH, tftWidth - 20, FP * LH, mopieConfig.bgColor);
     tft.setTextSize(FP);
     tft.drawCentreString(text, tftWidth / 2, tftHeight - BORDER_PAD_X - FP * LH, SMOOTH_FONT);
 }
@@ -1088,33 +1088,33 @@ void drawBatteryStatus(uint8_t bat) {
 
     bool charging = isCharging();
 
-    uint16_t color = bruceConfig.priColor;
-    uint16_t barcolor = bruceConfig.priColor;
+    uint16_t color = mopieConfig.priColor;
+    uint16_t barcolor = mopieConfig.priColor;
     if (bat < 16) barcolor = color = TFT_RED;
 
     tft.drawRoundRect(tftWidth - 42, 7, 34, 17, 2, color);
     tft.setTextSize(FP);
-    tft.fillRect(tftWidth - 85, 7, 42, 18, bruceConfig.bgColor);
+    tft.fillRect(tftWidth - 85, 7, 42, 18, mopieConfig.bgColor);
     if (charging) {
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawRightString("CHG", tftWidth - 44, 12, 1);
     } else {
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawRightString((bat == 100 ? "" : " ") + String(bat) + "%", tftWidth - 44, 12, 1);
     }
     tft.fillRoundRect(tftWidth - 40, 9, 30 * bat / 100, 13, 2, barcolor);
-    tft.drawLine(tftWidth - 30, 9, tftWidth - 30, 9 + 13, bruceConfig.bgColor);
-    tft.drawLine(tftWidth - 20, 9, tftWidth - 20, 9 + 13, bruceConfig.bgColor);
+    tft.drawLine(tftWidth - 30, 9, tftWidth - 30, 9 + 13, mopieConfig.bgColor);
+    tft.drawLine(tftWidth - 20, 9, tftWidth - 20, 9 + 13, mopieConfig.bgColor);
 }
 
 void drawWireguardStatus(int x, int y) {
-    tft.fillRect(x, y, 16, 16, bruceConfig.bgColor);
+    tft.fillRect(x, y, 16, 16, mopieConfig.bgColor);
     if (isConnectedWireguard) {
-        tft.drawRoundRect(x + 4, y + 2, 8, 8, 3, bruceConfig.priColor);
-        tft.fillRoundRect(x + 3, y + 7, 10, 7, 1, bruceConfig.priColor);
+        tft.drawRoundRect(x + 4, y + 2, 8, 8, 3, mopieConfig.priColor);
+        tft.fillRoundRect(x + 3, y + 7, 10, 7, 1, mopieConfig.priColor);
     } else {
-        tft.drawRoundRect(x + 4, y + 2, 8, 8, 3, bruceConfig.priColor);
-        tft.drawRoundRect(x + 3, y + 7, 10, 7, 1, bruceConfig.priColor);
+        tft.drawRoundRect(x + 4, y + 2, 8, 8, 3, mopieConfig.priColor);
+        tft.drawRoundRect(x + 3, y + 7, 10, 7, 1, mopieConfig.priColor);
     }
 }
 
@@ -1125,10 +1125,10 @@ void drawWireguardStatus(int x, int y) {
 #define MAX_ITEMS (int)(tftHeight - 20) / (LH * FM)
 Opt_Coord listFiles(int index, std::vector<FileList> fileList) {
     Opt_Coord coord;
-    tft.drawPixel(0, 0, bruceConfig.bgColor);
+    tft.drawPixel(0, 0, mopieConfig.bgColor);
     if (index == 0) {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.drawRoundRect(5, 5, tftWidth - 10, tftHeight - 10, 5, bruceConfig.priColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.drawRoundRect(5, 5, tftWidth - 10, tftHeight - 10, 5, mopieConfig.priColor);
     }
     tft.setCursor(10, 10);
     tft.setTextSize(FM);
@@ -1145,9 +1145,9 @@ Opt_Coord listFiles(int index, std::vector<FileList> fileList) {
         if (i >= start) {
             tft.setCursor(10, tft.getCursorY());
             if (fileList[i].folder == true)
-                tft.setTextColor(getColorVariation(bruceConfig.priColor), bruceConfig.bgColor);
-            else if (fileList[i].operation == true) tft.setTextColor(ALCOLOR, bruceConfig.bgColor);
-            else { tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor); }
+                tft.setTextColor(getColorVariation(mopieConfig.priColor), mopieConfig.bgColor);
+            else if (fileList[i].operation == true) tft.setTextColor(ALCOLOR, mopieConfig.bgColor);
+            else { tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor); }
 
             if (index == i) {
                 txt = ">";
@@ -1155,8 +1155,8 @@ Opt_Coord listFiles(int index, std::vector<FileList> fileList) {
                 coord.y = tft.getCursorY();
                 coord.size = nchars;
                 coord.fgcolor =
-                    fileList[i].folder ? getColorVariation(bruceConfig.priColor) : bruceConfig.priColor;
-                coord.bgcolor = bruceConfig.bgColor;
+                    fileList[i].folder ? getColorVariation(mopieConfig.priColor) : mopieConfig.priColor;
+                coord.bgcolor = mopieConfig.bgColor;
             } else txt = " ";
             txt += fileList[i].filename + "                 ";
             tft.println(txt.substring(0, nchars));
@@ -1170,88 +1170,88 @@ Opt_Coord listFiles(int index, std::vector<FileList> fileList) {
 // desenhos do menu principal, sprite "draw" com 80x80 pixels
 
 void drawSdSmall(int x, int y) {
-    tft.fillRect(x, y, 16, 16, bruceConfig.bgColor);
-    tft.drawLine(x + 3, y + 2, x + 3, y + 14, bruceConfig.priColor);
-    tft.drawLine(x + 3, y + 14, x + 13, y + 14, bruceConfig.priColor);
-    tft.drawLine(x + 13, y + 14, x + 13, y + 5, bruceConfig.priColor);
-    tft.drawLine(x + 13, y + 5, x + 10, y + 2, bruceConfig.priColor);
-    tft.drawLine(x + 10, y + 2, x + 3, y + 2, bruceConfig.priColor);
+    tft.fillRect(x, y, 16, 16, mopieConfig.bgColor);
+    tft.drawLine(x + 3, y + 2, x + 3, y + 14, mopieConfig.priColor);
+    tft.drawLine(x + 3, y + 14, x + 13, y + 14, mopieConfig.priColor);
+    tft.drawLine(x + 13, y + 14, x + 13, y + 5, mopieConfig.priColor);
+    tft.drawLine(x + 13, y + 5, x + 10, y + 2, mopieConfig.priColor);
+    tft.drawLine(x + 10, y + 2, x + 3, y + 2, mopieConfig.priColor);
 
-    tft.drawLine(x + 5, y + 4, x + 5, y + 6, bruceConfig.priColor);
-    tft.drawLine(x + 7, y + 4, x + 7, y + 6, bruceConfig.priColor);
-    tft.drawLine(x + 9, y + 4, x + 9, y + 6, bruceConfig.priColor);
-    tft.drawLine(x + 11, y + 5, x + 11, y + 6, bruceConfig.priColor);
+    tft.drawLine(x + 5, y + 4, x + 5, y + 6, mopieConfig.priColor);
+    tft.drawLine(x + 7, y + 4, x + 7, y + 6, mopieConfig.priColor);
+    tft.drawLine(x + 9, y + 4, x + 9, y + 6, mopieConfig.priColor);
+    tft.drawLine(x + 11, y + 5, x + 11, y + 6, mopieConfig.priColor);
 }
 
 void drawWifiSmall(int x, int y) {
-    tft.fillRect(x, y, 16, 16, bruceConfig.bgColor);
-    tft.fillCircle(x + 8, y + 13, 1, bruceConfig.priColor);
-    tft.drawArc(x + 8, y + 13, 4, 6, 135, 225, bruceConfig.priColor, bruceConfig.bgColor);
-    tft.drawArc(x + 8, y + 13, 9, 11, 135, 225, bruceConfig.priColor, bruceConfig.bgColor);
+    tft.fillRect(x, y, 16, 16, mopieConfig.bgColor);
+    tft.fillCircle(x + 8, y + 13, 1, mopieConfig.priColor);
+    tft.drawArc(x + 8, y + 13, 4, 6, 135, 225, mopieConfig.priColor, mopieConfig.bgColor);
+    tft.drawArc(x + 8, y + 13, 9, 11, 135, 225, mopieConfig.priColor, mopieConfig.bgColor);
 }
 
 void drawWebUISmall(int x, int y) {
-    tft.fillRect(x, y, 16, 16, bruceConfig.bgColor);
-    tft.drawCircle(x + 8, y + 8, 6, bruceConfig.priColor);
-    tft.drawLine(x + 3, y + 4, x + 13, y + 4, bruceConfig.priColor);
-    tft.drawLine(x + 2, y + 8, x + 14, y + 8, bruceConfig.priColor);
-    tft.drawLine(x + 3, y + 12, x + 13, y + 12, bruceConfig.priColor);
+    tft.fillRect(x, y, 16, 16, mopieConfig.bgColor);
+    tft.drawCircle(x + 8, y + 8, 6, mopieConfig.priColor);
+    tft.drawLine(x + 3, y + 4, x + 13, y + 4, mopieConfig.priColor);
+    tft.drawLine(x + 2, y + 8, x + 14, y + 8, mopieConfig.priColor);
+    tft.drawLine(x + 3, y + 12, x + 13, y + 12, mopieConfig.priColor);
 }
 
 void drawBLESmall(int x, int y) {
-    tft.fillRect(x, y, 16, 16, bruceConfig.bgColor);
-    tft.drawWideLine(x + 8, y + 8, x + 4, y + 4, 2, bruceConfig.priColor, bruceConfig.bgColor);
-    tft.drawWideLine(x + 8, y + 8, x + 4, y + 12, 2, bruceConfig.priColor, bruceConfig.bgColor);
-    tft.drawTriangle(x + 8, y + 8, x + 8, y + 2, x + 12, y + 5, bruceConfig.priColor);
-    tft.drawTriangle(x + 8, y + 8, x + 8, y + 14, x + 12, y + 11, bruceConfig.priColor);
+    tft.fillRect(x, y, 16, 16, mopieConfig.bgColor);
+    tft.drawWideLine(x + 8, y + 8, x + 4, y + 4, 2, mopieConfig.priColor, mopieConfig.bgColor);
+    tft.drawWideLine(x + 8, y + 8, x + 4, y + 12, 2, mopieConfig.priColor, mopieConfig.bgColor);
+    tft.drawTriangle(x + 8, y + 8, x + 8, y + 2, x + 12, y + 5, mopieConfig.priColor);
+    tft.drawTriangle(x + 8, y + 8, x + 8, y + 14, x + 12, y + 11, mopieConfig.priColor);
 }
 
 void drawBLE_beacon(int x, int y, uint16_t color) {
-    tft.fillRect(x, y, 40, 80, bruceConfig.bgColor);
-    tft.drawWideLine(40 + x, 53 + y, 2 + x, 26 + y, 5, color, bruceConfig.bgColor);
-    tft.drawWideLine(40 + x, 26 + y, 2 + x, 53 + y, 5, color, bruceConfig.bgColor);
-    tft.drawWideLine(40 + x, 53 + y, 20 + x, 68 + y, 5, color, bruceConfig.bgColor);
-    tft.drawWideLine(40 + x, 26 + y, 20 + x, 12 + y, 5, color, bruceConfig.bgColor);
-    tft.drawWideLine(20 + x, 12 + y, 20 + x, 68 + y, 5, color, bruceConfig.bgColor);
+    tft.fillRect(x, y, 40, 80, mopieConfig.bgColor);
+    tft.drawWideLine(40 + x, 53 + y, 2 + x, 26 + y, 5, color, mopieConfig.bgColor);
+    tft.drawWideLine(40 + x, 26 + y, 2 + x, 53 + y, 5, color, mopieConfig.bgColor);
+    tft.drawWideLine(40 + x, 53 + y, 20 + x, 68 + y, 5, color, mopieConfig.bgColor);
+    tft.drawWideLine(40 + x, 26 + y, 20 + x, 12 + y, 5, color, mopieConfig.bgColor);
+    tft.drawWideLine(20 + x, 12 + y, 20 + x, 68 + y, 5, color, mopieConfig.bgColor);
     tft.fillTriangle(40 + x, 26 + y, 20 + x, 40 + y, 20 + x, 12 + y, color);
     tft.fillTriangle(40 + x, 53 + y, 20 + x, 40 + y, 20 + x, 68 + y, color);
 }
 
 void drawGPS(int x, int y) {
-    tft.fillRect(x, y, 80, 80, bruceConfig.bgColor);
-    tft.drawEllipse(40 + x, 70 + y, 15, 8, bruceConfig.priColor);
-    tft.drawArc(40 + x, 25 + y, 23, 7, 0, 340, bruceConfig.priColor, bruceConfig.bgColor);
-    tft.fillTriangle(40 + x, 70 + y, 20 + x, 64 + y, 60 + x, 64 + y, bruceConfig.priColor);
+    tft.fillRect(x, y, 80, 80, mopieConfig.bgColor);
+    tft.drawEllipse(40 + x, 70 + y, 15, 8, mopieConfig.priColor);
+    tft.drawArc(40 + x, 25 + y, 23, 7, 0, 340, mopieConfig.priColor, mopieConfig.bgColor);
+    tft.fillTriangle(40 + x, 70 + y, 20 + x, 64 + y, 60 + x, 64 + y, mopieConfig.priColor);
 }
 
 void drawGpsSmall(int x, int y) {
-    tft.fillRect(x, y, 16, 16, bruceConfig.bgColor);
-    tft.drawEllipse(x + 8, y + 13, 4, 3, bruceConfig.priColor);
-    tft.drawArc(x + 8, y + 5, 5, 2, 0, 360, bruceConfig.priColor, bruceConfig.bgColor);
-    tft.fillTriangle(x + 8, y + 14, x + 4, y + 8, x + 12, y + 8, bruceConfig.priColor);
+    tft.fillRect(x, y, 16, 16, mopieConfig.bgColor);
+    tft.drawEllipse(x + 8, y + 13, 4, 3, mopieConfig.priColor);
+    tft.drawArc(x + 8, y + 5, 5, 2, 0, 360, mopieConfig.priColor, mopieConfig.bgColor);
+    tft.fillTriangle(x + 8, y + 14, x + 4, y + 8, x + 12, y + 8, mopieConfig.priColor);
 }
 
 void drawCreditCard(int x, int y) {
-    tft.fillRect(x, y, 70, 50, bruceConfig.bgColor);
-    tft.fillRoundRect(x + 5, y + 5, 60, 40, 5, bruceConfig.priColor);
-    tft.fillRect(x + 5, y + 15, 60, 10, getColorVariation(bruceConfig.priColor, 3, -1));
-    tft.fillRect(x + 10, y + 30, 12, 10, getColorVariation(bruceConfig.priColor, 3, 1));
-    tft.drawRect(x + 10, y + 30, 12, 10, getColorVariation(bruceConfig.priColor, 5, -1));
-    tft.drawRect(x + 10 + 4, y + 30, 4, 10, getColorVariation(bruceConfig.priColor, 5, -1));
-    tft.drawRect(x + 10, y + 33, 5, 4, getColorVariation(bruceConfig.priColor, 5, -1));
-    tft.drawRect(x + 17, y + 33, 5, 4, getColorVariation(bruceConfig.priColor, 5, -1));
-    tft.fillRect(x + 30, y + 35, 30, 5, getColorVariation(bruceConfig.priColor, 5, 1));
+    tft.fillRect(x, y, 70, 50, mopieConfig.bgColor);
+    tft.fillRoundRect(x + 5, y + 5, 60, 40, 5, mopieConfig.priColor);
+    tft.fillRect(x + 5, y + 15, 60, 10, getColorVariation(mopieConfig.priColor, 3, -1));
+    tft.fillRect(x + 10, y + 30, 12, 10, getColorVariation(mopieConfig.priColor, 3, 1));
+    tft.drawRect(x + 10, y + 30, 12, 10, getColorVariation(mopieConfig.priColor, 5, -1));
+    tft.drawRect(x + 10 + 4, y + 30, 4, 10, getColorVariation(mopieConfig.priColor, 5, -1));
+    tft.drawRect(x + 10, y + 33, 5, 4, getColorVariation(mopieConfig.priColor, 5, -1));
+    tft.drawRect(x + 17, y + 33, 5, 4, getColorVariation(mopieConfig.priColor, 5, -1));
+    tft.fillRect(x + 30, y + 35, 30, 5, getColorVariation(mopieConfig.priColor, 5, 1));
 }
 
 void drawMfkey32Icon(int x, int y) {
-    tft.drawRect(x + 2, y + 15, 24, 40, bruceConfig.priColor);
-    tft.drawRect(x + 5, y + 18, 18, 12, bruceConfig.priColor);
-    tft.drawRect(x + 5, y + 34, 18, 18, bruceConfig.priColor);
-    tft.drawLine(x + 5, y + 40, x + 22, y + 40, bruceConfig.priColor);
-    tft.drawLine(x + 5, y + 46, x + 22, y + 46, bruceConfig.priColor);
-    tft.drawLine(x + 11, y + 34, x + 11, y + 51, bruceConfig.priColor);
-    tft.drawLine(x + 17, y + 34, x + 17, y + 51, bruceConfig.priColor);
-    tft.drawRect(x + 30, y + 10, 25, 35, bruceConfig.priColor);
+    tft.drawRect(x + 2, y + 15, 24, 40, mopieConfig.priColor);
+    tft.drawRect(x + 5, y + 18, 18, 12, mopieConfig.priColor);
+    tft.drawRect(x + 5, y + 34, 18, 18, mopieConfig.priColor);
+    tft.drawLine(x + 5, y + 40, x + 22, y + 40, mopieConfig.priColor);
+    tft.drawLine(x + 5, y + 46, x + 22, y + 46, mopieConfig.priColor);
+    tft.drawLine(x + 11, y + 34, x + 11, y + 51, mopieConfig.priColor);
+    tft.drawLine(x + 17, y + 34, x + 17, y + 51, mopieConfig.priColor);
+    tft.drawRect(x + 30, y + 10, 25, 35, mopieConfig.priColor);
     int startX = x + 32;
     int startY = y + 12;
     int endX = x + 52;
@@ -1260,24 +1260,24 @@ void drawMfkey32Icon(int x, int y) {
     int turns = 0;
 
     while (startX <= endX && startY <= endY && turns < 3) {
-        for (int i = startX; i <= endX; i++) { tft.drawPixel(i, startY, bruceConfig.priColor); }
+        for (int i = startX; i <= endX; i++) { tft.drawPixel(i, startY, mopieConfig.priColor); }
         startY += step;
-        for (int i = startY; i <= endY; i++) { tft.drawPixel(endX, i, bruceConfig.priColor); }
+        for (int i = startY; i <= endY; i++) { tft.drawPixel(endX, i, mopieConfig.priColor); }
         endX -= step;
-        for (int i = endX; i >= startX; i--) { tft.drawPixel(i, endY, bruceConfig.priColor); }
+        for (int i = endX; i >= startX; i--) { tft.drawPixel(i, endY, mopieConfig.priColor); }
         endY -= step;
-        for (int i = endY; i >= startY; i--) { tft.drawPixel(startX, i, bruceConfig.priColor); }
+        for (int i = endY; i >= startY; i--) { tft.drawPixel(startX, i, mopieConfig.priColor); }
         startX += step;
         turns++;
     }
-    tft.fillRect(x + 40, y + 36, 6, 6, getColorVariation(bruceConfig.priColor, 3, 1));
+    tft.fillRect(x + 40, y + 36, 6, 6, getColorVariation(mopieConfig.priColor, 3, 1));
 }
 
 void drawMfkey64Icon(int x, int y) {
     drawMfkey32Icon(x, y);
-    tft.fillRoundRect(x + 40, y + 6, 24, 14, 4, bruceConfig.bgColor);
-    tft.drawRoundRect(x + 40, y + 6, 24, 14, 4, getColorVariation(bruceConfig.priColor, 3, -1));
-    tft.drawCircle(x + 48, y + 12, 4, getColorVariation(bruceConfig.priColor, 3, -1));
+    tft.fillRoundRect(x + 40, y + 6, 24, 14, 4, mopieConfig.bgColor);
+    tft.drawRoundRect(x + 40, y + 6, 24, 14, 4, getColorVariation(mopieConfig.priColor, 3, -1));
+    tft.drawCircle(x + 48, y + 12, 4, getColorVariation(mopieConfig.priColor, 3, -1));
 }
 
 // ####################################################################################################
@@ -1912,9 +1912,9 @@ int16_t ypos = 0;
 int PNGDraw(PNGDRAW *pDraw) {
     uint16_t usPixels[MAX_IMAGE_WIDTH];
     // static uint16_t dmaBuffer[MAX_IMAGE_WIDTH]; // static so buffer persists after fn exit
-    uint8_t r = ((uint16_t)bruceConfig.bgColor & 0xF800) >> 8;
-    uint8_t g = ((uint16_t)bruceConfig.bgColor & 0x07E0) >> 3;
-    uint8_t b = ((uint16_t)bruceConfig.bgColor & 0x001F) << 3;
+    uint8_t r = ((uint16_t)mopieConfig.bgColor & 0xF800) >> 8;
+    uint8_t g = ((uint16_t)mopieConfig.bgColor & 0x07E0) >> 3;
+    uint8_t b = ((uint16_t)mopieConfig.bgColor & 0x001F) << 3;
     png->getLineAsRGB565(pDraw, usPixels, PNG_RGB565_BIG_ENDIAN, b << 16 | g << 8 | r);
     if (!pngCacheOnly) {
         tft.drawPixel(0, 0, 0);
@@ -2018,7 +2018,7 @@ bool drawPNG(FS &fs, const String &filename, int x, int y, bool center) {
 
     if (!mem) {
         Serial.println("Fail alloc PNG!");
-        bruceConfig.theme.label = true;
+        mopieConfig.theme.label = true;
         return false;
     }
 

@@ -1086,9 +1086,9 @@ void wifi_crack_handshake(const String &wordlist_path, const String &pcap_path) 
         resetTftDisplay();
         drawMainBorderWithTitle("WiFi Password Cracker", true);
         padprintln("");
-        tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+        tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
         padprintln("PASSWORD FOUND!");
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         padprintln("");
         padprintf("SSID: %s\n", hs.ssid[0] ? hs.ssid : "(not found)");
 
@@ -1106,9 +1106,9 @@ void wifi_crack_handshake(const String &wordlist_path, const String &pcap_path) 
         while (!check(AnyKeyPress)) vTaskDelay(pdMS_TO_TICKS(50));
 
     } else if (!g_abortRequested) {
-        tft.setTextColor(TFT_RED, bruceConfig.bgColor);
+        tft.setTextColor(TFT_RED, mopieConfig.bgColor);
         padprintln("Password not found");
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         displayError("No match", true);
         vTaskDelay(pdMS_TO_TICKS(3000));
     }

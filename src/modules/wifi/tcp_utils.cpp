@@ -24,7 +24,7 @@ void listenTcpPort() {
     WiFiClient tcpClient;
     drawMainBorderWithTitle("LISTEN TCP");
     tft.setTextSize(FP);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
 
     WiFiServer server(portNumberInt);
     server.begin();
@@ -54,7 +54,7 @@ void listenTcpPort() {
                     inputMode = false;
                     drawMainBorderWithTitle("LISTEN TCP");
                     tft.setTextSize(FP);
-                    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+                    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
                     tft.setCursor(10, BORDER_PAD_Y + FM * LH);
                     if (keyString.length() > 0 && keyString != "\x1B") {
                         if (tft.getCursorY() > tftHeight - 3 * LH * FP) {
@@ -108,7 +108,7 @@ void clientTCP() {
     WiFiClient client;
     drawMainBorderWithTitle("TCP CLIENT");
     tft.setTextSize(FP);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
 
     padprintln("Connecting to:");
     tft.println(serverIP + ":" + portString);
@@ -127,7 +127,7 @@ void clientTCP() {
             inputMode = false;
             drawMainBorderWithTitle("TCP CLIENT");
             tft.setTextSize(FP);
-            tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+            tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
             tft.setCursor(10, BORDER_PAD_Y + FM * LH);
             if (keyString.length() > 0 && keyString != "\x1B") {
                 if (tft.getCursorY() > tftHeight - 3 * LH * FP) drawMainBorderWithTitle("LISTEN TCP");

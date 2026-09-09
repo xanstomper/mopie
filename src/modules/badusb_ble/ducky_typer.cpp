@@ -445,7 +445,7 @@ static String queueToString(const std::vector<QueuedHIDKey> &queuedKeys) {
 
 static void sendSingleKey(HIDInterface *hid, uint8_t key) {
     hid->press(key);
-    delay(bruceConfig.badUSBBLEKeyDelay);
+    delay(mopieConfig.badUSBBLEKeyDelay);
     hid->releaseAll();
 }
 
@@ -526,7 +526,7 @@ sendQueuedKeys(HIDInterface *hid, bool &queueRecording, const std::vector<Queued
     if (queuedKeys.empty()) return;
 
     for (const auto &queuedKey : queuedKeys) { hid->press(queuedKey.key); }
-    delay(bruceConfig.badUSBBLEKeyDelay);
+    delay(mopieConfig.badUSBBLEKeyDelay);
     hid->releaseAll();
 
     queueRecording = false;
@@ -603,7 +603,7 @@ void ducky_startKb(HIDInterface *&hid, bool ble, int functionId) {
             }
 
             // Build device name with suffix for unique identification
-            String deviceName = bruceConfigPins.bleName;
+            String deviceName = mopieConfigPins.bleName;
             if (deviceName.isEmpty()) { deviceName = "keyboard_99"; }
 
             Serial.printf("[ducky_startKb] Device name: %s\n", deviceName.c_str());
@@ -636,11 +636,11 @@ void ducky_startKb(HIDInterface *&hid, bool ble, int functionId) {
             Serial.printf("[ducky_startKb] hid_ble now points to instance %p\n", hid_ble);
 
             const uint8_t *layout =
-                (const uint8_t *)pgm_read_ptr(&keyboardLayouts[bruceConfig.badUSBBLEKeyboardLayout]);
+                (const uint8_t *)pgm_read_ptr(&keyboardLayouts[mopieConfig.badUSBBLEKeyboardLayout]);
 
             // Start the HID service
             hid->begin(layout);
-            hid->setDelay(bruceConfig.badUSBBLEKeyDelay);
+            hid->setDelay(mopieConfig.badUSBBLEKeyDelay);
 
             // CRITICAL: Wait for HID service to be fully registered
             delay(200);
@@ -673,30 +673,30 @@ void ducky_startKb(HIDInterface *&hid, bool ble, int functionId) {
         if (hid->isConnected()) {
             Serial.println("BLE Already connected, updating settings");
             const uint8_t *layout =
-                (const uint8_t *)pgm_read_ptr(&keyboardLayouts[bruceConfig.badUSBBLEKeyboardLayout]);
+                (const uint8_t *)pgm_read_ptr(&keyboardLayouts[mopieConfig.badUSBBLEKeyboardLayout]);
             hid->setLayout(layout);
-            hid->setDelay(bruceConfig.badUSBBLEKeyDelay);
+            hid->setDelay(mopieConfig.badUSBBLEKeyDelay);
             return;
         }
 
         Serial.println("Starting/restarting BLE advertising");
         const uint8_t *layout =
-            (const uint8_t *)pgm_read_ptr(&keyboardLayouts[bruceConfig.badUSBBLEKeyboardLayout]);
+            (const uint8_t *)pgm_read_ptr(&keyboardLayouts[mopieConfig.badUSBBLEKeyboardLayout]);
         hid->begin(layout);
-        hid->setDelay(bruceConfig.badUSBBLEKeyDelay);
+        hid->setDelay(mopieConfig.badUSBBLEKeyDelay);
     } else {
 #if defined(USB_as_HID)
         const uint8_t *layout =
-            (const uint8_t *)pgm_read_ptr(&keyboardLayouts[bruceConfig.badUSBBLEKeyboardLayout]);
+            (const uint8_t *)pgm_read_ptr(&keyboardLayouts[mopieConfig.badUSBBLEKeyboardLayout]);
         hid->begin(layout);
-        hid->setDelay(bruceConfig.badUSBBLEKeyDelay);
+        hid->setDelay(mopieConfig.badUSBBLEKeyDelay);
 #else
         mySerial.begin(CH9329_DEFAULT_BAUDRATE, SERIAL_8N1, BAD_RX, BAD_TX);
         delay(100);
         const uint8_t *layout =
-            (const uint8_t *)pgm_read_ptr(&keyboardLayouts[bruceConfig.badUSBBLEKeyboardLayout]);
+            (const uint8_t *)pgm_read_ptr(&keyboardLayouts[mopieConfig.badUSBBLEKeyboardLayout]);
         hid->begin(mySerial, layout);
-        hid->setDelay(bruceConfig.badUSBBLEKeyDelay);
+        hid->setDelay(mopieConfig.badUSBBLEKeyDelay);
 #endif
     }
 }
@@ -708,16 +708,16 @@ void ducky_startKb(HIDInterface *&hid, bool ble, int functionId) {
 void ducky_setup(HIDInterface *&hid, bool ble) {
     Serial.println("Ducky typer begin");
 
-    if (ble && bruceConfig.badUSBBLEKeyDelay < 50) {
+    if (ble && mopieConfig.badUSBBLEKeyDelay < 50) {
         displayWarning("Key delay is below 50ms. You may experience issues with missing keys.", true);
     }
 
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
 
     FS *fs = nullptr;
     bool first_time = true;
 
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     String bad_script = "";
     options = {};
 
@@ -816,7 +816,7 @@ void key_input(FS fs, const String &bad_script, HIDInterface *_hid) {
     String RepeatTmp = "";
 
     static int nextStringDelay = -1;
-    static int defaultStringDelay = bruceConfig.badUSBBLEKeyDelay;
+    static int defaultStringDelay = mopieConfig.badUSBBLEKeyDelay;
     currentOutputY = 0;
 
     _hid->releaseAll();
@@ -825,7 +825,7 @@ void key_input(FS fs, const String &bad_script, HIDInterface *_hid) {
     printStatusBadUSBBLE("Running");
 
     tft.setTextSize(FP);
-    tft.setTextColor(bruceConfig.priColor);
+    tft.setTextColor(mopieConfig.priColor);
     tft.setCursor(BORDER_OFFSET_FROM_SCREEN_EDGE * 2, FP * 8 * 3 + 2 + STATUS_BAR_HEIGHT);
     tft.print("Run Time:");
     printDecimalTime(0);
@@ -835,9 +835,9 @@ void key_input(FS fs, const String &bad_script, HIDInterface *_hid) {
         tftHeight / 2 - FP * 4 - 2,
         tftWidth - BORDER_OFFSET_FROM_SCREEN_EDGE,
         tftHeight / 2 - FP * 4 - 2,
-        bruceConfig.priColor
+        mopieConfig.priColor
     );
-    if (!bruceConfig.badUSBBLEShowOutput) {
+    if (!mopieConfig.badUSBBLEShowOutput) {
         tft.setTextSize(FP);
         tft.setTextColor(TFT_RED);
         tft.setCursor(BORDER_OFFSET_FROM_SCREEN_EDGE * 2, tftHeight / 2);
@@ -952,7 +952,7 @@ void key_input(FS fs, const String &bad_script, HIDInterface *_hid) {
             if (PriCmd == nullptr) {
                 printTFTBadUSBBLE(Command + " - UNKNOWN COMMAND", ALCOLOR, true);
             } else if (PriCmd->type != DuckyCommandType_Comment) {
-                printTFTBadUSBBLE(Command, bruceConfig.priColor);
+                printTFTBadUSBBLE(Command, mopieConfig.priColor);
                 if (Argument.length() > 0) {
                     printTFTBadUSBBLE(" " + Argument, (ArgCmd == nullptr ? TFT_WHITE : TFT_WHITE), true);
                 } else printTFTBadUSBBLE("", TFT_WHITE, true);
@@ -1020,10 +1020,10 @@ void ducky_keyboard(HIDInterface *&hid, bool ble) {
 
     drawMainBorder();
     tft.setTextSize(FP);
-    tft.setTextColor(bruceConfig.priColor);
+    tft.setTextColor(mopieConfig.priColor);
     tft.drawString("Keyboard Started", tftWidth / 2, tftHeight / 2);
 
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setTextSize(FP);
     drawMainBorder();
     tft.setCursor(10, 28);
@@ -1230,7 +1230,7 @@ void MediaCommands(HIDInterface *hid, bool ble) {
 
 void sendAltChar(HIDInterface *hid, uint8_t charCode) {
     hid->press(KEY_LEFT_ALT);
-    delay(bruceConfig.badUSBBLEKeyDelay);
+    delay(mopieConfig.badUSBBLEKeyDelay);
 
     String codeStr = String(charCode);
     if (codeStr.length() < 3) {
@@ -1256,20 +1256,20 @@ void sendAltChar(HIDInterface *hid, uint8_t charCode) {
         }
 
         hid->press(numpadKey);
-        delay(bruceConfig.badUSBBLEKeyDelay);
+        delay(mopieConfig.badUSBBLEKeyDelay);
         hid->release(numpadKey);
-        delay(bruceConfig.badUSBBLEKeyDelay);
+        delay(mopieConfig.badUSBBLEKeyDelay);
     }
 
     hid->release(KEY_LEFT_ALT);
-    delay(bruceConfig.badUSBBLEKeyDelay);
+    delay(mopieConfig.badUSBBLEKeyDelay);
 }
 
 void sendAltString(HIDInterface *hid, const String &text) {
     for (int i = 0; i < text.length(); i++) {
         uint8_t charCode = (uint8_t)text[i];
         sendAltChar(hid, charCode);
-        delay(bruceConfig.badUSBBLEKeyDelay);
+        delay(mopieConfig.badUSBBLEKeyDelay);
     }
 }
 
@@ -1285,9 +1285,9 @@ void printTextAtPosition(uint16_t xOffset, uint16_t yOffset, const String &text)
     uint16_t y = FP * 8 * yOffset + 2 + STATUS_BAR_HEIGHT;
 
     tft.setTextSize(FP);
-    tft.setTextColor(bruceConfig.secColor);
+    tft.setTextColor(mopieConfig.secColor);
     tft.setCursor(x, y);
-    tft.fillRect(x, y, tftWidth - x - BORDER_OFFSET_FROM_SCREEN_EDGE * 2, FP * 8, bruceConfig.bgColor);
+    tft.fillRect(x, y, tftWidth - x - BORDER_OFFSET_FROM_SCREEN_EDGE * 2, FP * 8, mopieConfig.bgColor);
     tft.print(text);
     tft.setCursor(currentTextCursorX, currentTextCursorY);
 }
@@ -1297,25 +1297,25 @@ void printStatusBadUSBBLE(const String &text) { printTextAtPosition(8, 2, text);
 void printDecimalTime(uint32_t timeElapsed) { printTextAtPosition(10, 3, formatTimeDecimal(timeElapsed)); }
 
 void printHeaderBadUSBBLE(const String &bad_script) {
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     drawMainBorder();
 
     tft.setTextSize(FP);
-    tft.setTextColor(bruceConfig.priColor);
+    tft.setTextColor(mopieConfig.priColor);
     tft.drawCentreString("BadUSB/BLE", tftWidth / 2, FP + STATUS_BAR_HEIGHT);
 
     tft.setCursor(BORDER_OFFSET_FROM_SCREEN_EDGE * 2, FP * 8 * 1 + 2 + STATUS_BAR_HEIGHT);
     tft.print("Script: ");
-    tft.setTextColor(bruceConfig.secColor);
+    tft.setTextColor(mopieConfig.secColor);
     tft.print(bad_script.substring(bad_script.lastIndexOf("/") + 1));
 
     tft.setCursor(BORDER_OFFSET_FROM_SCREEN_EDGE * 2, FP * 8 * 2 + 2 + STATUS_BAR_HEIGHT);
-    tft.setTextColor(bruceConfig.priColor);
+    tft.setTextColor(mopieConfig.priColor);
     tft.println("Status:");
 }
 
 void printTFTBadUSBBLE(const String &text, uint16_t color, bool newline) {
-    if (!bruceConfig.badUSBBLEShowOutput) return;
+    if (!mopieConfig.badUSBBLEShowOutput) return;
 
     static int bottomHalfStartY = tftHeight / 2;
     const int leftX = BORDER_OFFSET_FROM_SCREEN_EDGE * 2;
@@ -1331,7 +1331,7 @@ void printTFTBadUSBBLE(const String &text, uint16_t color, bool newline) {
             bottomHalfStartY,
             rightLimit - leftX,
             tftHeight - bottomHalfStartY - BORDER_OFFSET_FROM_SCREEN_EDGE * 2,
-            bruceConfig.bgColor
+            mopieConfig.bgColor
         );
         currentOutputY = bottomHalfStartY;
         cursorX = leftX;
@@ -1410,28 +1410,28 @@ void PresenterMode(HIDInterface *&hid, bool ble) {
     bool timerStarted = false;
 
     auto drawStaticUI = [&]() {
-        tft.fillScreen(bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
 
         tft.setTextSize(FM);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("PRESENTER", tftWidth / 2, 10, 1);
 
-        tft.drawFastHLine(10, 35, tftWidth - 20, bruceConfig.priColor);
+        tft.drawFastHLine(10, 35, tftWidth - 20, mopieConfig.priColor);
 
         tft.setTextSize(FM);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("Time", tftWidth / 2, tftHeight / 2 + 15, 1);
 
         tft.setTextSize(1);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("<< PREV | SEL | NEXT >>", tftWidth / 2, tftHeight - 15, 1);
     };
 
     auto updateSlideDisplay = [&]() {
-        tft.fillRect(0, tftHeight / 2 - 35, tftWidth, 40, bruceConfig.bgColor);
+        tft.fillRect(0, tftHeight / 2 - 35, tftWidth, 40, mopieConfig.bgColor);
 
         tft.setTextSize(4);
-        tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+        tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
         String slideStr = "Slide " + String(currentSlide);
         tft.drawCentreString(slideStr, tftWidth / 2, tftHeight / 2 - 30, 1);
         lastDisplayedSlide = currentSlide;
@@ -1452,9 +1452,9 @@ void PresenterMode(HIDInterface *&hid, bool ble) {
             snprintf(timeBuffer, sizeof(timeBuffer), "%02d:%02d", minutes, seconds);
         }
 
-        tft.fillRect(0, tftHeight / 2 + 30, tftWidth, 30, bruceConfig.bgColor);
+        tft.fillRect(0, tftHeight / 2 + 30, tftWidth, 30, mopieConfig.bgColor);
         tft.setTextSize(3);
-        tft.setTextColor(timerStarted ? TFT_GREEN : TFT_DARKGREY, bruceConfig.bgColor);
+        tft.setTextColor(timerStarted ? TFT_GREEN : TFT_DARKGREY, mopieConfig.bgColor);
         tft.drawCentreString(timeBuffer, tftWidth / 2, tftHeight / 2 + 35, 1);
 
         lastDisplayedSeconds = elapsed;

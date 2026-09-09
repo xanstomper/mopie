@@ -31,7 +31,7 @@ static bool rf_m5_raw_is_plausible(bool hasCrc, int rawBits, int rawTe) {
 }
 
 RFScan::RFScan() {
-    if (bruceConfigPins.rfModule == M5_RF_MODULE) ReadRAW = false;
+    if (mopieConfigPins.rfModule == M5_RF_MODULE) ReadRAW = false;
     setup();
 }
 
@@ -45,18 +45,18 @@ void RFScan::setup() {
     returnToMenu = false;
     exitRequested = false;
 
-    if (!initRfModule("rx", bruceConfigPins.rfFreq)) { return; }
+    if (!initRfModule("rx", mopieConfigPins.rfFreq)) { return; }
 
     enable_receive();
 
-    if (bruceConfigPins.rfScanRange < 0 || bruceConfigPins.rfScanRange > 3) {
-        bruceConfigPins.setRfScanRange(3);
+    if (mopieConfigPins.rfScanRange < 0 || mopieConfigPins.rfScanRange > 3) {
+        mopieConfigPins.setRfScanRange(3);
     }
-    if (bruceConfigPins.rfModule != CC1101_SPI_MODULE) { bruceConfigPins.setRfFxdFreq(1); }
+    if (mopieConfigPins.rfModule != CC1101_SPI_MODULE) { mopieConfigPins.setRfFxdFreq(1); }
 
     display_info(received, signals, ReadRAW, codesOnly, autoSave, title);
 
-    if (bruceConfigPins.rfFxdFreq) frequency = bruceConfigPins.rfFreq;
+    if (mopieConfigPins.rfFxdFreq) frequency = mopieConfigPins.rfFreq;
 
     restartScan = false;
 
@@ -83,7 +83,7 @@ void RFScan::loop() {
             return setup();
         }
 
-        if (bruceConfigPins.rfFxdFreq) frequency = bruceConfigPins.rfFreq;
+        if (mopieConfigPins.rfFxdFreq) frequency = mopieConfigPins.rfFreq;
         if (frequency <= 0) init_freqs();
 
         while (frequency <= 0) { // FastScan
@@ -116,7 +116,7 @@ void RFScan::loop() {
                 captured = read_raw(durations);
                 if (captured && autoSave && (lastSavedKey != received.key || received.key == 0)) save_signal();
             }
-            if (captured && bruceConfigPins.rfModule == M5_RF_MODULE) {
+            if (captured && mopieConfigPins.rfModule == M5_RF_MODULE) {
                 _rx.end();
                 rf_clear_nav_state();
                 returnToMenu = false;
@@ -124,7 +124,7 @@ void RFScan::loop() {
                 enable_receive();
                 continue;
             }
-            if (!captured && bruceConfigPins.rfModule == M5_RF_MODULE) {
+            if (!captured && mopieConfigPins.rfModule == M5_RF_MODULE) {
                 _rx.end();
                 vTaskDelay(RF_M5_SCAN_RESYNC_MS / portTICK_PERIOD_MS);
                 enable_receive();
@@ -151,9 +151,9 @@ void RFScan::init_freqs() {
 
 bool RFScan::fast_scan() {
 
-    if (idx < range_limits[bruceConfigPins.rfScanRange][0] ||
-        idx > range_limits[bruceConfigPins.rfScanRange][1]) {
-        idx = range_limits[bruceConfigPins.rfScanRange][0];
+    if (idx < range_limits[mopieConfigPins.rfScanRange][0] ||
+        idx > range_limits[mopieConfigPins.rfScanRange][1]) {
+        idx = range_limits[mopieConfigPins.rfScanRange][0];
     }
     float checkFrequency = subghz_frequency_list[idx];
     setMHZ(checkFrequency);
@@ -170,7 +170,7 @@ bool RFScan::fast_scan() {
                 if (_freqs[i].rssi > _freqs[max_index].rssi) { max_index = i; }
             }
 
-            bruceConfigPins.setRfFreq(_freqs[max_index].freq, 1); // change to fixed frequency
+            mopieConfigPins.setRfFreq(_freqs[max_index].freq, 1); // change to fixed frequency
             frequency = _freqs[max_index].freq;
             setMHZ(frequency);
             Serial.println("Frequency Found: " + String(frequency));
@@ -265,7 +265,7 @@ bool RFScan::decode_signal(const std::vector<int> &durations) {
         return true;
     }
 
-    if (bruceConfigPins.rfModule == M5_RF_MODULE) {
+    if (mopieConfigPins.rfModule == M5_RF_MODULE) {
         String _data;
         bool hasCrc = false;
         uint64_t crc = 0;
@@ -317,7 +317,7 @@ bool RFScan::read_raw(const std::vector<int> &durations) {
     }
     // no decode, but a repeated pattern gave us a CRC
     else if (hasCrc) {
-        if (bruceConfigPins.rfModule == M5_RF_MODULE &&
+        if (mopieConfigPins.rfModule == M5_RF_MODULE &&
             !rf_m5_raw_is_plausible(hasCrc, rawBits, rawTe)) {
             RF_DBG(
                 "m5 raw discard: crc=%d bits=%d te=%d minBits=%d minTe=%d",
@@ -345,7 +345,7 @@ bool RFScan::read_raw(const std::vector<int> &durations) {
     }
     // no decode and no CRC: only show the raw data when not filtering for codes
     else if (!codesOnly) {
-        if (bruceConfigPins.rfModule == M5_RF_MODULE) {
+        if (mopieConfigPins.rfModule == M5_RF_MODULE) {
             RF_DBG("m5 raw discard: crc=0 bits=%d te=%d", rawBits, rawTe);
             return false;
         }
@@ -365,7 +365,7 @@ bool RFScan::read_raw(const std::vector<int> &durations) {
 }
 
 bool RFScan::is_m5_duplicate_capture(const RfCodes &data) {
-    if (bruceConfigPins.rfModule != M5_RF_MODULE) return false;
+    if (mopieConfigPins.rfModule != M5_RF_MODULE) return false;
 
     unsigned long now = millis();
     bool duplicate = data.key == lastM5CaptureKey && data.protocol == lastM5CaptureProtocol &&
@@ -401,9 +401,9 @@ void RFScan::select_menu_option() {
 
     if (received.protocol != "") options.emplace_back("Reset Signal", [this]() { set_option(RESET); });
 
-    if (bruceConfigPins.rfModule == CC1101_SPI_MODULE)
+    if (mopieConfigPins.rfModule == CC1101_SPI_MODULE)
         options.emplace_back("Range", [this]() { set_option(RANGE); });
-    if (bruceConfigPins.rfModule == CC1101_SPI_MODULE && !bruceConfigPins.rfFxdFreq)
+    if (mopieConfigPins.rfModule == CC1101_SPI_MODULE && !mopieConfigPins.rfFxdFreq)
         options.emplace_back("Threshold", [this]() { set_option(THRESHOLD); });
 
     if (ReadRAW)
@@ -522,14 +522,14 @@ void RFScan::set_range() {
     bool chooseFixedOpt = false;
 
     options = {
-        {String("Fxd [" + String(bruceConfigPins.rfFreq) + "]").c_str(),
-         [=]() { bruceConfigPins.setRfScanRange(bruceConfigPins.rfScanRange, 1); } },
+        {String("Fxd [" + String(mopieConfigPins.rfFreq) + "]").c_str(),
+         [=]() { mopieConfigPins.setRfScanRange(mopieConfigPins.rfScanRange, 1); } },
         {"Choose Fxd",                                                   [&]() { chooseFixedOpt = true; } },
         {subghz_frequency_ranges[0],                                     [=]() {
-bruceConfigPins.setRfScanRange(0); }}, {subghz_frequency_ranges[1],                                     [=]()
-{ bruceConfigPins.setRfScanRange(1); }}, {subghz_frequency_ranges[2], [=]() {
-bruceConfigPins.setRfScanRange(2); }}, {subghz_frequency_ranges[3],                                     [=]()
-{ bruceConfigPins.setRfScanRange(3); }},
+mopieConfigPins.setRfScanRange(0); }}, {subghz_frequency_ranges[1],                                     [=]()
+{ mopieConfigPins.setRfScanRange(1); }}, {subghz_frequency_ranges[2], [=]() {
+mopieConfigPins.setRfScanRange(2); }}, {subghz_frequency_ranges[3],                                     [=]()
+{ mopieConfigPins.setRfScanRange(3); }},
     };
 
     loopOptions(options);
@@ -540,16 +540,16 @@ bruceConfigPins.setRfScanRange(2); }}, {subghz_frequency_ranges[3],             
         int arraySize = sizeof(subghz_frequency_list) / sizeof(subghz_frequency_list[0]);
         for (int i = 0; i < arraySize; i++) {
             String tmp = String(subghz_frequency_list[i], 2) + "Mhz";
-            options.emplace_back(tmp.c_str(), [=]() { bruceConfigPins.rfFreq = subghz_frequency_list[i]; });
+            options.emplace_back(tmp.c_str(), [=]() { mopieConfigPins.rfFreq = subghz_frequency_list[i]; });
             if (int(frequency * 100) == int(subghz_frequency_list[i] * 100)) ind = i;
         }
         loopOptions(options, ind);
         options.clear();
-        bruceConfigPins.setRfScanRange(bruceConfigPins.rfScanRange, 1);
+        mopieConfigPins.setRfScanRange(mopieConfigPins.rfScanRange, 1);
     }
 
-    if (bruceConfigPins.rfFxdFreq) displayTextLine("Scan freq set to " + String(bruceConfigPins.rfFreq));
-    else displayTextLine("Range set to " + String(subghz_frequency_ranges[bruceConfigPins.rfScanRange]));
+    if (mopieConfigPins.rfFxdFreq) displayTextLine("Scan freq set to " + String(mopieConfigPins.rfFreq));
+    else displayTextLine("Range set to " + String(subghz_frequency_ranges[mopieConfigPins.rfScanRange]));
 }
 */
 // Routes one info line to the right sink: Serial when running headless (CLI),
@@ -570,7 +570,7 @@ void display_info(
 
     if (received.protocol != "") display_signal_data(received, headless);
 
-    if (!headless) tft.setTextColor(getColorVariation(bruceConfig.priColor), bruceConfig.bgColor);
+    if (!headless) tft.setTextColor(getColorVariation(mopieConfig.priColor), mopieConfig.bgColor);
 
     if (!ReadRAW) rf_info_line(headless, "Recording: Only decoded codes.");
     else if (codesOnly) rf_info_line(headless, "Recording: RAW with CRC or decoded codes.");
@@ -578,14 +578,14 @@ void display_info(
 
     if (autoSave) rf_info_line(headless, "Auto save: Enabled");
 
-    if (bruceConfigPins.rfFxdFreq)
-        rf_info_line(headless, "Scanning: " + String(bruceConfigPins.rfFreq) + " MHz");
-    else rf_info_line(headless, "Scanning: " + String(subghz_frequency_ranges[bruceConfigPins.rfScanRange]));
+    if (mopieConfigPins.rfFxdFreq)
+        rf_info_line(headless, "Scanning: " + String(mopieConfigPins.rfFreq) + " MHz");
+    else rf_info_line(headless, "Scanning: " + String(subghz_frequency_ranges[mopieConfigPins.rfScanRange]));
 
     rf_info_line(headless, "Total signals found: " + String(signals));
 
     if (!headless) {
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         padprintln("");
         padprintln("Press [NEXT] for options.");
     }
@@ -651,7 +651,7 @@ void display_signal_data(RfCodes received, bool headless) {
         }
     }
 
-    // if (bruceConfigPins.rfModule == CC1101_SPI_MODULE) {
+    // if (mopieConfigPins.rfModule == CC1101_SPI_MODULE) {
     //     int rssi = ELECHOUSE_cc1101.getRssi();
     //     tft.drawPixel(0, 0, 0);
     //     padprintln("Rssi: " + String(rssi));
@@ -745,7 +745,7 @@ bool rfSaveSignal(float frequency, RfCodes codes, bool raw, char *key, bool auto
 String rf_scan(float start_freq, float stop_freq, int max_loops) {
     // derived from https://github.com/mcore1976/cc1101-tool/blob/main/cc1101-tool-esp32.ino#L480
 
-    if (bruceConfigPins.rfModule != CC1101_SPI_MODULE) {
+    if (mopieConfigPins.rfModule != CC1101_SPI_MODULE) {
         displayError("rf scanning is available with CC1101 only", true);
         return ""; // only CC1101 is supported for this
     }
@@ -810,7 +810,7 @@ String rf_scan(float start_freq, float stop_freq, int max_loops) {
 String rfReceiveSignal(float frequency, int max_loops, bool raw, bool headless) {
     RfCodes received;
 
-    if (!frequency) frequency = bruceConfigPins.rfFreq; // default from config
+    if (!frequency) frequency = mopieConfigPins.rfFreq; // default from config
 
     char hexString[64] = {0};
 

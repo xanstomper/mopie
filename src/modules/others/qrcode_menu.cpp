@@ -36,7 +36,7 @@ void qrcode_display(const String &qrcodeUrl) {
     qrcode.create(qrcodeUrl);
     delay(300); // Due to M5 sel press, it could be confusing with next line
     while (!check(EscPress) && !check(SelPress)) delay(100);
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
 #endif
 }
 
@@ -68,7 +68,7 @@ void qrcode_menu() {
     std::vector<Option> options;
 
     // Add QR codes from the config
-    for (const auto &entry : bruceConfig.qrCodes) {
+    for (const auto &entry : mopieConfig.qrCodes) {
         options.push_back({entry.menuName.c_str(), lambdaHelper(qrcode_display, entry.content)});
     }
 
@@ -101,9 +101,9 @@ void save_and_display_qrcode() {
     }
 
     if (std::any_of(
-            bruceConfig.qrCodes.begin(),
-            bruceConfig.qrCodes.end(),
-            [&](const BruceConfig::QrCodeEntry &entry) { return entry.menuName == name; }
+            mopieConfig.qrCodes.begin(),
+            mopieConfig.qrCodes.end(),
+            [&](const MopieConfig::QrCodeEntry &entry) { return entry.menuName == name; }
         )) {
         displayError("Name already exists!");
         delay(1000);
@@ -113,12 +113,12 @@ void save_and_display_qrcode() {
     String text = keyboard("", 100, "QRCode text:");
     if (text == "\x1B") return;
 
-    bruceConfig.addQrCodeEntry(name, text);
+    mopieConfig.addQrCodeEntry(name, text);
     return qrcode_display(text);
 }
 
 void remove_custom_qrcode() {
-    if (bruceConfig.qrCodes.empty()) {
+    if (mopieConfig.qrCodes.empty()) {
         displayInfo("There is nothing to remove!");
         delay(1000);
         custom_qrcode_menu();
@@ -126,9 +126,9 @@ void remove_custom_qrcode() {
     std::vector<Option> options;
 
     // Populate options with the QR codes from the config
-    for (const auto &entry : bruceConfig.qrCodes) {
+    for (const auto &entry : mopieConfig.qrCodes) {
         options.emplace_back(entry.menuName.c_str(), [=]() {
-            bruceConfig.removeQrCodeEntry(entry.menuName);
+            mopieConfig.removeQrCodeEntry(entry.menuName);
             log_i("Removed QR code: %s", entry.menuName.c_str());
             custom_qrcode_menu();
         });

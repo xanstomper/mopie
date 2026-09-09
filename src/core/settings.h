@@ -97,11 +97,11 @@ void setBadUSBBLEKeyboardLayoutMenu();
 void setBadUSBBLEKeyDelayMenu();
 void setBadUSBBLEShowOutputMenu();
 
-void setSPIPinsMenu(BruceConfigPins::SPIPins &value);
+void setSPIPinsMenu(MopieConfigPins::SPIPins &value);
 
-void setUARTPinsMenu(BruceConfigPins::UARTPins &value);
+void setUARTPinsMenu(MopieConfigPins::UARTPins &value);
 
-void setI2CPinsMenu(BruceConfigPins::I2CPins &value);
+void setI2CPinsMenu(MopieConfigPins::I2CPins &value);
 
 void setTheme();
 

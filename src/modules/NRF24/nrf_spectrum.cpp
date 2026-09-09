@@ -12,7 +12,7 @@ String scanChannels(bool web) {
     String result = "{";
 
     uint8_t rpdValues[CHANNELS] = {0};
-    digitalWrite(bruceConfigPins.NRF24_bus.io0, LOW);
+    digitalWrite(mopieConfigPins.NRF24_bus.io0, LOW);
 
     for (int i = 0; i < CHANNELS; i++) {
         NRFradio.setChannel(i);
@@ -25,7 +25,7 @@ String scanChannels(bool web) {
         rpdValues[i] = channel[i];
     }
 
-    digitalWrite(bruceConfigPins.NRF24_bus.io0, HIGH);
+    digitalWrite(mopieConfigPins.NRF24_bus.io0, HIGH);
 
     for (int i = 0; i < CHANNELS; i++) {
         int level = rpdValues[i];
@@ -33,13 +33,13 @@ String scanChannels(bool web) {
         int c = i;
 
         tft.drawFastVLine(
-            x, tftHeight - (10 + level), level, (i % 2 == 0) ? bruceConfig.priColor : TFT_DARKGREY
+            x, tftHeight - (10 + level), level, (i % 2 == 0) ? mopieConfig.priColor : TFT_DARKGREY
         ); // for level display
 
         tft.drawFastVLine(
             x, 0, tftHeight - (9 + level), (i % 8) ? TFT_BLACK : RGB565(25, 25, 25)
         );                                                    /// for clearing
-        tft.drawFastVLine(x, 0, level, bruceConfig.secColor); /// for top display
+        tft.drawFastVLine(x, 0, level, mopieConfig.secColor); /// for top display
         // show 5 channel gap only
         if (c % 5 == 0 && c != 0) { tft.drawCentreString(String(c).c_str(), x, tftHeight / 2, 1); }
 
@@ -55,7 +55,7 @@ String scanChannels(bool web) {
 }
 
 void nrf_spectrum() {
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     tft.setTextSize(FP);
     tft.drawString("2.40Ghz", 0, tftHeight - LH);
     tft.drawCentreString("2.44Ghz", tftWidth / 2, tftHeight - LH, 1);

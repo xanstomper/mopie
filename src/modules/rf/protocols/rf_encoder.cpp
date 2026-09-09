@@ -8,7 +8,7 @@
 //     contributors — the KeeLoq OOK framing.
 // See THIRD_PARTY.md for full attribution.
 #include "rf_encoder.h"
-#include "../rf_utils.h" // bruceConfigPins, RMT defines
+#include "../rf_utils.h" // mopieConfigPins, RMT defines
 #include "rf_config.h"   // RF_DBG
 #include "rf_registry.h" // rf_find_protocol (self-test)
 #include <cstdlib>       // abs
@@ -21,9 +21,9 @@
 
 // Resolve the GPIO that actually drives the RF output for the current board.
 static gpio_num_t rf_tx_gpio() {
-    if (bruceConfigPins.rfModule == CC1101_SPI_MODULE)
-        return gpio_num_t(bruceConfigPins.CC1101_bus.io0);
-    return gpio_num_t(bruceConfigPins.rfTx);
+    if (mopieConfigPins.rfModule == CC1101_SPI_MODULE)
+        return gpio_num_t(mopieConfigPins.CC1101_bus.io0);
+    return gpio_num_t(mopieConfigPins.rfTx);
 }
 
 // Append a half-pulse (one logic level held for `dur` µs), splitting it when it

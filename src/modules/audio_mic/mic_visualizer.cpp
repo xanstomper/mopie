@@ -367,7 +367,7 @@ void MicVisualizer::run() {
     }
 
     deinit();
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
 }
 
 } // namespace AudioMic

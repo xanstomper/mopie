@@ -303,8 +303,8 @@ int netcutScanDevices() {
             lastUIUpdate = millis();
             displayRedStripe(
                 String(hostsScanned) + "/" + String(totalHosts) + " | Found: " + String(s_deviceCount),
-                getComplementaryColor2(bruceConfig.priColor),
-                bruceConfig.priColor
+                getComplementaryColor2(mopieConfig.priColor),
+                mopieConfig.priColor
             );
         }
 
@@ -584,12 +584,12 @@ static void _activeLoop() {
                 }
             }
             const int _lh = (LH * FP + 2);
-            tft.fillRect(6, tftHeight - 6 * _lh, tftWidth - 12, 6 * _lh - 6, bruceConfig.bgColor);
+            tft.fillRect(6, tftHeight - 6 * _lh, tftWidth - 12, 6 * _lh - 6, mopieConfig.bgColor);
             tft.setTextSize(FP);
 
             // Troll timing info
             if (trollN > 0) {
-                tft.setTextColor(TFT_YELLOW, bruceConfig.bgColor);
+                tft.setTextColor(TFT_YELLOW, mopieConfig.bgColor);
                 tft.drawString(
                     "Troll: " + String(s_trollOfflineMs / 1000) + "s OFF / " +
                         String(s_trollOnlineMs / 1000) + "s ON",
@@ -599,20 +599,20 @@ static void _activeLoop() {
                 );
             }
 
-            tft.setTextColor(TFT_RED, bruceConfig.bgColor);
+            tft.setTextColor(TFT_RED, mopieConfig.bgColor);
             tft.drawString(
                 "CUT:" + String(cutN) + " Dev:" + String(s_deviceCount), 10, tftHeight - 5 * _lh, 1
             );
-            tft.setTextColor(DEFAULT_PRICOLOR, bruceConfig.bgColor);
+            tft.setTextColor(DEFAULT_PRICOLOR, mopieConfig.bgColor);
             tft.drawString(
                 "TRL:" + String(trollOff) + "off/" + String(trollOn) + "on", 10, tftHeight - 4 * _lh, 1
             );
 
             // Draw SNIPER count
-            for (int i = 0; i < s_deviceCount; i++) tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+            for (int i = 0; i < s_deviceCount; i++) tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
             tft.drawString("Pkts:" + String(packetCount), 10, tftHeight - 3 * _lh, 1);
 
-            tft.setTextColor(TFT_DARKGREY, bruceConfig.bgColor);
+            tft.setTextColor(TFT_DARKGREY, mopieConfig.bgColor);
             tft.drawString("Esc=Stop", 10, tftHeight - 2 * _lh, 1);
         }
 

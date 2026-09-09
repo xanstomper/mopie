@@ -7,7 +7,7 @@ volatile unsigned long pulseDuration = 0;
 volatile bool newPulse = false;
 
 // MUST be fully IRAM-safe: no digitalRead() (lives in flash) and no access to C++ objects
-// like bruceConfigPins from here. On GDO0 the noise can fire this thousands of times/s; if it
+// like mopieConfigPins from here. On GDO0 the noise can fire this thousands of times/s; if it
 // runs while the flash cache is busy (e.g. display/font reads) the chip crashes/reboots.
 void IRAM_ATTR onPulse() {
     unsigned long now = micros();
@@ -52,7 +52,7 @@ void rf_listen() {
 
         if (redraw) {
             String text = String("Frequency: ") + String(freq, 2) + String("MHz");
-            displayRedStripe(text, getComplementaryColor2(bruceConfig.priColor), bruceConfig.priColor);
+            displayRedStripe(text, getComplementaryColor2(mopieConfig.priColor), mopieConfig.priColor);
         }
 
         if (check(EscPress)) break;
@@ -60,7 +60,7 @@ void rf_listen() {
         vTaskDelay(pdMS_TO_TICKS(1));
     }
 
-    if (bruceConfigPins.rfModule != CC1101_SPI_MODULE) {
+    if (mopieConfigPins.rfModule != CC1101_SPI_MODULE) {
         displayError("Listener needs a CC1101!", true);
         return;
     }
@@ -79,8 +79,8 @@ void rf_listen() {
     // (that was the 0.03 Hz reading).
     lastEdgeMicros = micros();
     newPulse = false;
-    attachInterrupt(digitalPinToInterrupt(bruceConfigPins.CC1101_bus.io0), onPulse, RISING);
-    displayRedStripe("Listening...", getComplementaryColor2(bruceConfig.priColor), bruceConfig.priColor);
+    attachInterrupt(digitalPinToInterrupt(mopieConfigPins.CC1101_bus.io0), onPulse, RISING);
+    displayRedStripe("Listening...", getComplementaryColor2(mopieConfig.priColor), mopieConfig.priColor);
 
     unsigned long lastPulseTime = millis();
     unsigned long lastTone = 0;
@@ -92,7 +92,7 @@ void rf_listen() {
     auto showStripe = [&](const String &text) {
         if (text == lastStripe) return;
         lastStripe = text;
-        displayRedStripe(text, getComplementaryColor2(bruceConfig.priColor), bruceConfig.priColor);
+        displayRedStripe(text, getComplementaryColor2(mopieConfig.priColor), mopieConfig.priColor);
     };
 
     while (check(EscPress)) { delay(10); }
@@ -127,5 +127,5 @@ void rf_listen() {
         delay(5); // feed the watchdog and let button/UI handling breathe
     }
 
-    detachInterrupt(digitalPinToInterrupt(bruceConfigPins.CC1101_bus.io0));
+    detachInterrupt(digitalPinToInterrupt(mopieConfigPins.CC1101_bus.io0));
 }

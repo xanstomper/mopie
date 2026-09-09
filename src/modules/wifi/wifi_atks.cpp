@@ -133,7 +133,7 @@ void resetGlobalState() {
     PrevPress = false;
     NextPress = false;
     returnToMenu = false;
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
 }
 
 void send_raw_frame(const uint8_t *frame_buffer, int size) {
@@ -168,7 +168,7 @@ void wsl_bypasser_send_raw_frame(const wifi_ap_record_t *ap_record, uint8_t chan
 
 void wifi_atk_info(const String &tssid, const String &mac, uint8_t channel) {
     drawMainBorder();
-    tft.setTextColor(bruceConfig.priColor);
+    tft.setTextColor(mopieConfig.priColor);
     tft.drawCentreString("-=Information=-", tft.width() / 2, 28, SMOOTH_FONT);
     tft.drawString("AP: " + tssid, 10, 48);
     tft.drawString("Channel: " + String(channel), 10, 66);
@@ -205,7 +205,7 @@ bool wifi_atk_setWifi() {
         vTaskDelay(pdMS_TO_TICKS(100));
     }
 
-    if (WiFi.softAPSSID() != bruceConfig.wifiAp.ssid && WiFi.softAPSSID() != WIFI_ATK_NAME) {
+    if (WiFi.softAPSSID() != mopieConfig.wifiAp.ssid && WiFi.softAPSSID() != WIFI_ATK_NAME) {
         uint8_t randomChannel = random(1, 12);
 
         int attempts = 0;
@@ -235,7 +235,7 @@ bool wifi_atk_unsetWifi() {
         }
         vTaskDelay(pdMS_TO_TICKS(100));
     }
-    if (!WiFi.isConnected() && WiFi.softAPSSID() != bruceConfig.wifiAp.ssid) wifiDisconnect();
+    if (!WiFi.isConnected() && WiFi.softAPSSID() != mopieConfig.wifiAp.ssid) wifiDisconnect();
 
     return true;
 }
@@ -532,7 +532,7 @@ void capture_handshake(const String &tssid, const String &mac, uint8_t channel) 
 
     auto deauthInterval = [&]() -> unsigned long { return (phase == SCANNING) ? 10000UL : 15000UL; };
 
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setTextSize(FM);
 
     sendDeauthBurst();
@@ -561,46 +561,46 @@ void capture_handshake(const String &tssid, const String &mac, uint8_t channel) 
 
         if (needRedraw) {
             drawMainBorderWithTitle("Handshake Capture");
-            tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+            tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
             padprintln("");
             padprintln("SSID: " + tssid);
             padprintln("BSSID: " + mac);
             padprintln("Security: " + encryptionTypeStr);
 
             if (phase == CAPTURED) {
-                tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+                tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
                 padprintln("Status: CAPTURED!");
             } else if (hasBeacons) {
-                tft.setTextColor(TFT_YELLOW, bruceConfig.bgColor);
+                tft.setTextColor(TFT_YELLOW, mopieConfig.bgColor);
                 padprintln("Status: " + String(phase == MONITORING ? "Monitoring..." : "Scanning..."));
             } else {
-                tft.setTextColor(TFT_YELLOW, bruceConfig.bgColor);
+                tft.setTextColor(TFT_YELLOW, mopieConfig.bgColor);
                 padprintln("Status: Waiting...");
             }
 
             if (tftHeight > 135) {
-                tft.setTextColor(hsTracker.msg1 ? TFT_GREEN : TFT_RED, bruceConfig.bgColor);
+                tft.setTextColor(hsTracker.msg1 ? TFT_GREEN : TFT_RED, mopieConfig.bgColor);
                 padprintln("        EAPOL MSG 1: " + String(hsTracker.msg1 ? "Captured" : "None"));
-                tft.setTextColor(hsTracker.msg2 ? TFT_GREEN : TFT_RED, bruceConfig.bgColor);
+                tft.setTextColor(hsTracker.msg2 ? TFT_GREEN : TFT_RED, mopieConfig.bgColor);
                 padprintln("        EAPOL MSG 2: " + String(hsTracker.msg2 ? "Captured" : "None"));
-                tft.setTextColor(hsTracker.msg3 ? TFT_GREEN : TFT_RED, bruceConfig.bgColor);
+                tft.setTextColor(hsTracker.msg3 ? TFT_GREEN : TFT_RED, mopieConfig.bgColor);
                 padprintln("        EAPOL MSG 3: " + String(hsTracker.msg3 ? "Captured" : "None"));
-                tft.setTextColor(hsTracker.msg4 ? TFT_GREEN : TFT_RED, bruceConfig.bgColor);
+                tft.setTextColor(hsTracker.msg4 ? TFT_GREEN : TFT_RED, mopieConfig.bgColor);
                 padprintln("        EAPOL MSG 4: " + String(hsTracker.msg4 ? "Captured" : "None"));
-                tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+                tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
             } else {
-                tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+                tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
                 padprint("EAPOL MSG:");
-                tft.setTextColor(hsTracker.msg1 ? TFT_GREEN : TFT_RED, bruceConfig.bgColor);
+                tft.setTextColor(hsTracker.msg1 ? TFT_GREEN : TFT_RED, mopieConfig.bgColor);
                 tft.print(" 1");
-                tft.setTextColor(hsTracker.msg2 ? TFT_GREEN : TFT_RED, bruceConfig.bgColor);
+                tft.setTextColor(hsTracker.msg2 ? TFT_GREEN : TFT_RED, mopieConfig.bgColor);
                 tft.print(" 2");
-                tft.setTextColor(hsTracker.msg3 ? TFT_GREEN : TFT_RED, bruceConfig.bgColor);
+                tft.setTextColor(hsTracker.msg3 ? TFT_GREEN : TFT_RED, mopieConfig.bgColor);
                 tft.print(" 3");
-                tft.setTextColor(hsTracker.msg4 ? TFT_GREEN : TFT_RED, bruceConfig.bgColor);
+                tft.setTextColor(hsTracker.msg4 ? TFT_GREEN : TFT_RED, mopieConfig.bgColor);
                 tft.print(" 4");
                 if (hsTracker.msg1 && hsTracker.msg2 && hsTracker.msg3 && hsTracker.msg4) {
-                    tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+                    tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
                     tft.println(" > All Captured");
                 } else tft.println("");
             }
@@ -615,9 +615,9 @@ void capture_handshake(const String &tssid, const String &mac, uint8_t channel) 
             if (phase != CAPTURED) {
                 padprintln("Press " + String(BTN_ALIAS) + " to deauth");
             } else {
-                tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+                tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
                 padprintln("Handshake saved!        ");
-                tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+                tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
             }
             tft.drawString("Press Esc to exit", 10, tftHeight - 20);
 

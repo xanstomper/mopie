@@ -61,7 +61,7 @@ TagOMatic::~TagOMatic() {
 }
 
 void TagOMatic::set_rfid_module() {
-    switch (bruceConfigPins.rfidModule) {
+    switch (mopieConfigPins.rfidModule) {
         case PN532_I2C_MODULE: _rfid = new PN532(PN532::CONNECTION_TYPE::I2C); break;
 #ifdef M5STICK
         case PN532_I2C_SPI_MODULE: _rfid = new PN532(PN532::CONNECTION_TYPE::I2C_SPI); break;
@@ -228,9 +228,9 @@ void TagOMatic::display_banner() {
 
     tft.setTextSize(FP);
     padprintln("");
-    tft.setTextColor(getColorVariation(bruceConfig.priColor), bruceConfig.bgColor);
+    tft.setTextColor(getColorVariation(mopieConfig.priColor), mopieConfig.bgColor);
     padprintln("Press [OK] to change mode.");
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     padprintln("");
 }
 
@@ -316,7 +316,7 @@ void TagOMatic::read_card() {
             show_not_implemented_card();
             return;
         }
-        if (bruceConfigPins.rfidModule != M5_RFID2_MODULE) { // Read felica if module is PN532
+        if (mopieConfigPins.rfidModule != M5_RFID2_MODULE) { // Read felica if module is PN532
             readStatus = _rfid->read(1);
             if (readStatus == RFIDInterface::NOT_IMPLEMENTED) {
                 show_not_implemented_card();
@@ -632,10 +632,10 @@ void TagOMatic::create_ndef_wifi() {
     // "application/vnd.wfa.wsc" with a binary WSC Credential payload) is what
     // phones actually look for to show the "connect to this network" prompt.
     options = {};
-    for (auto const &entry : bruceConfig.wifi) {
+    for (auto const &entry : mopieConfig.wifi) {
         String ssid = entry.first;
         options.emplace_back(ssid, [this, ssid]() {
-            buildWifiNdef(ssid, bruceConfig.getWifiPassword(ssid));
+            buildWifiNdef(ssid, mopieConfig.getWifiPassword(ssid));
         });
     }
     options.emplace_back("Manual entry", [this]() {
@@ -650,13 +650,13 @@ void TagOMatic::create_ndef_wifi() {
 }
 
 void TagOMatic::create_ndef_link() {
-    if (bruceConfig.qrCodes.empty()) {
+    if (mopieConfig.qrCodes.empty()) {
         displayError("No saved links.", true);
         return;
     }
 
     options = {};
-    for (auto const &entry : bruceConfig.qrCodes) {
+    for (auto const &entry : mopieConfig.qrCodes) {
         String content = entry.content;
         options.emplace_back(entry.menuName, [this, content]() { build_ndef_url_payload(content); });
     }
@@ -947,7 +947,7 @@ int TagOMatic::load_file_headless(const String &filename) {
 #endif
 
 bool TagOMatic::ndefEmulationSupported() {
-    switch (bruceConfigPins.rfidModule) {
+    switch (mopieConfigPins.rfidModule) {
         case PN532_I2C_MODULE:
         case PN532_SPI_MODULE:
 #ifdef M5STICK

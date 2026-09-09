@@ -759,12 +759,12 @@ static void destroyActivePortal() {
 #define pendingPortals (state().pendingPortals)
 
 void forceFullRedraw() {
-    tft.fillScreen(bruceConfig.bgColor);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setTextSize(FP);
 
     tft.setCursor(0, 0);
-    tft.fillRect(0, 0, tftWidth, tftHeight, bruceConfig.bgColor);
+    tft.fillRect(0, 0, tftWidth, tftHeight, mopieConfig.bgColor);
 
     delay(50);
 }
@@ -2427,18 +2427,18 @@ void updateKarmaDisplay() {
     if (currentTime - last_time > 1000) {
         last_time = currentTime;
 
-        tft.fillRect(10, 45, tftWidth - 20, tftHeight - 70, bruceConfig.bgColor);
+        tft.fillRect(10, 45, tftWidth - 20, tftHeight - 70, mopieConfig.bgColor);
         tft.setTextSize(1);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
 
         int y = 45;
         tft.setCursor(10, y);
 
         if (karmaPaused) {
-            tft.setTextColor(TFT_RED, bruceConfig.bgColor);
+            tft.setTextColor(TFT_RED, mopieConfig.bgColor);
             tft.setCursor(10, y);
             tft.print("KARMA PAUSED");
-            tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+            tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
             y += LH + 2;
         }
 
@@ -2635,7 +2635,7 @@ void karma_setup() {
     forceFullRedraw();
     drawMainBorderWithTitle("ENHANCED KARMA ATK");
     tft.setTextSize(FP);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     padprintln("Saved to " + FileSys);
     padprintln("Modern Karma Started");
 
@@ -2985,7 +2985,7 @@ void karma_setup() {
                               drawMainBorderWithTitle("SSID DATABASE");
                               int y = 60;
                               tft.setTextSize(1);
-                              tft.fillRect(10, 40, tftWidth - 20, 100, bruceConfig.bgColor);
+                              tft.fillRect(10, 40, tftWidth - 20, 100, mopieConfig.bgColor);
                               size_t total = SSIDDatabase::getCount();
                               tft.setCursor(10, y);
                               y += 15;
@@ -3290,7 +3290,7 @@ void karma_setup() {
             forceFullRedraw();
             drawMainBorderWithTitle("ENHANCED KARMA ATK");
             tft.setTextSize(FP);
-            tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+            tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
             padprintln("Saved to " + FileSys);
             if (templateSelected) padprintln("Template: " + selectedTemplate.name);
             else padprintln("Template: None");

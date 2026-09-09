@@ -130,7 +130,7 @@ static AudioOutputI2S *createConfiguredAudioOutput() {
     }
 
     audioout->SetPinout(BCLK, WCLK, DOUT, MCLK);
-    audioout->SetGain(bruceConfig.soundVolume / AUDIO_VOLUME_MAX);
+    audioout->SetGain(mopieConfig.soundVolume / AUDIO_VOLUME_MAX);
 
     return audioout;
 }
@@ -349,7 +349,7 @@ AudioPlaybackInfo getAudioPlaybackInfo() {
     info.currentFile = "";
     info.duration = 0;
     info.position = 0;
-    info.volume = bruceConfig.soundVolume;
+    info.volume = mopieConfig.soundVolume;
     info.isAsyncMode = false;
 
     if (!g_audioPlayer) return info;
@@ -357,7 +357,7 @@ AudioPlaybackInfo getAudioPlaybackInfo() {
     if (g_audioPlayer->lock(pdMS_TO_TICKS(100))) {
         info.state = g_audioPlayer->state;
         info.currentFile = g_audioPlayer->currentFile;
-        info.volume = bruceConfig.soundVolume;
+        info.volume = mopieConfig.soundVolume;
         info.isAsyncMode = (g_audioPlayer->mode == PLAYBACK_ASYNC);
 
         // Calculate position
@@ -378,7 +378,7 @@ void setAudioPlaybackVolume(uint8_t volume) {
     if (volume > 100) volume = 100;
 
     // Update config
-    bruceConfig.setSoundVolume(volume);
+    mopieConfig.setSoundVolume(volume);
 
     initAudioPlayer();
 
@@ -414,7 +414,7 @@ static bool startAsyncPlayback(
     g_audioPlayer->stopRequested = false;
     g_audioPlayer->pauseRequested = false;
     g_audioPlayer->volumeChanged = false;
-    g_audioPlayer->currentGain = bruceConfig.soundVolume / AUDIO_VOLUME_MAX; // Store initial gain
+    g_audioPlayer->currentGain = mopieConfig.soundVolume / AUDIO_VOLUME_MAX; // Store initial gain
     g_audioPlayer->startTime = millis();
     g_audioPlayer->pausedTime = 0;
     g_audioPlayer->totalPausedDuration = 0;
@@ -453,7 +453,7 @@ static bool startAsyncPlayback(
 // ===== CORE PLAYBACK FUNCTIONS =====
 
 bool playAudioFile(FS *fs, String filepath, PlaybackMode mode) {
-    if (!bruceConfig.soundEnabled) return false;
+    if (!mopieConfig.soundEnabled) return false;
 
     if (!validateAudioFile(fs, filepath)) { return false; }
 
@@ -534,7 +534,7 @@ bool playAudioFile(FS *fs, String filepath, PlaybackMode mode) {
 }
 
 bool playAudioRTTTLString(String song, PlaybackMode mode) {
-    if (!bruceConfig.soundEnabled) return false;
+    if (!mopieConfig.soundEnabled) return false;
 
     song.trim();
     if (song == "") {
@@ -602,7 +602,7 @@ bool playAudioRTTTLString(String song, PlaybackMode mode) {
     return startAsyncPlayback(generator, source, audioout, "RTTTL");
 }
 bool tts(String text, PlaybackMode mode) {
-    if (!bruceConfig.soundEnabled) return false;
+    if (!mopieConfig.soundEnabled) return false;
 
     text.trim();
     if (text == "") {
@@ -655,7 +655,7 @@ bool isAudioFile(const String &filepath) {
 }
 
 void playTone(unsigned int frequency, unsigned long duration, short waveType) {
-    if (!bruceConfig.soundEnabled) return;
+    if (!mopieConfig.soundEnabled) return;
 
     _setup_codec_speaker(true);
 
@@ -682,7 +682,7 @@ void playTone(unsigned int frequency, unsigned long duration, short waveType) {
         return;
     }
 
-    float volumeScale = (bruceConfig.soundVolume / AUDIO_VOLUME_MAX) * AUDIO_VOLUME_SCALE;
+    float volumeScale = (mopieConfig.soundVolume / AUDIO_VOLUME_MAX) * AUDIO_VOLUME_SCALE;
 
     if (waveType == 0) {
         file->addAudioGenerators([volumeScale, hz](const float time) {
@@ -731,7 +731,7 @@ void playTone(unsigned int frequency, unsigned long duration, short waveType) {
 #endif
 
 void _tone(unsigned int frequency, unsigned long duration) {
-    if (!bruceConfig.soundEnabled) return;
+    if (!mopieConfig.soundEnabled) return;
 
 #if defined(BUZZ_PIN)
     tone(BUZZ_PIN, frequency, duration);
@@ -740,7 +740,7 @@ void _tone(unsigned int frequency, unsigned long duration) {
     if (frequency == 0) {
         if (duration > 0) delay(duration);
     } else {
-        uint8_t m5vol = (bruceConfig.soundVolume * 255) / AUDIO_VOLUME_MAX;
+        uint8_t m5vol = (mopieConfig.soundVolume * 255) / AUDIO_VOLUME_MAX;
         M5.Speaker.setVolume(m5vol);
         M5.Speaker.tone(frequency, duration);
         if (duration > 0) delay(duration);

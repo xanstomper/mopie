@@ -35,11 +35,11 @@ static void displayStatus() {
         if (!bufferCrcValid()) {
             tft.setTextColor(TFT_RED);
             padprintln("CRC ERROR!");
-            tft.setTextColor(bruceConfig.priColor);
+            tft.setTextColor(mopieConfig.priColor);
         } else {
             tft.setTextColor(TFT_GREEN);
             padprintln("CRC OK");
-            tft.setTextColor(bruceConfig.priColor);
+            tft.setTextColor(mopieConfig.priColor);
         }
     } else {
         padprintln("No key in buffer");
@@ -54,7 +54,7 @@ static void displayStatus() {
 // ---------------------------------------------------------------------------
 
 static void writeByte_RW1990(byte data) {
-    uint8_t pin = bruceConfigPins.iButton;
+    uint8_t pin = mopieConfigPins.iButton;
     for (int bit = 0; bit < 8; bit++) {
         if (data & 1) {
             digitalWrite(pin, LOW);
@@ -90,7 +90,7 @@ static bool readKey(int maxRetries = 20) {
             return true;
         }
 
-        tft.fillScreen(bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
         drawMainBorderWithTitle("iButton");
         padprintln("Reading... attempt " + String(attempt + 2));
         padprintln("CRC mismatch, retrying...");
@@ -105,7 +105,7 @@ static bool readKey(int maxRetries = 20) {
 }
 
 static void writeKey() {
-    uint8_t pin = bruceConfigPins.iButton;
+    uint8_t pin = mopieConfigPins.iButton;
 
     oneWire->skip();
     oneWire->reset();
@@ -256,7 +256,7 @@ static void doWrite() {
         return;
     }
 
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     drawMainBorderWithTitle("Write iButton");
     padprintln("UID: " + bufferToHexStr(keyBuffer, 8));
     padprintln("");
@@ -350,9 +350,9 @@ void setup_ibutton() {
 
 Restart:
     if (oneWire) delete oneWire;
-    oneWire = new OneWire(bruceConfigPins.iButton);
+    oneWire = new OneWire(mopieConfigPins.iButton);
 
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     displayStatus();
 
     for (;;) {
@@ -372,28 +372,28 @@ Restart:
                 setiButtonPinMenu();
                 goto Restart;
             }
-            tft.fillScreen(bruceConfig.bgColor);
+            tft.fillScreen(mopieConfig.bgColor);
             displayStatus();
         }
 
         // Auto-read when iButton touches the probe
         if (oneWire->reset() != 0) {
             bool ok = readKey();
-            tft.fillScreen(bruceConfig.bgColor);
+            tft.fillScreen(mopieConfig.bgColor);
 
             if (ok) {
                 displayStatus();
                 padprintln("");
                 tft.setTextColor(TFT_GREEN);
                 padprintln("Key read successfully!");
-                tft.setTextColor(bruceConfig.priColor);
+                tft.setTextColor(mopieConfig.priColor);
             } else if (keyLoaded) {
                 // Read failed CRC but we have data
                 displayStatus();
                 padprintln("");
                 tft.setTextColor(TFT_YELLOW);
                 padprintln("Read with CRC errors");
-                tft.setTextColor(bruceConfig.priColor);
+                tft.setTextColor(mopieConfig.priColor);
             } else {
                 displayStatus();
             }
@@ -423,9 +423,9 @@ void setiButtonPinMenu() {
         String label = "GPIO " + String(i);
         options.push_back({label.c_str(), [i, &sel]() { sel = (gpio_num_t)i; }});
     }
-    loopOptions(options, bruceConfigPins.iButton + 1);
+    loopOptions(options, mopieConfigPins.iButton + 1);
     options.clear();
-    bruceConfigPins.setiButtonPin(sel);
+    mopieConfigPins.setiButtonPin(sel);
 }
 
 #endif

@@ -11,7 +11,7 @@
 
 enum EvilPortalPasswordMode { FULL_PASSWORD = 0, FIRST_LAST_CHAR = 1, HIDE_PASSWORD = 2, SAVE_LENGTH = 3 };
 
-class BruceConfig : public BruceTheme {
+class MopieConfig : public MopieTheme {
 public:
     struct WiFiCredential {
         String ssid;
@@ -33,7 +33,7 @@ public:
         bool allowGetCreds;
     };
 
-    const char *filepath = "/bruce.conf";
+    const char *filepath = "/mopie.conf";
 
     //  Settings
     int dimmerSet = 60;
@@ -95,16 +95,16 @@ public:
 
     std::vector<QrCodeEntry> qrCodes = {
         {"Mopie AP",   "WIFI:T:WPA;S:MopieNet;P:mopienet;;"},
-        {"Mopie Wiki", "https://github.com/pr3y/Mopie/wiki"},
-        {"Mopie Site", "https://bruce.computer"            },
+        {"Mopie Wiki", "https://github.com/xanstomper/mopie"},
+        {"Mopie Site", "https://github.com/xanstomper/mopie"     },
         {"Rickroll",   "https://youtu.be/dQw4w9WgXcQ"      }
     };
 
     /////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     /////////////////////////////////////////////////////////////////////////////////////
-    BruceConfig() {};
-    // ~BruceConfig();
+    MopieConfig() {};
+    // ~MopieConfig();
 
 private:
     bool _mifareKeysLoaded = false;

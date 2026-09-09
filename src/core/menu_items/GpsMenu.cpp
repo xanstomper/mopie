@@ -17,7 +17,7 @@ void GpsMenu::optionsMenu() {
     };
     addOptionToMainMenu();
 
-    String txt = "GPS (" + String(bruceConfigPins.gpsBaudrate) + " bps)";
+    String txt = "GPS (" + String(mopieConfigPins.gpsBaudrate) + " bps)";
     loopOptions(options, MENU_TYPE_SUBMENU, txt.c_str());
 }
 
@@ -34,7 +34,7 @@ void GpsMenu::wardrivingMenu() {
 void GpsMenu::configMenu() {
     options = {
         {"Baudrate", setGpsBaudrateMenu                                 },
-        {"GPS Pins", [=]() { setUARTPinsMenu(bruceConfigPins.gps_bus); }},
+        {"GPS Pins", [=]() { setUARTPinsMenu(mopieConfigPins.gps_bus); }},
         {"Back",     [this]() { optionsMenu(); }                        },
     };
 

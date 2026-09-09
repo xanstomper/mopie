@@ -16,8 +16,8 @@
 #include <string>
 #include <vector>
 io_expander ioExpander;
-BruceConfig bruceConfig;
-BruceConfigPins bruceConfigPins;
+MopieConfig mopieConfig;
+MopieConfigPins mopieConfigPins;
 
 SerialCli serialCli;
 USBSerial USBserial;
@@ -194,8 +194,8 @@ void begin_storage() {
     }
     RAM_LOG("after LittleFS");
     bool checkFS = setupSdCard();
-    bruceConfig.fromFile(checkFS);
-    bruceConfigPins.fromFile(checkFS);
+    mopieConfig.fromFile(checkFS);
+    mopieConfigPins.fromFile(checkFS);
 }
 
 /*********************************************************************
@@ -233,7 +233,7 @@ void setup_gpio() {
     ioExpander.init(IO_EXPANDER_ADDRESS, &Wire);
 
     initCC1101once(acquireSPIBus(
-        bruceConfigPins.CC1101_bus.sck, bruceConfigPins.CC1101_bus.miso, bruceConfigPins.CC1101_bus.mosi
+        mopieConfigPins.CC1101_bus.sck, mopieConfigPins.CC1101_bus.miso, mopieConfigPins.CC1101_bus.mosi
     ));
     // acquireSPIBus() returns nullptr when these pins have no hardware controller left (e.g.
     // ARDUINO_M5STICK_C_PLUS and others that don't share SPI with the display/SD/aux bus);
@@ -245,9 +245,9 @@ void setup_gpio() {
  **  Config tft
  *********************************************************************/
 void begin_tft() {
-    tft.setRotation(bruceConfigPins.rotation); // sometimes it misses the first command
-    tft.invertDisplay(bruceConfig.colorInverted);
-    tft.setRotation(bruceConfigPins.rotation);
+    tft.setRotation(mopieConfigPins.rotation); // sometimes it misses the first command
+    tft.invertDisplay(mopieConfig.colorInverted);
+    tft.setRotation(mopieConfigPins.rotation);
     tftWidth = tft.width();
 #ifdef HAS_TOUCH
     tftHeight = tft.height() - 20;
@@ -255,7 +255,7 @@ void begin_tft() {
     tftHeight = tft.height();
 #endif
     resetTftDisplay();
-    setBrightness(bruceConfig.bright, false);
+    setBrightness(mopieConfig.bright, false);
 }
 
 /*********************************************************************
@@ -283,19 +283,19 @@ void boot_screen_anim() {
     }
     if (boot_img == 0 && LittleFS.exists("/boot.jpg")) boot_img = 2;
     else if (boot_img == 0 && LittleFS.exists("/boot.gif")) boot_img = 4;
-    if (bruceConfig.theme.boot_img) boot_img = 5; // override others
+    if (mopieConfig.theme.boot_img) boot_img = 5; // override others
 
     tft.drawPixel(0, 0, 0);       // Forces back communication with TFT, to avoid ghosting
                                   // Start image loop
     while (millis() < i + 7000) { // boot image lasts for 5 secs
         if ((millis() - i > 2000) && !drawn) {
-            tft.fillRect(0, 45, tftWidth, tftHeight - 45, bruceConfig.bgColor);
+            tft.fillRect(0, 45, tftWidth, tftHeight - 45, mopieConfig.bgColor);
             if (boot_img > 0 && !drawn) {
-                tft.fillScreen(bruceConfig.bgColor);
+                tft.fillScreen(mopieConfig.bgColor);
                 if (boot_img == 5) {
                     drawImg(
-                        *bruceConfig.themeFS(),
-                        bruceConfig.getThemeItemImg(bruceConfig.theme.paths.boot_img),
+                        *mopieConfig.themeFS(),
+                        mopieConfig.getThemeItemImg(mopieConfig.theme.paths.boot_img),
                         0,
                         0,
                         true,
@@ -324,14 +324,14 @@ void boot_screen_anim() {
 #endif
         if (check(AnyKeyPress)) // If any key or M5 key is pressed, it'll jump the boot screen
         {
-            tft.fillScreen(bruceConfig.bgColor);
+            tft.fillScreen(mopieConfig.bgColor);
             delay(10);
             return;
         }
     }
 
     // Clear splashscreen
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
 }
 
 /*********************************************************************
@@ -389,7 +389,7 @@ void init_led() {
  **  Play sound or tone depending on device hardware
  *********************************************************************/
 void startup_sound() {
-    if (bruceConfig.soundEnabled == 0) return; // if sound is disabled, do not play sound
+    if (mopieConfig.soundEnabled == 0) return; // if sound is disabled, do not play sound
 #if !defined(LITE_VERSION)
 #if defined(BUZZ_PIN)
     // Bip M5 just because it can. Does not bip if splashscreen is bypassed
@@ -399,8 +399,8 @@ void startup_sound() {
     /*  2fix: menu infinite loop */
 #elif defined(HAS_NS4168_SPKR)
     // play a boot sound
-    if (bruceConfig.theme.boot_sound) {
-        playAudioFile(bruceConfig.themeFS(), bruceConfig.getThemeItemImg(bruceConfig.theme.paths.boot_sound));
+    if (mopieConfig.theme.boot_sound) {
+        playAudioFile(mopieConfig.themeFS(), mopieConfig.getThemeItemImg(mopieConfig.theme.paths.boot_sound));
     } else if (SD.exists("/boot.wav")) {
         playAudioFile(&SD, "/boot.wav");
     } else if (LittleFS.exists("/boot.wav")) {
@@ -444,14 +444,14 @@ void setup() {
     sdcardMounted = false;
     wifiConnected = false;
     BLEConnected = false;
-    bruceConfig.bright = 100; // theres is no value yet
-    bruceConfigPins.rotation = ROTATION;
+    mopieConfig.bright = 100; // theres is no value yet
+    mopieConfigPins.rotation = ROTATION;
     setup_gpio();
 #if defined(HAS_SCREEN)
     tft.init();
-    tft.setRotation(bruceConfigPins.rotation);
+    tft.setRotation(mopieConfigPins.rotation);
     tft.fillScreen(TFT_BLACK);
-    // bruceConfig is not read yet.. just to show something on screen due to long boot time
+    // mopieConfig is not read yet.. just to show something on screen due to long boot time
     tft.setTextColor(DEFAULT_PRICOLOR, TFT_BLACK);
     tft.drawCentreString("Booting", tft.width() / 2, tft.height() / 2, 1);
     RAM_LOG("first-display-elem"); // first element drawn on screen
@@ -460,7 +460,7 @@ void setup() {
 #endif
     _pre_storage_gpio();
     begin_storage();
-    RAM_LOG("after-storage"); // bruceConfig/bruceConfigPins loaded from FS
+    RAM_LOG("after-storage"); // mopieConfig/mopieConfigPins loaded from FS
     begin_tft();
     init_clock();
     init_led();
@@ -488,7 +488,7 @@ void setup() {
     _post_setup_gpio();
     // Some board interfaces initialize or reset the backlight in post-setup,
     // so re-apply the stored brightness after that stage completes.
-    setBrightness(bruceConfig.bright, false);
+    setBrightness(mopieConfig.bright, false);
     // end of post gpio begin
 
     // #ifndef USE_TFT_eSPI_TOUCH
@@ -516,12 +516,12 @@ void setup() {
 #endif
     // #endif
 #if defined(HAS_SCREEN)
-    bruceConfig.openThemeFile(bruceConfig.themeFS(), bruceConfig.themePath, false);
-    if (!bruceConfig.instantBoot) {
+    mopieConfig.openThemeFile(mopieConfig.themeFS(), mopieConfig.themePath, false);
+    if (!mopieConfig.instantBoot) {
         boot_screen_anim();
         startup_sound();
     }
-    if (bruceConfig.wifiAtStartup) {
+    if (mopieConfig.wifiAtStartup) {
         log_i("Loading Wifi at Startup");
         xTaskCreate(
             wifiConnectTask,   // Task function
@@ -537,8 +537,8 @@ void setup() {
     startSerialCommandsHandlerTask(true);
 
     wakeUpScreen();
-    if (bruceConfig.startupApp != "" && !startupApp.startApp(bruceConfig.startupApp)) {
-        bruceConfig.setStartupApp("");
+    if (mopieConfig.startupApp != "" && !startupApp.startApp(mopieConfig.startupApp)) {
+        mopieConfig.setStartupApp("");
     }
 
     RAM_LOG("setup-end");
@@ -565,7 +565,7 @@ void loop() {
         previousMillis = millis(); // ensure that will not dim screen when get back to menu
     }
 #endif
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
 
 #if defined(ENABLE_RAM_LOGGING)
     static bool ramLoggedFirstMenu = false;
@@ -597,7 +597,7 @@ void loop() {
     );
 
     // Enable navigation through webUI
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     mainMenu.begin();
     vTaskDelay(10 / portTICK_PERIOD_MS);
 }

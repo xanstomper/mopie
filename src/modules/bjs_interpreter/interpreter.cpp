@@ -72,9 +72,9 @@ void interpreterHandler(void *pvParameters) {
     JS_SetPropertyStr(ctx, global, "__dirpath", JS_NewString(ctx, scriptDirpath));
     JS_SetPropertyStr(ctx, global, "MOPIE_VERSION", JS_NewString(ctx, MOPIE_VERSION));
     JS_SetPropertyStr(ctx, global, "MOPIE_VERSION", JS_NewString(ctx, MOPIE_VERSION));  // alias for compat
-    JS_SetPropertyStr(ctx, global, "MOPIE_PRICOLOR", JS_NewInt32(ctx, bruceConfig.priColor));
-    JS_SetPropertyStr(ctx, global, "MOPIE_SECCOLOR", JS_NewInt32(ctx, bruceConfig.secColor));
-    JS_SetPropertyStr(ctx, global, "MOPIE_BGCOLOR", JS_NewInt32(ctx, bruceConfig.bgColor));
+    JS_SetPropertyStr(ctx, global, "MOPIE_PRICOLOR", JS_NewInt32(ctx, mopieConfig.priColor));
+    JS_SetPropertyStr(ctx, global, "MOPIE_SECCOLOR", JS_NewInt32(ctx, mopieConfig.secColor));
+    JS_SetPropertyStr(ctx, global, "MOPIE_BGCOLOR", JS_NewInt32(ctx, mopieConfig.bgColor));
 
     JS_SetPropertyStr(ctx, global, "HIGH", JS_NewInt32(ctx, HIGH));
     JS_SetPropertyStr(ctx, global, "LOW", JS_NewInt32(ctx, LOW));
@@ -255,8 +255,8 @@ getScriptsOptionsList(const String &currentPath, bool saveStartupScript, int rem
             String entry_title = nameOnly.substring(0, nameOnly.lastIndexOf(".")); // remove the extension
             opt.push_back({entry_title.c_str(), [=]() {
                                if (saveStartupScript) {
-                                   bruceConfig.startupAppJSInterpreterFile = fullPath;
-                                   bruceConfig.saveFile();
+                                   mopieConfig.startupAppJSInterpreterFile = fullPath;
+                                   mopieConfig.saveFile();
                                } else {
                                    Serial.printf("Running script: %s\n", fullPath.c_str());
                                    run_bjs_script_headless(*fs, fullPath);

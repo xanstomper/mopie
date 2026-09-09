@@ -13,10 +13,10 @@ enum MopieGlyph {
 };
 
 inline void drawMopieGlyph(int g, int cx, int cy, int s) {
-    const uint16_t P  = bruceConfig.priColor;
+    const uint16_t P  = mopieConfig.priColor;
     const uint16_t A  = DEFAULT_ACCENT;
     const uint16_t W  = TFT_WHITE;
-    const uint16_t BG = bruceConfig.bgColor;
+    const uint16_t BG = mopieConfig.bgColor;
     const int h = s / 2;
     int lw = s / 14; if (lw < 1) lw = 1; if (lw > 3) lw = 3;
 

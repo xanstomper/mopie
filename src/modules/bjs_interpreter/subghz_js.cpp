@@ -75,9 +75,9 @@ JSValue native_subghzRead(JSContext *ctx, JSValue *this_val, int argc, JSValue *
     if (argc > 0 && JS_IsNumber(ctx, argv[0])) {
         int t;
         JS_ToInt32(ctx, &t, argv[0]);
-        r = rfReceiveSignal(bruceConfigPins.rfFreq, t, false, true); // headless mode for JS
+        r = rfReceiveSignal(mopieConfigPins.rfFreq, t, false, true); // headless mode for JS
     } else {
-        r = rfReceiveSignal(bruceConfigPins.rfFreq, 10, false, true);
+        r = rfReceiveSignal(mopieConfigPins.rfFreq, 10, false, true);
     }
     return JS_NewString(ctx, r.c_str());
 }
@@ -87,9 +87,9 @@ JSValue native_subghzReadRaw(JSContext *ctx, JSValue *this_val, int argc, JSValu
     if (argc > 0 && JS_IsNumber(ctx, argv[0])) {
         int t;
         JS_ToInt32(ctx, &t, argv[0]);
-        r = rfReceiveSignal(bruceConfigPins.rfFreq, t, true, true); // raw + headless for JS
+        r = rfReceiveSignal(mopieConfigPins.rfFreq, t, true, true); // raw + headless for JS
     } else {
-        r = rfReceiveSignal(bruceConfigPins.rfFreq, 10, true, true);
+        r = rfReceiveSignal(mopieConfigPins.rfFreq, 10, true, true);
     }
     return JS_NewString(ctx, r.c_str());
 }
@@ -99,7 +99,7 @@ JSValue native_subghzSetFrequency(JSContext *ctx, JSValue *this_val, int argc, J
     if (argc > 0 && JS_IsNumber(ctx, argv[0])) {
         double v;
         JS_ToNumber(ctx, &v, argv[0]);
-        bruceConfigPins.rfFreq = v; // float global var
+        mopieConfigPins.rfFreq = v; // float global var
     }
     return JS_UNDEFINED;
 }
@@ -126,10 +126,10 @@ JSValue native_subghzTxSetup(JSContext *ctx, JSValue *this_val, int argc, JSValu
     if (!initRfModule("tx", freq)) { return JS_NewBool(false); }
 
     // Determine TX pin based on module configuration
-    if (bruceConfigPins.rfModule == CC1101_SPI_MODULE) {
-        _txPin = bruceConfigPins.CC1101_bus.io0;
+    if (mopieConfigPins.rfModule == CC1101_SPI_MODULE) {
+        _txPin = mopieConfigPins.CC1101_bus.io0;
     } else {
-        _txPin = bruceConfigPins.rfTx;
+        _txPin = mopieConfigPins.rfTx;
     }
     pinMode(_txPin, OUTPUT);
     _txSessionActive = true;

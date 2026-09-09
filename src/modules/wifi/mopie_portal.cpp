@@ -94,10 +94,10 @@ int mopiePortal() {
     g_server->begin();
 
     // --- screen ---
-    tft.fillScreen(bruceConfig.bgColor);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.drawCentreString("CAPTIVE PORTAL", tftWidth / 2, 12, 1);
-    tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.secColor, mopieConfig.bgColor);
     tft.drawCentreString("AP: " + ssid, tftWidth / 2, 30, 1);
     tft.drawCentreString("Gate: 192.168.4.1", tftWidth / 2, 44, 1);
 
@@ -107,7 +107,7 @@ int mopiePortal() {
         g_dns->processNextRequest();
         if (g_captured != lastCaptured) {
             lastCaptured = g_captured;
-            tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+            tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
             tft.drawCentreString(String(g_captured) + " creds", tftWidth / 2, 66, 1);
         }
         vTaskDelay(20);

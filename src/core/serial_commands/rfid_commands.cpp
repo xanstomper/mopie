@@ -19,7 +19,7 @@
 static RFIDInterface *_rfid = nullptr;
 
 static RFIDInterface *_createRfidModule() {
-    switch (bruceConfigPins.rfidModule) {
+    switch (mopieConfigPins.rfidModule) {
         case PN532_I2C_MODULE: return new PN532(PN532::CONNECTION_TYPE::I2C);
 #ifdef M5STICK
         case PN532_I2C_SPI_MODULE: return new PN532(PN532::CONNECTION_TYPE::I2C_SPI);
@@ -210,7 +210,7 @@ uint32_t rfidInfoCallback(cmd *c) {
 }
 
 // rfid reset  — destroys the module instance (forces re-init on next command)
-// rfid save [filename=rfid_dump] [format=bruce|flipper]
+// rfid save [filename=rfid_dump] [format=mopie|flipper]
 uint32_t rfidSaveCallback(cmd *c) {
     Command cmd(c);
     String filename = cmd.getArgument("filename").getValue();
@@ -389,7 +389,7 @@ void createRfidCommands(SimpleCLI *cli) {
     cmd.addCommand("info", rfidInfoCallback);
     Command saveCmd = cmd.addCommand("save", rfidSaveCallback);
     saveCmd.addPosArg("filename", "rfid_dump");
-    saveCmd.addPosArg("format", "bruce");
+    saveCmd.addPosArg("format", "mopie");
     Command loadFileCmd = cmd.addCommand("loadfile", rfidLoadFileCallback);
     loadFileCmd.addPosArg("filepath", "MopieRFID/rfid_dump.rfid");
     cmd.addBoundlessCommand("ndef", rfidNdefCallback);

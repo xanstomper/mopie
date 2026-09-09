@@ -16,7 +16,7 @@ public:
         // neural net glyph centered (same shape as GLYPH_AI)
         int cX = iconCenterX, cY = iconCenterY;
         int r = 10 * scale;
-        tft.fillCircle(cX, cY, r * 3 / 10 + 2, bruceConfig.priColor);
+        tft.fillCircle(cX, cY, r * 3 / 10 + 2, mopieConfig.priColor);
         const int off = r * 3 / 5;
         tft.fillCircle(cX - off, cY - off / 2, r / 5 + 1, DEFAULT_ACCENT);
         tft.fillCircle(cX + off, cY - off / 2, r / 5 + 1, DEFAULT_ACCENT);

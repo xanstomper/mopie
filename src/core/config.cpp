@@ -3,7 +3,7 @@
 #include "sd_functions.h"
 #include <algorithm>
 
-JsonDocument BruceConfig::toJson() const {
+JsonDocument MopieConfig::toJson() const {
     JsonDocument jsonDoc;
     JsonObject setting = jsonDoc.to<JsonObject>();
 
@@ -86,7 +86,7 @@ JsonDocument BruceConfig::toJson() const {
     return jsonDoc;
 }
 
-void BruceConfig::fromFile(bool checkFS) {
+void MopieConfig::fromFile(bool checkFS) {
     FS *fs;
     if (checkFS) {
         if (!getFsStorage(fs)) {
@@ -443,7 +443,7 @@ void BruceConfig::fromFile(bool checkFS) {
     log_i("Using config from file");
 }
 
-void BruceConfig::saveFile() {
+void MopieConfig::saveFile() {
     FS *fs = &LittleFS;
     JsonDocument jsonDoc = toJson();
 
@@ -465,14 +465,14 @@ void BruceConfig::saveFile() {
     if (setupSdCard()) copyToFs(LittleFS, SD, filepath, false);
 }
 
-void BruceConfig::factoryReset() {
+void MopieConfig::factoryReset() {
     FS *fs = &LittleFS;
     fs->rename(String(filepath), "/bak." + String(filepath).substring(1));
     if (setupSdCard()) SD.rename(String(filepath), "/bak." + String(filepath).substring(1));
     ESP.restart();
 }
 
-void BruceConfig::validateConfig() {
+void MopieConfig::validateConfig() {
     validateDimmerValue();
     validateBrightValue();
     validateTmzValue();
@@ -498,133 +498,133 @@ void BruceConfig::validateConfig() {
     validateEvilGatewayIp();
 }
 
-void BruceConfig::setUiColor(uint16_t primary, uint16_t *secondary, uint16_t *background) {
-    BruceTheme::_setUiColor(primary, secondary, background);
+void MopieConfig::setUiColor(uint16_t primary, uint16_t *secondary, uint16_t *background) {
+    MopieTheme::_setUiColor(primary, secondary, background);
     saveFile();
 }
 
-void BruceConfig::setDimmer(int value) {
+void MopieConfig::setDimmer(int value) {
     dimmerSet = value;
     validateDimmerValue();
     saveFile();
 }
 
-void BruceConfig::validateDimmerValue() {
+void MopieConfig::validateDimmerValue() {
     if (dimmerSet < 0) dimmerSet = 10;
     if (dimmerSet > 60) dimmerSet = 0;
 }
 
-void BruceConfig::setBright(uint8_t value) {
+void MopieConfig::setBright(uint8_t value) {
     bright = value;
     validateBrightValue();
     saveFile();
 }
 
-void BruceConfig::validateBrightValue() {
+void MopieConfig::validateBrightValue() {
     if (bright > 100) bright = 100;
 }
 
-void BruceConfig::setAutomaticTimeUpdateViaNTP(bool value) {
+void MopieConfig::setAutomaticTimeUpdateViaNTP(bool value) {
     automaticTimeUpdateViaNTP = value;
     saveFile();
 }
 
-void BruceConfig::setTmz(float value) {
+void MopieConfig::setTmz(float value) {
     tmz = value;
     validateTmzValue();
     saveFile();
 }
 
-void BruceConfig::validateTmzValue() {
+void MopieConfig::validateTmzValue() {
     if (tmz < -12 || tmz > 14) tmz = 0;
 }
 
-void BruceConfig::setDST(bool value) {
+void MopieConfig::setDST(bool value) {
     dst = value;
     saveFile();
 }
 
-void BruceConfig::setClock24Hr(bool value) {
+void MopieConfig::setClock24Hr(bool value) {
     clock24hr = value;
     saveFile();
 }
 
-void BruceConfig::setSoundEnabled(int value) {
+void MopieConfig::setSoundEnabled(int value) {
     soundEnabled = value;
     validateSoundEnabledValue();
     saveFile();
 }
 
-void BruceConfig::setSoundVolume(int value) {
+void MopieConfig::setSoundVolume(int value) {
     soundVolume = value;
     validateSoundVolumeValue();
     saveFile();
 }
 
-void BruceConfig::validateSoundEnabledValue() {
+void MopieConfig::validateSoundEnabledValue() {
     if (soundEnabled > 1) soundEnabled = 1;
 }
 
-void BruceConfig::validateSoundVolumeValue() {
+void MopieConfig::validateSoundVolumeValue() {
     if (soundVolume > 100) soundVolume = 100;
 }
 
-void BruceConfig::setWifiAtStartup(int value) {
+void MopieConfig::setWifiAtStartup(int value) {
     wifiAtStartup = value;
     validateWifiAtStartupValue();
     saveFile();
 }
 
-void BruceConfig::validateWifiAtStartupValue() {
+void MopieConfig::validateWifiAtStartupValue() {
     if (wifiAtStartup > 1) wifiAtStartup = 1;
 }
 
 #ifdef HAS_RGB_LED
-void BruceConfig::setLedBright(int value) {
+void MopieConfig::setLedBright(int value) {
     ledBright = value;
     validateLedBrightValue();
     saveFile();
 }
 
-void BruceConfig::validateLedBrightValue() { ledBright = max(0, min(100, ledBright)); }
+void MopieConfig::validateLedBrightValue() { ledBright = max(0, min(100, ledBright)); }
 
-void BruceConfig::setLedColor(uint32_t value) {
+void MopieConfig::setLedColor(uint32_t value) {
     ledColor = value;
     validateLedColorValue();
     saveFile();
 }
 
-void BruceConfig::validateLedColorValue() {
+void MopieConfig::validateLedColorValue() {
     ledColor = max<uint32_t>(0, min<uint32_t>(0xFFFFFFFF, ledColor));
 }
 
-void BruceConfig::setLedBlinkEnabled(int value) {
+void MopieConfig::setLedBlinkEnabled(int value) {
     ledBlinkEnabled = value;
     validateLedBlinkEnabledValue();
     saveFile();
 }
 
-void BruceConfig::validateLedBlinkEnabledValue() {
+void MopieConfig::validateLedBlinkEnabledValue() {
     if (ledBlinkEnabled > 1) ledBlinkEnabled = 1;
 }
 
-void BruceConfig::setLedEffect(int value) {
+void MopieConfig::setLedEffect(int value) {
     ledEffect = value;
     validateLedEffectValue();
     saveFile();
 }
 
-void BruceConfig::validateLedEffectValue() {
+void MopieConfig::validateLedEffectValue() {
     if (ledEffect < 0 || ledEffect > 9) ledEffect = 0;
 }
 
-void BruceConfig::setLedEffectSpeed(int value) {
+void MopieConfig::setLedEffectSpeed(int value) {
     ledEffectSpeed = value;
     validateLedEffectSpeedValue();
     saveFile();
 }
 
-void BruceConfig::validateLedEffectSpeedValue() {
+void MopieConfig::validateLedEffectSpeedValue() {
 #ifdef HAS_ENCODER_LED
     if (ledEffectSpeed > 11) ledEffectSpeed = 11;
 #else
@@ -633,63 +633,63 @@ void BruceConfig::validateLedEffectSpeedValue() {
     if (ledEffectSpeed < 0) ledEffectSpeed = 1;
 }
 
-void BruceConfig::setLedEffectDirection(int value) {
+void MopieConfig::setLedEffectDirection(int value) {
     ledEffectDirection = value;
     validateLedEffectDirectionValue();
     saveFile();
 }
 
-void BruceConfig::validateLedEffectDirectionValue() {
+void MopieConfig::validateLedEffectDirectionValue() {
     if (ledEffectDirection > 1 || ledEffectDirection == 0) ledEffectDirection = 1;
     if (ledEffectDirection < -1) ledEffectDirection = -1;
 }
 #endif
 
-void BruceConfig::setWebUICreds(const String &usr, const String &pwd) {
+void MopieConfig::setWebUICreds(const String &usr, const String &pwd) {
     webUI.user = usr;
     webUI.pwd = pwd;
     saveFile();
 }
 
-void BruceConfig::setWifiApCreds(const String &ssid, const String &pwd) {
+void MopieConfig::setWifiApCreds(const String &ssid, const String &pwd) {
     wifiAp.ssid = ssid;
     wifiAp.pwd = pwd;
     saveFile();
 }
 
-void BruceConfig::setTerminalLog(bool value) {
+void MopieConfig::setTerminalLog(bool value) {
     TerminalLog = value;
     saveFile();
 }
 
-void BruceConfig::addWifiCredential(const String &ssid, const String &pwd) {
+void MopieConfig::addWifiCredential(const String &ssid, const String &pwd) {
     wifi[ssid] = pwd;
     saveFile();
 }
 
-String BruceConfig::getWifiPassword(const String &ssid) const {
+String MopieConfig::getWifiPassword(const String &ssid) const {
     auto it = wifi.find(ssid);
     if (it != wifi.end()) return it->second;
     return "";
 }
 
-void BruceConfig::addEvilWifiName(String value) {
+void MopieConfig::addEvilWifiName(String value) {
     evilWifiNames.insert(value);
     saveFile();
 }
 
-void BruceConfig::removeEvilWifiName(String value) {
+void MopieConfig::removeEvilWifiName(String value) {
     evilWifiNames.erase(value);
     saveFile();
 }
 
-void BruceConfig::setEvilEndpointCreds(String value) {
+void MopieConfig::setEvilEndpointCreds(String value) {
     evilPortalEndpoints.getCredsEndpoint = value;
     validateEvilEndpointCreds();
     saveFile();
 }
 
-void BruceConfig::validateEvilEndpointCreds() {
+void MopieConfig::validateEvilEndpointCreds() {
     if (evilPortalEndpoints.getCredsEndpoint == evilPortalEndpoints.setSsidEndpoint) {
         // on collision reset to defaults
         evilPortalEndpoints.getCredsEndpoint = "/creds";
@@ -699,13 +699,13 @@ void BruceConfig::validateEvilEndpointCreds() {
     }
 }
 
-void BruceConfig::setEvilEndpointSsid(String value) {
+void MopieConfig::setEvilEndpointSsid(String value) {
     evilPortalEndpoints.setSsidEndpoint = value;
     validateEvilEndpointCreds();
     saveFile();
 }
 
-void BruceConfig::validateEvilEndpointSsid() {
+void MopieConfig::validateEvilEndpointSsid() {
     if (evilPortalEndpoints.getCredsEndpoint == evilPortalEndpoints.setSsidEndpoint) {
         // on collision reset to defaults
         evilPortalEndpoints.setSsidEndpoint = "/ssid";
@@ -715,141 +715,141 @@ void BruceConfig::validateEvilEndpointSsid() {
     }
 }
 
-void BruceConfig::setEvilAllowEndpointDisplay(bool value) {
+void MopieConfig::setEvilAllowEndpointDisplay(bool value) {
     evilPortalEndpoints.showEndpoints = value;
     saveFile();
 }
 
-void BruceConfig::setEvilAllowGetCreds(bool value) {
+void MopieConfig::setEvilAllowGetCreds(bool value) {
     evilPortalEndpoints.allowGetCreds = value;
     saveFile();
 }
 
-void BruceConfig::setEvilAllowSetSsid(bool value) {
+void MopieConfig::setEvilAllowSetSsid(bool value) {
     evilPortalEndpoints.allowSetSsid = value;
     saveFile();
 }
 
-void BruceConfig::setEvilPasswordMode(EvilPortalPasswordMode value) {
+void MopieConfig::setEvilPasswordMode(EvilPortalPasswordMode value) {
     evilPortalPasswordMode = value;
     saveFile();
 }
 
-void BruceConfig::validateEvilPasswordMode() {
+void MopieConfig::validateEvilPasswordMode() {
     if (evilPortalPasswordMode < 0 || evilPortalPasswordMode > 2) evilPortalPasswordMode = FULL_PASSWORD;
 }
 
-void BruceConfig::setEvilGatewayIp(String value) {
+void MopieConfig::setEvilGatewayIp(String value) {
     evilPortalGatewayIp = value;
     validateEvilGatewayIp();
     saveFile();
 }
 
-void BruceConfig::validateEvilGatewayIp() {
+void MopieConfig::validateEvilGatewayIp() {
     IPAddress gatewayIp;
     if (!gatewayIp.fromString(evilPortalGatewayIp)) evilPortalGatewayIp = "172.0.0.1";
 }
 
-void BruceConfig::setStartupApp(String value) {
+void MopieConfig::setStartupApp(String value) {
     startupApp = value;
     saveFile();
 }
 
-void BruceConfig::setStartupAppJSInterpreterFile(String value) {
+void MopieConfig::setStartupAppJSInterpreterFile(String value) {
     startupAppJSInterpreterFile = value;
     saveFile();
 }
 
-void BruceConfig::setWigleBasicToken(String value) {
+void MopieConfig::setWigleBasicToken(String value) {
     wigleBasicToken = value;
     saveFile();
 }
 
-void BruceConfig::setWdgwarsApiKey(String value) {
+void MopieConfig::setWdgwarsApiKey(String value) {
     wdgwarsApiKey = value;
     saveFile();
 }
 
-void BruceConfig::setDevMode(int value) {
+void MopieConfig::setDevMode(int value) {
     devMode = value;
     validateDevModeValue();
     saveFile();
 }
 
-void BruceConfig::validateDevModeValue() {
+void MopieConfig::validateDevModeValue() {
     if (devMode > 1) devMode = 1;
 }
 
-void BruceConfig::setColorInverted(int value) {
+void MopieConfig::setColorInverted(int value) {
     colorInverted = value;
     validateColorInverted();
     saveFile();
 }
 
-void BruceConfig::validateColorInverted() {
+void MopieConfig::validateColorInverted() {
     if (colorInverted > 1) colorInverted = 1;
 }
 
-void BruceConfig::setBadUSBBLEKeyboardLayout(int value) {
+void MopieConfig::setBadUSBBLEKeyboardLayout(int value) {
     badUSBBLEKeyboardLayout = value;
     validateBadUSBBLEKeyboardLayout();
     saveFile();
 }
 
-void BruceConfig::validateBadUSBBLEKeyboardLayout() {
+void MopieConfig::validateBadUSBBLEKeyboardLayout() {
     if (badUSBBLEKeyboardLayout < 0 || badUSBBLEKeyboardLayout > 13) badUSBBLEKeyboardLayout = 0;
 }
 
-void BruceConfig::setBadUSBBLEKeyDelay(uint16_t value) {
+void MopieConfig::setBadUSBBLEKeyDelay(uint16_t value) {
     badUSBBLEKeyDelay = value;
     validateBadUSBBLEKeyDelay();
     saveFile();
 }
 
-void BruceConfig::validateBadUSBBLEKeyDelay() {
+void MopieConfig::validateBadUSBBLEKeyDelay() {
     if (badUSBBLEKeyDelay < 0) badUSBBLEKeyDelay = 0;
     if (badUSBBLEKeyDelay > 500) badUSBBLEKeyDelay = 500;
 }
 
-void BruceConfig::setBadUSBBLEShowOutput(bool value) {
+void MopieConfig::setBadUSBBLEShowOutput(bool value) {
     badUSBBLEShowOutput = value;
     saveFile();
 }
-void BruceConfig::ensureMifareKeysLoaded() {
+void MopieConfig::ensureMifareKeysLoaded() {
     if (!_mifareKeysLoaded) {
         MifareKeysManager::ensureLoaded(mifareKeys);
         _mifareKeysLoaded = true;
     }
 }
 
-void BruceConfig::addMifareKey(String value) {
+void MopieConfig::addMifareKey(String value) {
     ensureMifareKeysLoaded();
     MifareKeysManager::addKey(mifareKeys, value);
 }
 
-void BruceConfig::validateMifareKeysItems() {
+void MopieConfig::validateMifareKeysItems() {
     if (_mifareKeysLoaded) MifareKeysManager::validateKeys(mifareKeys);
 }
 
-void BruceConfig::addDisabledMenu(String value) {
+void MopieConfig::addDisabledMenu(String value) {
     if (std::find(disabledMenus.begin(), disabledMenus.end(), value) != disabledMenus.end()) return;
     disabledMenus.push_back(value);
     saveFile();
 }
 
-void BruceConfig::removeDisabledMenu(String value) {
+void MopieConfig::removeDisabledMenu(String value) {
     auto it = std::find(disabledMenus.begin(), disabledMenus.end(), value);
     if (it == disabledMenus.end()) return;
     disabledMenus.erase(it);
     saveFile();
 }
 
-void BruceConfig::addQrCodeEntry(const String &menuName, const String &content) {
+void MopieConfig::addQrCodeEntry(const String &menuName, const String &content) {
     qrCodes.push_back({menuName, content});
     saveFile();
 }
 
-void BruceConfig::removeQrCodeEntry(const String &menuName) {
+void MopieConfig::removeQrCodeEntry(const String &menuName) {
     size_t writeIndex = 0;
 
     for (size_t readIndex = 0; readIndex < qrCodes.size(); ++readIndex) {
@@ -866,14 +866,14 @@ void BruceConfig::removeQrCodeEntry(const String &menuName) {
     saveFile();
 }
 
-void BruceConfig::addWebUISession(const String &token) {
+void MopieConfig::addWebUISession(const String &token) {
     webUISessions.push_back(token);
     // Limit to maximum 5 sessions - remove oldest (first element) if exceeded
     if (webUISessions.size() > 5) { webUISessions.erase(webUISessions.begin()); }
     saveFile();
 }
 
-void BruceConfig::removeWebUISession(const String &token) {
+void MopieConfig::removeWebUISession(const String &token) {
     for (auto it = webUISessions.begin(); it != webUISessions.end(); ++it) {
         if (*it == token) {
             webUISessions.erase(it);
@@ -883,7 +883,7 @@ void BruceConfig::removeWebUISession(const String &token) {
     saveFile();
 }
 
-bool BruceConfig::isValidWebUISession(const String &token) {
+bool MopieConfig::isValidWebUISession(const String &token) {
     auto it = std::find(webUISessions.begin(), webUISessions.end(), token);
 
     if (it == webUISessions.end()) {

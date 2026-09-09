@@ -9,8 +9,8 @@
 
 /**
  * @brief Internal helper for managing MIFARE keys
- * This class is used internally by BruceConfig
- * External code should use BruceConfig.mifareKeys directly
+ * This class is used internally by MopieConfig
+ * External code should use MopieConfig.mifareKeys directly
  */
 class MifareKeysManager {
 public:

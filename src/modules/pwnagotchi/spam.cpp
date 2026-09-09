@@ -161,13 +161,13 @@ void beacon_task(void *pvParameters) {
 }
 
 void displaySpamStatus() {
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     drawTopCanvas();
     drawBottomCanvas();
-    tft.fillRect(0, 20, tftWidth, tftHeight - 40, bruceConfig.bgColor);
+    tft.fillRect(0, 20, tftWidth, tftHeight - 40, mopieConfig.bgColor);
     tft.setTextSize(1.5);
     tft.setCursor(0, 20);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.println("PwnGrid Spam Running...");
 
 #if defined(HAS_TOUCH)
@@ -396,7 +396,7 @@ void send_pwnagotchi_beacon_main() {
     spamRunning = true;
 
     // Clear screen
-    tft.fillRect(0, 20, tftWidth, tftHeight - 40, bruceConfig.bgColor);
+    tft.fillRect(0, 20, tftWidth, tftHeight - 40, mopieConfig.bgColor);
 
     // Créer la tâche beacon
     xTaskCreate(&beacon_task, "beacon_task", 4096, NULL, 5, NULL);

@@ -27,8 +27,8 @@ uint8_t menu_current_opt = 0;
 
 void initUi() {
     tft.setTextSize(1);
-    tft.fillScreen(bruceConfig.bgColor);
-    tft.setTextColor(bruceConfig.priColor);
+    tft.fillScreen(mopieConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor);
 
     display_w = tftWidth;
     display_h = tftHeight;
@@ -60,7 +60,7 @@ String getRssiBars(signed int rssi) {
 
 void drawTime() {
     tft.drawPixel(0, 0, 0);
-    tft.fillRect(80, 0, display_w, canvas_top_h - 3, bruceConfig.bgColor);
+    tft.fillRect(80, 0, display_w, canvas_top_h - 3, mopieConfig.bgColor);
     tft.setTextDatum(TR_DATUM);
     unsigned long ellapsed = millis() / 1000;
     int8_t h = ellapsed / 3600;
@@ -74,9 +74,9 @@ void drawTime() {
 
 void drawFooterData(uint8_t friends_run, uint8_t friends_tot, const String &last_friend_name, signed int rssi) {
     tft.drawPixel(0, 0, 0);
-    tft.fillRect(0, canvas_bot_h + 1, display_w - 50, canvas_bot_h + 10, bruceConfig.bgColor);
+    tft.fillRect(0, canvas_bot_h + 1, display_w - 50, canvas_bot_h + 10, mopieConfig.bgColor);
     tft.setTextSize(1);
-    tft.setTextColor(bruceConfig.priColor);
+    tft.setTextColor(mopieConfig.priColor);
     tft.setTextDatum(TL_DATUM);
 
     String rssi_bars = getRssiBars(rssi);
@@ -118,15 +118,15 @@ void updateUi(bool show_toolbars) {
 void drawTopCanvas() {
     // prepare canvas
     tft.setTextSize(1);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setTextDatum(TL_DATUM);
     char buffer[32];
     sprintf(buffer, "CH %02d, HS %d", ch, num_HS);
     // draw screen
     tft.drawPixel(0, 0, 0);
-    tft.fillRect(0, 0, display_w, canvas_top_h, bruceConfig.bgColor);
+    tft.fillRect(0, 0, display_w, canvas_top_h, mopieConfig.bgColor);
     tft.drawString("DETECTIVE MOPIE", 0, 3);
-    tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.secColor, mopieConfig.bgColor);
     tft.drawString(buffer, 108, 3);
 
     // channel scan animation: 13 segment bar = real AP density per channel,
@@ -148,30 +148,30 @@ void drawTopCanvas() {
         int cn = chCount[i + 1];           // APs on channel i+1
         int hh = 2 + (cn * (segH - 3)) / maxC;   // density-proportional height
         if (cn == 0) hh = 3;
-        uint16_t c = bruceConfig.bgColor;
-        if (cn > 0) c = bruceConfig.secColor;                    // active channel
-        if (i + 1 == ch) c = bruceConfig.priColor;               // current channel
-        if ((int)(sweep % 13) == i) c = bruceConfig.secColor;    // sweep highlight
+        uint16_t c = mopieConfig.bgColor;
+        if (cn > 0) c = mopieConfig.secColor;                    // active channel
+        if (i + 1 == ch) c = mopieConfig.priColor;               // current channel
+        if ((int)(sweep % 13) == i) c = mopieConfig.secColor;    // sweep highlight
         tft.fillRect(x, barY - hh, segW, hh, c);
     }
-    tft.drawLine(0, canvas_top_h - 1, display_w, canvas_top_h - 1, bruceConfig.priColor);
+    tft.drawLine(0, canvas_top_h - 1, display_w, canvas_top_h - 1, mopieConfig.priColor);
 }
 
 void drawHandshakeCaught() {
     // quick "handshake locked" flash animation
     const int cx = display_w / 2, cy = canvas_h / 3;
-    uint16_t c = bruceConfig.priColor;
+    uint16_t c = mopieConfig.priColor;
     for (int k = 0; k < 2; k++) {
         tft.drawCircle(cx, cy, 18 + k * 2, c);
-        tft.drawCircle(cx, cy, 24 + k * 2, bruceConfig.secColor);
+        tft.drawCircle(cx, cy, 24 + k * 2, mopieConfig.secColor);
     }
     tft.setTextDatum(MC_DATUM);
     tft.setTextSize(1);
-    tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+    tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
     tft.drawCentreString("HS LOCKED", cx, cy + 30, 1);
     // handshake zigzag between two dots
     tft.drawWideLine(cx - 30, cy + 44, cx - 10, cy + 40, 1, c, c);
-    tft.drawWideLine(cx - 10, cy + 40, cx + 10, cy + 48, 1, bruceConfig.secColor, bruceConfig.secColor);
+    tft.drawWideLine(cx - 10, cy + 40, cx + 10, cy + 48, 1, mopieConfig.secColor, mopieConfig.secColor);
     tft.drawWideLine(cx + 10, cy + 48, cx + 30, cy + 44, 1, c, c);
     tft.fillCircle(cx - 30, cy + 44, 2, c);
     tft.fillCircle(cx + 30, cy + 44, 2, c);
@@ -180,23 +180,23 @@ void drawHandshakeCaught() {
 void drawBottomCanvas() {
     // prepare canvas
     tft.setTextSize(1);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setTextDatum(TR_DATUM);
     // draw screen
     tft.drawPixel(0, 0, 0);
-    tft.fillRect(0, canvas_bot_h, display_w, canvas_bot_h + 10, bruceConfig.bgColor);
+    tft.fillRect(0, canvas_bot_h, display_w, canvas_bot_h + 10, mopieConfig.bgColor);
     tft.drawString("NOT AI", display_w, canvas_bot_h + 5);
-    tft.drawLine(0, canvas_bot_h, display_w, canvas_bot_h, bruceConfig.priColor);
+    tft.drawLine(0, canvas_bot_h, display_w, canvas_bot_h, mopieConfig.priColor);
 }
 
 void drawMood(const String &face, const String &phrase, bool broken) {
     // prepare canvas
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setTextSize(FG + 1);
     tft.setTextDatum(MC_DATUM);
     // draw screen
     tft.drawPixel(0, 0, 0);
-    tft.fillRect(0, canvas_top_h + 10, display_w, canvas_bot_h - 40, bruceConfig.bgColor);
+    tft.fillRect(0, canvas_top_h + 10, display_w, canvas_bot_h - 40, mopieConfig.bgColor);
     tft.drawCentreString(face, canvas_center_x, canvas_h / 3, SMOOTH_FONT);
     // prepare canvas
     tft.setTextDatum(BC_DATUM);

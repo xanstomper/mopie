@@ -17,8 +17,8 @@ WDGoWars::WDGoWars() {}
 WDGoWars::~WDGoWars() {}
 
 bool WDGoWars::_check_api_key() {
-    if (bruceConfig.wdgwarsApiKey.length() != 64) {
-        displayError("Set API key in bruce.conf\nGet it at wdgwars.pl", true);
+    if (mopieConfig.wdgwarsApiKey.length() != 64) {
+        displayError("Set API key in mopie.conf\nGet it at wdgwars.pl", true);
         return false;
     }
 
@@ -43,9 +43,9 @@ void WDGoWars::_send_upload_headers(
     client.print("Host: ");
     client.println(host);
     client.println("Connection: close");
-    client.println("User-Agent: bruce.wardriving");
+    client.println("User-Agent: mopie.wardriving");
     client.print("X-API-Key: ");
-    client.println(bruceConfig.wdgwarsApiKey);
+    client.println(mopieConfig.wdgwarsApiKey);
     client.print("Content-Type: multipart/form-data; boundary=");
     client.println(boundary);
     client.print("Content-Length: ");

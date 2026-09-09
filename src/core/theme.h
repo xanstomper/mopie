@@ -62,7 +62,7 @@ struct themeInfo {
     themeFiles paths;
 };
 
-class BruceTheme {
+class MopieTheme {
 public:
     themeInfo theme;
     String themePath = "";

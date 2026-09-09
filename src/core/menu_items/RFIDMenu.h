@@ -10,8 +10,8 @@ public:
     void optionsMenu(void);
     void drawIcon(float scale);
     void drawIconAt(int cx, int cy, float scale);
-    bool hasTheme() { return bruceConfig.theme.rfid; }
-    const String& themePath() override { return bruceConfig.theme.paths.rfid; }
+    bool hasTheme() { return mopieConfig.theme.rfid; }
+    const String& themePath() override { return mopieConfig.theme.paths.rfid; }
 
 private:
     void configMenu(void);

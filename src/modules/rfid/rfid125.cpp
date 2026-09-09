@@ -130,7 +130,7 @@ void RFID125::set_state(RFID125_State state) {
 void RFID125::cls() {
     drawMainBorder();
     tft.setCursor(10, 28);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
 }
 
 void RFID125::display_banner() {

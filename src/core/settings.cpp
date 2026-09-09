@@ -27,12 +27,12 @@ void _setBrightness(uint8_t brightval) {}
 **  set brightness value
 **********************************************************************/
 void setBrightness(uint8_t brightval, bool save) {
-    if (bruceConfig.bright > 100) bruceConfig.setBright(100);
+    if (mopieConfig.bright > 100) mopieConfig.setBright(100);
     _setBrightness(brightval);
     delay(10);
 
     currentScreenBrightness = brightval;
-    if (save) { bruceConfig.setBright(brightval); }
+    if (save) { mopieConfig.setBright(brightval); }
 }
 
 /*********************************************************************
@@ -40,17 +40,17 @@ void setBrightness(uint8_t brightval, bool save) {
 **  get brightness value
 **********************************************************************/
 void getBrightness() {
-    if (bruceConfig.bright > 100) {
-        bruceConfig.setBright(100);
-        _setBrightness(bruceConfig.bright);
+    if (mopieConfig.bright > 100) {
+        mopieConfig.setBright(100);
+        _setBrightness(mopieConfig.bright);
         delay(10);
         setBrightness(100);
     }
 
-    _setBrightness(bruceConfig.bright);
+    _setBrightness(mopieConfig.bright);
     delay(10);
 
-    currentScreenBrightness = bruceConfig.bright;
+    currentScreenBrightness = mopieConfig.bright;
 }
 
 /*********************************************************************
@@ -58,7 +58,7 @@ void getBrightness() {
 **  get/set rotation value
 **********************************************************************/
 int gsetRotation(bool set) {
-    int getRot = bruceConfigPins.rotation;
+    int getRot = mopieConfigPins.rotation;
     int result = ROTATION;
     int mask = ROTATION > 1 ? -2 : 2;
 
@@ -80,7 +80,7 @@ int gsetRotation(bool set) {
         set = true;
     }
     if (set) {
-        bruceConfigPins.setRotation(result);
+        mopieConfigPins.setRotation(result);
         tft.setRotation(result);
         tft.setRotation(result); // must repeat, sometimes ESP32S3 miss one SPI command and it just
                                  // jumps this step and don't rotate
@@ -111,44 +111,44 @@ int gsetRotation(bool set) {
 **********************************************************************/
 void setBrightnessMenu() {
     int idx = 0;
-    if (bruceConfig.bright == 100) idx = 0;
-    else if (bruceConfig.bright == 75) idx = 1;
-    else if (bruceConfig.bright == 50) idx = 2;
-    else if (bruceConfig.bright == 25) idx = 3;
-    else if (bruceConfig.bright == 1) idx = 4;
+    if (mopieConfig.bright == 100) idx = 0;
+    else if (mopieConfig.bright == 75) idx = 1;
+    else if (mopieConfig.bright == 50) idx = 2;
+    else if (mopieConfig.bright == 25) idx = 3;
+    else if (mopieConfig.bright == 1) idx = 4;
 
     options = {
         {"100%",
          [=]() { setBrightness((uint8_t)100); },
-         bruceConfig.bright == 100,
+         mopieConfig.bright == 100,
          [](void *pointer, bool shouldRender) {
              setBrightness((uint8_t)100, false);
              return false;
          }},
         {"75 %",
          [=]() { setBrightness((uint8_t)75); },
-         bruceConfig.bright == 75,
+         mopieConfig.bright == 75,
          [](void *pointer, bool shouldRender) {
              setBrightness((uint8_t)75, false);
              return false;
          }},
         {"50 %",
          [=]() { setBrightness((uint8_t)50); },
-         bruceConfig.bright == 50,
+         mopieConfig.bright == 50,
          [](void *pointer, bool shouldRender) {
              setBrightness((uint8_t)50, false);
              return false;
          }},
         {"25 %",
          [=]() { setBrightness((uint8_t)25); },
-         bruceConfig.bright == 25,
+         mopieConfig.bright == 25,
          [](void *pointer, bool shouldRender) {
              setBrightness((uint8_t)25, false);
              return false;
          }},
         {" 1 %",
          [=]() { setBrightness((uint8_t)1); },
-         bruceConfig.bright == 1,
+         mopieConfig.bright == 1,
          [](void *pointer, bool shouldRender) {
              setBrightness((uint8_t)1, false);
              return false;
@@ -156,7 +156,7 @@ void setBrightnessMenu() {
     };
     addOptionToMainMenu(); // this one bugs the brightness selection
     loopOptions(options, MENU_TYPE_REGULAR, "", idx);
-    setBrightness(bruceConfig.bright, false);
+    setBrightness(mopieConfig.bright, false);
 }
 
 /*********************************************************************
@@ -181,17 +181,17 @@ void setSleepMode() {
 **********************************************************************/
 void setDimmerTimeMenu() {
     int idx = 0;
-    if (bruceConfig.dimmerSet == 10) idx = 0;
-    else if (bruceConfig.dimmerSet == 20) idx = 1;
-    else if (bruceConfig.dimmerSet == 30) idx = 2;
-    else if (bruceConfig.dimmerSet == 60) idx = 3;
-    else if (bruceConfig.dimmerSet == 0) idx = 4;
+    if (mopieConfig.dimmerSet == 10) idx = 0;
+    else if (mopieConfig.dimmerSet == 20) idx = 1;
+    else if (mopieConfig.dimmerSet == 30) idx = 2;
+    else if (mopieConfig.dimmerSet == 60) idx = 3;
+    else if (mopieConfig.dimmerSet == 0) idx = 4;
     options = {
-        {"10s",      [=]() { bruceConfig.setDimmer(10); }, bruceConfig.dimmerSet == 10},
-        {"20s",      [=]() { bruceConfig.setDimmer(20); }, bruceConfig.dimmerSet == 20},
-        {"30s",      [=]() { bruceConfig.setDimmer(30); }, bruceConfig.dimmerSet == 30},
-        {"60s",      [=]() { bruceConfig.setDimmer(60); }, bruceConfig.dimmerSet == 60},
-        {"Disabled", [=]() { bruceConfig.setDimmer(0); },  bruceConfig.dimmerSet == 0 },
+        {"10s",      [=]() { mopieConfig.setDimmer(10); }, mopieConfig.dimmerSet == 10},
+        {"20s",      [=]() { mopieConfig.setDimmer(20); }, mopieConfig.dimmerSet == 20},
+        {"30s",      [=]() { mopieConfig.setDimmer(30); }, mopieConfig.dimmerSet == 30},
+        {"60s",      [=]() { mopieConfig.setDimmer(60); }, mopieConfig.dimmerSet == 60},
+        {"Disabled", [=]() { mopieConfig.setDimmer(0); },  mopieConfig.dimmerSet == 0 },
     };
     loopOptions(options, idx);
 }
@@ -207,8 +207,8 @@ void setUIColor() {
         int idx = UI_COLOR_COUNT;
         int i = 0;
         for (const auto &mapping : UI_COLORS) {
-            if (bruceConfig.priColor == mapping.priColor && bruceConfig.secColor == mapping.secColor &&
-                bruceConfig.bgColor == mapping.bgColor) {
+            if (mopieConfig.priColor == mapping.priColor && mopieConfig.secColor == mapping.secColor &&
+                mopieConfig.bgColor == mapping.bgColor) {
                 idx = i;
             }
 
@@ -217,7 +217,7 @@ void setUIColor() {
                 [=, &mapping]() {
                     uint16_t secColor = mapping.secColor;
                     uint16_t bgColor = mapping.bgColor;
-                    bruceConfig.setUiColor(mapping.priColor, &secColor, &bgColor);
+                    mopieConfig.setUiColor(mapping.priColor, &secColor, &bgColor);
                 },
                 idx == i
             );
@@ -227,20 +227,20 @@ void setUIColor() {
         options.push_back(
             {"Custom Color",
              [=]() {
-                 uint16_t oldPriColor = bruceConfig.priColor;
-                 uint16_t oldSecColor = bruceConfig.secColor;
-                 uint16_t oldBgColor = bruceConfig.bgColor;
+                 uint16_t oldPriColor = mopieConfig.priColor;
+                 uint16_t oldSecColor = mopieConfig.secColor;
+                 uint16_t oldBgColor = mopieConfig.bgColor;
 
                  if (setCustomUIColorMenu()) {
-                     bruceConfig.setUiColor(
-                         bruceConfig.priColor, &bruceConfig.secColor, &bruceConfig.bgColor
+                     mopieConfig.setUiColor(
+                         mopieConfig.priColor, &mopieConfig.secColor, &mopieConfig.bgColor
                      );
                  } else {
-                     bruceConfig.priColor = oldPriColor;
-                     bruceConfig.secColor = oldSecColor;
-                     bruceConfig.bgColor = oldBgColor;
+                     mopieConfig.priColor = oldPriColor;
+                     mopieConfig.secColor = oldSecColor;
+                     mopieConfig.bgColor = oldBgColor;
                  }
-                 tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+                 tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
              },
              idx == UI_COLOR_COUNT}
         );
@@ -248,10 +248,10 @@ void setUIColor() {
         options.push_back(
             {"Invert Color",
              [=]() {
-                 bruceConfig.setColorInverted(!bruceConfig.colorInverted);
-                 tft.invertDisplay(bruceConfig.colorInverted);
+                 mopieConfig.setColorInverted(!mopieConfig.colorInverted);
+                 tft.invertDisplay(mopieConfig.colorInverted);
              },
-             bruceConfig.colorInverted > 0}
+             mopieConfig.colorInverted > 0}
         );
 
         addOptionToMainMenu();
@@ -339,30 +339,30 @@ constexpr const char *rgbNames[] = {
 void setCustomUIColorSettingMenu(
     int colorType, int rgb, std::function<uint16_t(uint16_t, int)> colorGenerator
 ) {
-    uint16_t color = (colorType == 1)   ? bruceConfig.priColor
-                     : (colorType == 2) ? bruceConfig.secColor
-                                        : bruceConfig.bgColor;
+    uint16_t color = (colorType == 1)   ? mopieConfig.priColor
+                     : (colorType == 2) ? mopieConfig.secColor
+                                        : mopieConfig.bgColor;
 
     options.clear();
 
     static auto hoverFunctionPriColor = [](void *pointer, bool shouldRender) -> bool {
         uint16_t colorToSet = *static_cast<uint16_t *>(pointer);
         // Serial.printf("Setting primary color to: %04X\n", colorToSet);
-        bruceConfig.priColor = colorToSet;
+        mopieConfig.priColor = colorToSet;
         return false;
     };
     static auto hoverFunctionSecColor = [](void *pointer, bool shouldRender) -> bool {
         uint16_t colorToSet = *static_cast<uint16_t *>(pointer);
         // Serial.printf("Setting secondary color to: %04X\n", colorToSet);
-        bruceConfig.secColor = colorToSet;
+        mopieConfig.secColor = colorToSet;
         return false;
     };
 
     static auto hoverFunctionBgColor = [](void *pointer, bool shouldRender) -> bool {
         uint16_t colorToSet = *static_cast<uint16_t *>(pointer);
         // Serial.printf("Setting bg color to: %04X\n", colorToSet);
-        bruceConfig.bgColor = colorToSet;
-        tft.fillScreen(bruceConfig.bgColor);
+        mopieConfig.bgColor = colorToSet;
+        tft.fillScreen(mopieConfig.bgColor);
         return false;
     };
 
@@ -387,9 +387,9 @@ void setCustomUIColorSettingMenu(
             options.emplace_back(
                 String(i),
                 [colorType, updatedColor]() {
-                    if (colorType == 1) bruceConfig.priColor = updatedColor;
-                    else if (colorType == 2) bruceConfig.secColor = updatedColor;
-                    else bruceConfig.bgColor = updatedColor;
+                    if (colorType == 1) mopieConfig.priColor = updatedColor;
+                    else if (colorType == 2) mopieConfig.secColor = updatedColor;
+                    else mopieConfig.bgColor = updatedColor;
                 },
                 selectedIndex == i,
                 (colorType == 1 ? hoverFunctionPriColor
@@ -413,11 +413,11 @@ void setCustomUIColorSettingMenu(
     );
     if (selectedOption == -1 || selectedOption == options.size() - 1) {
         if (colorType == 1) {
-            bruceConfig.priColor = color;
+            mopieConfig.priColor = color;
         } else if (colorType == 2) {
-            bruceConfig.secColor = color;
+            mopieConfig.secColor = color;
         } else {
-            bruceConfig.bgColor = color;
+            mopieConfig.bgColor = color;
         }
         return;
     }
@@ -430,10 +430,10 @@ void setCustomUIColorSettingMenu(
 **********************************************************************/
 void setSoundConfig() {
     options = {
-        {"Sound off", [=]() { bruceConfig.setSoundEnabled(0); }, bruceConfig.soundEnabled == 0},
-        {"Sound on",  [=]() { bruceConfig.setSoundEnabled(1); }, bruceConfig.soundEnabled == 1},
+        {"Sound off", [=]() { mopieConfig.setSoundEnabled(0); }, mopieConfig.soundEnabled == 0},
+        {"Sound on",  [=]() { mopieConfig.setSoundEnabled(1); }, mopieConfig.soundEnabled == 1},
     };
-    loopOptions(options, bruceConfig.soundEnabled);
+    loopOptions(options, mopieConfig.soundEnabled);
 }
 
 /*********************************************************************
@@ -442,18 +442,18 @@ void setSoundConfig() {
 **********************************************************************/
 void setSoundVolume() {
     options = {
-        {"10%",  [=]() { bruceConfig.setSoundVolume(10); },  bruceConfig.soundVolume == 10 },
-        {"20%",  [=]() { bruceConfig.setSoundVolume(20); },  bruceConfig.soundVolume == 20 },
-        {"30%",  [=]() { bruceConfig.setSoundVolume(30); },  bruceConfig.soundVolume == 30 },
-        {"40%",  [=]() { bruceConfig.setSoundVolume(40); },  bruceConfig.soundVolume == 40 },
-        {"50%",  [=]() { bruceConfig.setSoundVolume(50); },  bruceConfig.soundVolume == 50 },
-        {"60%",  [=]() { bruceConfig.setSoundVolume(60); },  bruceConfig.soundVolume == 60 },
-        {"70%",  [=]() { bruceConfig.setSoundVolume(70); },  bruceConfig.soundVolume == 70 },
-        {"80%",  [=]() { bruceConfig.setSoundVolume(80); },  bruceConfig.soundVolume == 80 },
-        {"90%",  [=]() { bruceConfig.setSoundVolume(90); },  bruceConfig.soundVolume == 90 },
-        {"100%", [=]() { bruceConfig.setSoundVolume(100); }, bruceConfig.soundVolume == 100},
+        {"10%",  [=]() { mopieConfig.setSoundVolume(10); },  mopieConfig.soundVolume == 10 },
+        {"20%",  [=]() { mopieConfig.setSoundVolume(20); },  mopieConfig.soundVolume == 20 },
+        {"30%",  [=]() { mopieConfig.setSoundVolume(30); },  mopieConfig.soundVolume == 30 },
+        {"40%",  [=]() { mopieConfig.setSoundVolume(40); },  mopieConfig.soundVolume == 40 },
+        {"50%",  [=]() { mopieConfig.setSoundVolume(50); },  mopieConfig.soundVolume == 50 },
+        {"60%",  [=]() { mopieConfig.setSoundVolume(60); },  mopieConfig.soundVolume == 60 },
+        {"70%",  [=]() { mopieConfig.setSoundVolume(70); },  mopieConfig.soundVolume == 70 },
+        {"80%",  [=]() { mopieConfig.setSoundVolume(80); },  mopieConfig.soundVolume == 80 },
+        {"90%",  [=]() { mopieConfig.setSoundVolume(90); },  mopieConfig.soundVolume == 90 },
+        {"100%", [=]() { mopieConfig.setSoundVolume(100); }, mopieConfig.soundVolume == 100},
     };
-    loopOptions(options, bruceConfig.soundVolume);
+    loopOptions(options, mopieConfig.soundVolume);
 }
 
 #ifdef HAS_RGB_LED
@@ -464,10 +464,10 @@ void setSoundVolume() {
 **********************************************************************/
 void setLedBlinkConfig() {
     options = {
-        {"Led Blink off", [=]() { bruceConfig.setLedBlinkEnabled(0); }, bruceConfig.ledBlinkEnabled == 0},
-        {"Led Blink on",  [=]() { bruceConfig.setLedBlinkEnabled(1); }, bruceConfig.ledBlinkEnabled == 1},
+        {"Led Blink off", [=]() { mopieConfig.setLedBlinkEnabled(0); }, mopieConfig.ledBlinkEnabled == 0},
+        {"Led Blink on",  [=]() { mopieConfig.setLedBlinkEnabled(1); }, mopieConfig.ledBlinkEnabled == 1},
     };
-    loopOptions(options, bruceConfig.ledBlinkEnabled);
+    loopOptions(options, mopieConfig.ledBlinkEnabled);
 }
 #endif
 
@@ -477,10 +477,10 @@ void setLedBlinkConfig() {
 **********************************************************************/
 void setWifiStartupConfig() {
     options = {
-        {"Disable", [=]() { bruceConfig.setWifiAtStartup(0); }, bruceConfig.wifiAtStartup == 0},
-        {"Enable",  [=]() { bruceConfig.setWifiAtStartup(1); }, bruceConfig.wifiAtStartup == 1},
+        {"Disable", [=]() { mopieConfig.setWifiAtStartup(0); }, mopieConfig.wifiAtStartup == 0},
+        {"Enable",  [=]() { mopieConfig.setWifiAtStartup(1); }, mopieConfig.wifiAtStartup == 1},
     };
-    loopOptions(options, bruceConfig.wifiAtStartup);
+    loopOptions(options, mopieConfig.wifiAtStartup);
 }
 
 /*********************************************************************
@@ -489,7 +489,7 @@ void setWifiStartupConfig() {
 **********************************************************************/
 void addEvilWifiMenu() {
     String apName = keyboard("", 30, "Evil Portal SSID");
-    if (apName != "\x1B") bruceConfig.addEvilWifiName(apName);
+    if (apName != "\x1B") mopieConfig.addEvilWifiName(apName);
 }
 
 /*********************************************************************
@@ -499,8 +499,8 @@ void addEvilWifiMenu() {
 void removeEvilWifiMenu() {
     options = {};
 
-    for (const auto &wifi_name : bruceConfig.evilWifiNames) {
-        options.push_back({wifi_name.c_str(), [wifi_name]() { bruceConfig.removeEvilWifiName(wifi_name); }});
+    for (const auto &wifi_name : mopieConfig.evilWifiNames) {
+        options.push_back({wifi_name.c_str(), [wifi_name]() { mopieConfig.removeEvilWifiName(wifi_name); }});
     }
 
     options.push_back({"Cancel", [=]() { backToMenu(); }});
@@ -513,8 +513,8 @@ void removeEvilWifiMenu() {
 **  Handles menu for changing the endpoint to access captured creds
 **********************************************************************/
 void setEvilEndpointCreds() {
-    String userInput = keyboard(bruceConfig.evilPortalEndpoints.getCredsEndpoint, 30, "Evil creds endpoint");
-    if (userInput != "\x1B") bruceConfig.setEvilEndpointCreds(userInput);
+    String userInput = keyboard(mopieConfig.evilPortalEndpoints.getCredsEndpoint, 30, "Evil creds endpoint");
+    if (userInput != "\x1B") mopieConfig.setEvilEndpointCreds(userInput);
 }
 
 /*********************************************************************
@@ -522,8 +522,8 @@ void setEvilEndpointCreds() {
 **  Handles menu for changing the endpoint to change evilSsid
 **********************************************************************/
 void setEvilEndpointSsid() {
-    String userInput = keyboard(bruceConfig.evilPortalEndpoints.setSsidEndpoint, 30, "Evil creds endpoint");
-    if (userInput != "\x1B") bruceConfig.setEvilEndpointSsid(userInput);
+    String userInput = keyboard(mopieConfig.evilPortalEndpoints.setSsidEndpoint, 30, "Evil creds endpoint");
+    if (userInput != "\x1B") mopieConfig.setEvilEndpointSsid(userInput);
 }
 
 /*********************************************************************
@@ -534,13 +534,13 @@ void setEvilEndpointSsid() {
 void setEvilAllowGetCreds() {
     options = {
         {"Disallow",
-         [=]() { bruceConfig.setEvilAllowGetCreds(false); },
-         bruceConfig.evilPortalEndpoints.allowGetCreds == false},
+         [=]() { mopieConfig.setEvilAllowGetCreds(false); },
+         mopieConfig.evilPortalEndpoints.allowGetCreds == false},
         {"Allow",
-         [=]() { bruceConfig.setEvilAllowGetCreds(true); },
-         bruceConfig.evilPortalEndpoints.allowGetCreds == true },
+         [=]() { mopieConfig.setEvilAllowGetCreds(true); },
+         mopieConfig.evilPortalEndpoints.allowGetCreds == true },
     };
-    loopOptions(options, bruceConfig.evilPortalEndpoints.allowGetCreds);
+    loopOptions(options, mopieConfig.evilPortalEndpoints.allowGetCreds);
 }
 
 /*********************************************************************
@@ -551,13 +551,13 @@ void setEvilAllowGetCreds() {
 void setEvilAllowSetSsid() {
     options = {
         {"Disallow",
-         [=]() { bruceConfig.setEvilAllowSetSsid(false); },
-         bruceConfig.evilPortalEndpoints.allowSetSsid == false},
+         [=]() { mopieConfig.setEvilAllowSetSsid(false); },
+         mopieConfig.evilPortalEndpoints.allowSetSsid == false},
         {"Allow",
-         [=]() { bruceConfig.setEvilAllowSetSsid(true); },
-         bruceConfig.evilPortalEndpoints.allowSetSsid == true },
+         [=]() { mopieConfig.setEvilAllowSetSsid(true); },
+         mopieConfig.evilPortalEndpoints.allowSetSsid == true },
     };
-    loopOptions(options, bruceConfig.evilPortalEndpoints.allowSetSsid);
+    loopOptions(options, mopieConfig.evilPortalEndpoints.allowSetSsid);
 }
 
 /*********************************************************************
@@ -568,13 +568,13 @@ void setEvilAllowSetSsid() {
 void setEvilAllowEndpointDisplay() {
     options = {
         {"Disallow",
-         [=]() { bruceConfig.setEvilAllowEndpointDisplay(false); },
-         bruceConfig.evilPortalEndpoints.showEndpoints == false},
+         [=]() { mopieConfig.setEvilAllowEndpointDisplay(false); },
+         mopieConfig.evilPortalEndpoints.showEndpoints == false},
         {"Allow",
-         [=]() { bruceConfig.setEvilAllowEndpointDisplay(true); },
-         bruceConfig.evilPortalEndpoints.showEndpoints == true },
+         [=]() { mopieConfig.setEvilAllowEndpointDisplay(true); },
+         mopieConfig.evilPortalEndpoints.showEndpoints == true },
     };
-    loopOptions(options, bruceConfig.evilPortalEndpoints.showEndpoints);
+    loopOptions(options, mopieConfig.evilPortalEndpoints.showEndpoints);
 }
 
 /*********************************************************************
@@ -584,19 +584,19 @@ void setEvilAllowEndpointDisplay() {
 void setEvilPasswordMode() {
     options = {
         {"Save 'password'",
-         [=]() { bruceConfig.setEvilPasswordMode(FULL_PASSWORD); },
-         bruceConfig.evilPortalPasswordMode == FULL_PASSWORD  },
+         [=]() { mopieConfig.setEvilPasswordMode(FULL_PASSWORD); },
+         mopieConfig.evilPortalPasswordMode == FULL_PASSWORD  },
         {"Save 'p******d'",
-         [=]() { bruceConfig.setEvilPasswordMode(FIRST_LAST_CHAR); },
-         bruceConfig.evilPortalPasswordMode == FIRST_LAST_CHAR},
+         [=]() { mopieConfig.setEvilPasswordMode(FIRST_LAST_CHAR); },
+         mopieConfig.evilPortalPasswordMode == FIRST_LAST_CHAR},
         {"Save '*hidden*'",
-         [=]() { bruceConfig.setEvilPasswordMode(HIDE_PASSWORD); },
-         bruceConfig.evilPortalPasswordMode == HIDE_PASSWORD  },
+         [=]() { mopieConfig.setEvilPasswordMode(HIDE_PASSWORD); },
+         mopieConfig.evilPortalPasswordMode == HIDE_PASSWORD  },
         {"Save length",
-         [=]() { bruceConfig.setEvilPasswordMode(SAVE_LENGTH); },
-         bruceConfig.evilPortalPasswordMode == SAVE_LENGTH    },
+         [=]() { mopieConfig.setEvilPasswordMode(SAVE_LENGTH); },
+         mopieConfig.evilPortalPasswordMode == SAVE_LENGTH    },
     };
-    loopOptions(options, bruceConfig.evilPortalPasswordMode);
+    loopOptions(options, mopieConfig.evilPortalPasswordMode);
 }
 
 /*********************************************************************
@@ -606,17 +606,17 @@ void setEvilPasswordMode() {
 void setEvilGatewayIp() {
     options = {
         {"172.0.0.1",
-         [=]() { bruceConfig.setEvilGatewayIp("172.0.0.1"); },
-         bruceConfig.evilPortalGatewayIp == "172.0.0.1"},
+         [=]() { mopieConfig.setEvilGatewayIp("172.0.0.1"); },
+         mopieConfig.evilPortalGatewayIp == "172.0.0.1"},
         {"192.168.4.1",
-         [=]() { bruceConfig.setEvilGatewayIp("192.168.4.1"); },
-         bruceConfig.evilPortalGatewayIp == "192.168.4.1"},
+         [=]() { mopieConfig.setEvilGatewayIp("192.168.4.1"); },
+         mopieConfig.evilPortalGatewayIp == "192.168.4.1"},
         {"Custom", [=]() {
              String ip = num_keyboard("", 15, "Gateway Addr");
-             bruceConfig.setEvilGatewayIp(ip);
+             mopieConfig.setEvilGatewayIp(ip);
          }},
     };
-    loopOptions(options, bruceConfig.evilPortalGatewayIp == "192.168.4.1" ? 1 : 0);
+    loopOptions(options, mopieConfig.evilPortalGatewayIp == "192.168.4.1" ? 1 : 0);
 }
 
 /*********************************************************************
@@ -627,11 +627,11 @@ void setRFModuleMenu() {
     int result = 0;
     int idx = 0;
     uint8_t pins_setup = 0;
-    if (bruceConfigPins.rfModule == M5_RF_MODULE) idx = 0;
-    else if (bruceConfigPins.rfModule == CC1101_SPI_MODULE) {
+    if (mopieConfigPins.rfModule == M5_RF_MODULE) idx = 0;
+    else if (mopieConfigPins.rfModule == CC1101_SPI_MODULE) {
         idx = 1;
 #if defined(ARDUINO_M5STICK_C_PLUS) || defined(ARDUINO_M5STICK_C_PLUS2)
-        if (bruceConfigPins.CC1101_bus.mosi == GPIO_NUM_26) idx = 2;
+        if (mopieConfigPins.CC1101_bus.mosi == GPIO_NUM_26) idx = 2;
 #endif
     }
 
@@ -654,7 +654,7 @@ void setRFModuleMenu() {
         // This setting is meant to StickCPlus and StickCPlus2 to setup the ports from RF Menu
         if (pins_setup == 1) {
             result = CC1101_SPI_MODULE;
-            bruceConfigPins.setCC1101Pins(
+            mopieConfigPins.setCC1101Pins(
                 {(gpio_num_t)CC1101_SCK_PIN,
                  (gpio_num_t)CC1101_MISO_PIN,
                  (gpio_num_t)CC1101_MOSI_PIN,
@@ -662,7 +662,7 @@ void setRFModuleMenu() {
                  (gpio_num_t)CC1101_GDO0_PIN,
                  GPIO_NUM_NC}
             );
-            bruceConfigPins.setNrf24Pins(
+            mopieConfigPins.setNrf24Pins(
                 {(gpio_num_t)CC1101_SCK_PIN,
                  (gpio_num_t)CC1101_MISO_PIN,
                  (gpio_num_t)CC1101_MOSI_PIN,
@@ -673,7 +673,7 @@ void setRFModuleMenu() {
         } else if (pins_setup == 2) {
 #if CONFIG_SOC_GPIO_OUT_RANGE_MAX > 30
             result = CC1101_SPI_MODULE;
-            bruceConfigPins.setCC1101Pins(
+            mopieConfigPins.setCC1101Pins(
                 {(gpio_num_t)SDCARD_SCK,
                  (gpio_num_t)SDCARD_MISO,
                  (gpio_num_t)SDCARD_MOSI,
@@ -681,7 +681,7 @@ void setRFModuleMenu() {
                  GPIO_NUM_32,
                  GPIO_NUM_NC}
             );
-            bruceConfigPins.setNrf24Pins(
+            mopieConfigPins.setNrf24Pins(
                 {(gpio_num_t)SDCARD_SCK,
                  (gpio_num_t)SDCARD_MISO,
                  (gpio_num_t)SDCARD_MOSI,
@@ -692,7 +692,7 @@ void setRFModuleMenu() {
 #endif
         }
         if (initRfModule()) {
-            bruceConfigPins.setRfModule(CC1101_SPI_MODULE);
+            mopieConfigPins.setRfModule(CC1101_SPI_MODULE);
             deinitRfModule();
             if (pins_setup == 1) AUX_SPI.end();
             return;
@@ -708,7 +708,7 @@ void setRFModuleMenu() {
         while (!check(AnyKeyPress)) vTaskDelay(50 / portTICK_PERIOD_MS);
     }
     // fallback to "M5 RF433T/R" on errors
-    bruceConfigPins.setRfModule(M5_RF_MODULE);
+    mopieConfigPins.setRfModule(M5_RF_MODULE);
 }
 
 /*********************************************************************
@@ -717,18 +717,18 @@ void setRFModuleMenu() {
 **********************************************************************/
 void setRFFreqMenu() {
     float result = 433.92;
-    String freq_str = num_keyboard(String(bruceConfigPins.rfFreq), 10, "Default frequency:");
+    String freq_str = num_keyboard(String(mopieConfigPins.rfFreq), 10, "Default frequency:");
     if (freq_str == "\x1B") return;
     if (freq_str.length() > 1) {
         result = freq_str.toFloat();          // returns 0 if not valid
         if (result >= 280 && result <= 928) { // TODO: check valid freq according to current module?
-            bruceConfigPins.setRfFreq(result);
+            mopieConfigPins.setRfFreq(result);
             return;
         }
     }
     // else
     displayError("Invalid frequency");
-    bruceConfigPins.setRfFreq(433.92); // reset to default
+    mopieConfigPins.setRfFreq(433.92); // reset to default
     delay(1000);
 }
 
@@ -739,36 +739,36 @@ void setRFFreqMenu() {
 void setRFIDModuleMenu() {
     options = {
         {"M5 RFID2",
-         [=]() { bruceConfigPins.setRfidModule(M5_RFID2_MODULE); },
-         bruceConfigPins.rfidModule == M5_RFID2_MODULE     },
+         [=]() { mopieConfigPins.setRfidModule(M5_RFID2_MODULE); },
+         mopieConfigPins.rfidModule == M5_RFID2_MODULE     },
 #ifdef M5STICK
         {"PN532 I2C G33",
-         [=]() { bruceConfigPins.setRfidModule(PN532_I2C_MODULE); },
-         bruceConfigPins.rfidModule == PN532_I2C_MODULE    },
+         [=]() { mopieConfigPins.setRfidModule(PN532_I2C_MODULE); },
+         mopieConfigPins.rfidModule == PN532_I2C_MODULE    },
         {"PN532 I2C G36",
-         [=]() { bruceConfigPins.setRfidModule(PN532_I2C_SPI_MODULE); },
-         bruceConfigPins.rfidModule == PN532_I2C_SPI_MODULE},
+         [=]() { mopieConfigPins.setRfidModule(PN532_I2C_SPI_MODULE); },
+         mopieConfigPins.rfidModule == PN532_I2C_SPI_MODULE},
 #else
         {"PN532 on I2C",
-         [=]() { bruceConfigPins.setRfidModule(PN532_I2C_MODULE); },
-         bruceConfigPins.rfidModule == PN532_I2C_MODULE},
+         [=]() { mopieConfigPins.setRfidModule(PN532_I2C_MODULE); },
+         mopieConfigPins.rfidModule == PN532_I2C_MODULE},
 #endif
         {"PN532 on SPI",
-         [=]() { bruceConfigPins.setRfidModule(PN532_SPI_MODULE); },
-         bruceConfigPins.rfidModule == PN532_SPI_MODULE    },
+         [=]() { mopieConfigPins.setRfidModule(PN532_SPI_MODULE); },
+         mopieConfigPins.rfidModule == PN532_SPI_MODULE    },
         {"RC522 on SPI",
-         [=]() { bruceConfigPins.setRfidModule(RC522_SPI_MODULE); },
-         bruceConfigPins.rfidModule == RC522_SPI_MODULE    },
+         [=]() { mopieConfigPins.setRfidModule(RC522_SPI_MODULE); },
+         mopieConfigPins.rfidModule == RC522_SPI_MODULE    },
 #if !defined(LITE_VERSION)
         {"ST25R3916 SPI",
-         [=]() { bruceConfigPins.setRfidModule(ST25R3916_SPI_MODULE); },
-         bruceConfigPins.rfidModule == ST25R3916_SPI_MODULE},
+         [=]() { mopieConfigPins.setRfidModule(ST25R3916_SPI_MODULE); },
+         mopieConfigPins.rfidModule == ST25R3916_SPI_MODULE},
         {"ST25R3916 I2C",
-         [=]() { bruceConfigPins.setRfidModule(ST25R3916_I2C_MODULE); },
-         bruceConfigPins.rfidModule == ST25R3916_I2C_MODULE},
+         [=]() { mopieConfigPins.setRfidModule(ST25R3916_I2C_MODULE); },
+         mopieConfigPins.rfidModule == ST25R3916_I2C_MODULE},
 #endif
     };
-    loopOptions(options, bruceConfigPins.rfidModule);
+    loopOptions(options, mopieConfigPins.rfidModule);
 }
 
 /*********************************************************************
@@ -777,7 +777,7 @@ void setRFIDModuleMenu() {
 **********************************************************************/
 void addMifareKeyMenu() {
     String key = keyboard("", 12, "MIFARE key");
-    if (key != "\x1B") bruceConfig.addMifareKey(key);
+    if (key != "\x1B") mopieConfig.addMifareKey(key);
 }
 
 /*********************************************************************
@@ -801,16 +801,16 @@ void setClock() {
 #endif
 
     options = {
-        {"Via NTP Set Timezone",                                                 [&]() { bruceConfig.setAutomaticTimeUpdateViaNTP(true); } },
-        {"Set Time Manually",                                                    [&]() { bruceConfig.setAutomaticTimeUpdateViaNTP(false); }},
-        {("Daylight Savings " + String(bruceConfig.dst ? "On" : "Off")).c_str(),
+        {"Via NTP Set Timezone",                                                 [&]() { mopieConfig.setAutomaticTimeUpdateViaNTP(true); } },
+        {"Set Time Manually",                                                    [&]() { mopieConfig.setAutomaticTimeUpdateViaNTP(false); }},
+        {("Daylight Savings " + String(mopieConfig.dst ? "On" : "Off")).c_str(),
          [&]() {
-             bruceConfig.setDST(!bruceConfig.dst);
+             mopieConfig.setDST(!mopieConfig.dst);
              updateClockTimezone();
              returnToMenu = true;
          }                                                                                                                                 },
-        {(bruceConfig.clock24hr ? "24-Hour Format" : "12-Hour Format"),          [&]() {
-             bruceConfig.setClock24Hr(!bruceConfig.clock24hr);
+        {(mopieConfig.clock24hr ? "24-Hour Format" : "12-Hour Format"),          [&]() {
+             mopieConfig.setClock24Hr(!mopieConfig.clock24hr);
              returnToMenu = true;
          }                                                          }
     };
@@ -820,7 +820,7 @@ void setClock() {
 
     if (returnToMenu) return;
 
-    if (bruceConfig.automaticTimeUpdateViaNTP) {
+    if (mopieConfig.automaticTimeUpdateViaNTP) {
         if (!wifiConnected) wifiConnectMenu();
 
         options.clear();
@@ -876,10 +876,10 @@ void setClock() {
         int idx = 0;
         int i = 0;
         for (const auto &mapping : timezoneMappings) {
-            if (bruceConfig.tmz == mapping.offset) { idx = i; }
+            if (mopieConfig.tmz == mapping.offset) { idx = i; }
 
             options.emplace_back(
-                mapping.name, [=, &mapping]() { bruceConfig.setTmz(mapping.offset); }, idx == i
+                mapping.name, [=, &mapping]() { mopieConfig.setTmz(mapping.offset); }, idx == i
             );
             ++i;
         }
@@ -893,12 +893,12 @@ void setClock() {
         int idx = 0;
         int i = 0;
         for (const auto &offset : timezoneOffsets) {
-            if (bruceConfig.tmz == offset) idx = i;
+            if (mopieConfig.tmz == offset) idx = i;
 
             options.emplace_back(
                 ("UTC" + String(offset >= 0 ? "+" : "") + String(offset)).c_str(),
-                [=]() { bruceConfig.setTmz(offset); },
-                bruceConfig.tmz == offset
+                [=]() { mopieConfig.setTmz(offset); },
+                mopieConfig.tmz == offset
             );
             ++i;
         }
@@ -982,7 +982,7 @@ void runClockLoop(bool showMenuHint) {
 #endif
 
     // Delay due to SelPress() detected on run
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     delay(300);
 
     for (;;) {
@@ -994,13 +994,13 @@ void runClockLoop(bool showMenuHint) {
 #endif
             Serial.print("Current time: ");
             Serial.println(timeStr);
-            tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+            tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
             tft.drawRect(
                 BORDER_PAD_X,
                 BORDER_PAD_X,
                 tftWidth - 2 * BORDER_PAD_X,
                 tftHeight - 2 * BORDER_PAD_X,
-                bruceConfig.priColor
+                mopieConfig.priColor
             );
             uint8_t f_size = 4;
             for (uint8_t i = 4; i > 0; i--) {
@@ -1023,7 +1023,7 @@ void runClockLoop(bool showMenuHint) {
                     tftHeight / 2 + 20,
                     tftWidth - 2 * BORDER_PAD_X - 2,
                     20,
-                    bruceConfig.bgColor
+                    mopieConfig.bgColor
                 );
                 hintVisible = false;
             }
@@ -1032,7 +1032,7 @@ void runClockLoop(bool showMenuHint) {
 
         // Checks to exit the loop
         if (check(SelPress)) {
-            tft.fillScreen(bruceConfig.bgColor);
+            tft.fillScreen(mopieConfig.bgColor);
             if (showMenuHint) {
                 // Exits the loop to return to the caller (ClockMenu)
                 break;
@@ -1044,7 +1044,7 @@ void runClockLoop(bool showMenuHint) {
         }
 
         if (check(EscPress)) {
-            tft.fillScreen(bruceConfig.bgColor);
+            tft.fillScreen(mopieConfig.bgColor);
             returnToMenu = true;
             break;
         }
@@ -1058,9 +1058,9 @@ void runClockLoop(bool showMenuHint) {
 **  get or set IR Tx Pin
 **********************************************************************/
 int gsetIrTxPin(bool set) {
-    int result = bruceConfigPins.irTx;
+    int result = mopieConfigPins.irTx;
 
-    if (result > 50) bruceConfigPins.setIrTxPin(TXLED);
+    if (result > 50) mopieConfigPins.setIrTxPin(TXLED);
     if (set) {
         options.clear();
         std::vector<std::pair<const char *, int>> pins;
@@ -1068,7 +1068,7 @@ int gsetIrTxPin(bool set) {
         int idx = 100;
         int j = 0;
         for (auto pin : pins) {
-            if (pin.second == bruceConfigPins.irTx && idx == 100) idx = j;
+            if (pin.second == mopieConfigPins.irTx && idx == 100) idx = j;
             j++;
 #ifdef ALLOW_ALL_GPIO_FOR_IR_RF
             int i = pin.second;
@@ -1077,19 +1077,19 @@ int gsetIrTxPin(bool set) {
 #endif
                 options.push_back(
                     {pin.first,
-                     [=]() { bruceConfigPins.setIrTxPin(pin.second); },
-                     pin.second == bruceConfigPins.irTx}
+                     [=]() { mopieConfigPins.setIrTxPin(pin.second); },
+                     pin.second == mopieConfigPins.irTx}
                 );
         }
 
         loopOptions(options, idx);
         options.clear();
 
-        Serial.println("Saved pin: " + String(bruceConfigPins.irTx));
+        Serial.println("Saved pin: " + String(mopieConfigPins.irTx));
     }
 
     returnToMenu = true;
-    return bruceConfigPins.irTx;
+    return mopieConfigPins.irTx;
 }
 
 void setIrTxRepeats() {
@@ -1102,7 +1102,7 @@ void setIrTxRepeats() {
         {"Custom",           [&]() {
              // up to 99 repeats
              String rpt =
-                 num_keyboard(String(bruceConfigPins.irTxRepeats), 2, "Nbr of Repeats (+ 1 initial)");
+                 num_keyboard(String(mopieConfigPins.irTxRepeats), 2, "Nbr of Repeats (+ 1 initial)");
              chRpts = static_cast<uint8_t>(rpt.toInt());
          }                       },
     };
@@ -1112,16 +1112,16 @@ void setIrTxRepeats() {
 
     if (returnToMenu) return;
 
-    bruceConfigPins.setIrTxRepeats(chRpts);
+    mopieConfigPins.setIrTxRepeats(chRpts);
 }
 /*********************************************************************
 **  Function: gsetIrRxPin
 **  get or set IR Rx Pin
 **********************************************************************/
 int gsetIrRxPin(bool set) {
-    int result = bruceConfigPins.irRx;
+    int result = mopieConfigPins.irRx;
 
-    if (result > 45) bruceConfigPins.setIrRxPin(GROVE_SCL);
+    if (result > 45) mopieConfigPins.setIrRxPin(GROVE_SCL);
     if (set) {
         options.clear();
         std::vector<std::pair<const char *, int>> pins;
@@ -1129,7 +1129,7 @@ int gsetIrRxPin(bool set) {
         int idx = -1;
         int j = 0;
         for (auto pin : pins) {
-            if (pin.second == bruceConfigPins.irRx && idx < 0) idx = j;
+            if (pin.second == mopieConfigPins.irRx && idx < 0) idx = j;
             j++;
 #ifdef ALLOW_ALL_GPIO_FOR_IR_RF
             int i = pin.second;
@@ -1138,8 +1138,8 @@ int gsetIrRxPin(bool set) {
 #endif
                 options.push_back(
                     {pin.first,
-                     [=]() { bruceConfigPins.setIrRxPin(pin.second); },
-                     pin.second == bruceConfigPins.irRx}
+                     [=]() { mopieConfigPins.setIrRxPin(pin.second); },
+                     pin.second == mopieConfigPins.irRx}
                 );
         }
 
@@ -1147,7 +1147,7 @@ int gsetIrRxPin(bool set) {
     }
 
     returnToMenu = true;
-    return bruceConfigPins.irRx;
+    return mopieConfigPins.irRx;
 }
 
 /*********************************************************************
@@ -1155,9 +1155,9 @@ int gsetIrRxPin(bool set) {
 **  get or set RF Tx Pin
 **********************************************************************/
 int gsetRfTxPin(bool set) {
-    int result = bruceConfigPins.rfTx;
+    int result = mopieConfigPins.rfTx;
 
-    if (result > 45) bruceConfigPins.setRfTxPin(GROVE_SDA);
+    if (result > 45) mopieConfigPins.setRfTxPin(GROVE_SDA);
     if (set) {
         options.clear();
         std::vector<std::pair<const char *, int>> pins;
@@ -1165,7 +1165,7 @@ int gsetRfTxPin(bool set) {
         int idx = -1;
         int j = 0;
         for (auto pin : pins) {
-            if (pin.second == bruceConfigPins.rfTx && idx < 0) idx = j;
+            if (pin.second == mopieConfigPins.rfTx && idx < 0) idx = j;
             j++;
 #ifdef ALLOW_ALL_GPIO_FOR_IR_RF
             int i = pin.second;
@@ -1174,8 +1174,8 @@ int gsetRfTxPin(bool set) {
 #endif
                 options.push_back(
                     {pin.first,
-                     [=]() { bruceConfigPins.setRfTxPin(pin.second); },
-                     pin.second == bruceConfigPins.rfTx}
+                     [=]() { mopieConfigPins.setRfTxPin(pin.second); },
+                     pin.second == mopieConfigPins.rfTx}
                 );
         }
 
@@ -1184,7 +1184,7 @@ int gsetRfTxPin(bool set) {
     }
 
     returnToMenu = true;
-    return bruceConfigPins.rfTx;
+    return mopieConfigPins.rfTx;
 }
 
 /*********************************************************************
@@ -1192,9 +1192,9 @@ int gsetRfTxPin(bool set) {
 **  get or set FR Rx Pin
 **********************************************************************/
 int gsetRfRxPin(bool set) {
-    int result = bruceConfigPins.rfRx;
+    int result = mopieConfigPins.rfRx;
 
-    if (result > 36) bruceConfigPins.setRfRxPin(GROVE_SCL);
+    if (result > 36) mopieConfigPins.setRfRxPin(GROVE_SCL);
     if (set) {
         options.clear();
         std::vector<std::pair<const char *, int>> pins;
@@ -1202,7 +1202,7 @@ int gsetRfRxPin(bool set) {
         int idx = -1;
         int j = 0;
         for (auto pin : pins) {
-            if (pin.second == bruceConfigPins.rfRx && idx < 0) idx = j;
+            if (pin.second == mopieConfigPins.rfRx && idx < 0) idx = j;
             j++;
 #ifdef ALLOW_ALL_GPIO_FOR_IR_RF
             int i = pin.second;
@@ -1211,8 +1211,8 @@ int gsetRfRxPin(bool set) {
 #endif
                 options.push_back(
                     {pin.first,
-                     [=]() { bruceConfigPins.setRfRxPin(pin.second); },
-                     pin.second == bruceConfigPins.rfRx}
+                     [=]() { mopieConfigPins.setRfRxPin(pin.second); },
+                     pin.second == mopieConfigPins.rfRx}
                 );
         }
 
@@ -1221,7 +1221,7 @@ int gsetRfRxPin(bool set) {
     }
 
     returnToMenu = true;
-    return bruceConfigPins.rfRx;
+    return mopieConfigPins.rfRx;
 }
 
 /*********************************************************************
@@ -1230,19 +1230,19 @@ int gsetRfRxPin(bool set) {
 **********************************************************************/
 void setStartupApp() {
     int idx = 0;
-    if (bruceConfig.startupApp == "") idx = 0;
+    if (mopieConfig.startupApp == "") idx = 0;
 
     options = {
-        {"None", [=]() { bruceConfig.setStartupApp(""); }, bruceConfig.startupApp == ""}
+        {"None", [=]() { mopieConfig.setStartupApp(""); }, mopieConfig.startupApp == ""}
     };
 
     int index = 0;
     for (String appName : startupApp.getAppNames()) {
         index++;
-        if (bruceConfig.startupApp == appName) idx = index;
+        if (mopieConfig.startupApp == appName) idx = index;
 
         options.push_back({appName.c_str(), [=]() {
-                               bruceConfig.setStartupApp(appName);
+                               mopieConfig.setStartupApp(appName);
 #if !defined(LITE_VERSION) && !defined(DISABLE_INTERPRETER)
                                if (appName == "JS Interpreter") {
                                    options = getScriptsOptionsList("", true);
@@ -1262,16 +1262,16 @@ void setStartupApp() {
 **********************************************************************/
 void setGpsBaudrateMenu() {
     options = {
-        {"9600 bps",   [=]() { bruceConfigPins.setGpsBaudrate(9600); },  bruceConfigPins.gpsBaudrate == 9600 },
-        {"19200 bps",  [=]() { bruceConfigPins.setGpsBaudrate(19200); }, bruceConfigPins.gpsBaudrate == 19200},
-        {"38400 bps",  [=]() { bruceConfigPins.setGpsBaudrate(38400); }, bruceConfigPins.gpsBaudrate == 38400},
-        {"57600 bps",  [=]() { bruceConfigPins.setGpsBaudrate(57600); }, bruceConfigPins.gpsBaudrate == 57600},
+        {"9600 bps",   [=]() { mopieConfigPins.setGpsBaudrate(9600); },  mopieConfigPins.gpsBaudrate == 9600 },
+        {"19200 bps",  [=]() { mopieConfigPins.setGpsBaudrate(19200); }, mopieConfigPins.gpsBaudrate == 19200},
+        {"38400 bps",  [=]() { mopieConfigPins.setGpsBaudrate(38400); }, mopieConfigPins.gpsBaudrate == 38400},
+        {"57600 bps",  [=]() { mopieConfigPins.setGpsBaudrate(57600); }, mopieConfigPins.gpsBaudrate == 57600},
         {"115200 bps",
-         [=]() { bruceConfigPins.setGpsBaudrate(115200); },
-         bruceConfigPins.gpsBaudrate == 115200                                                               },
+         [=]() { mopieConfigPins.setGpsBaudrate(115200); },
+         mopieConfigPins.gpsBaudrate == 115200                                                               },
     };
 
-    loopOptions(options, bruceConfigPins.gpsBaudrate);
+    loopOptions(options, mopieConfigPins.gpsBaudrate);
 }
 
 /*********************************************************************
@@ -1279,17 +1279,17 @@ void setGpsBaudrateMenu() {
 **  Handles Menu to set the WiFi AP SSID
 **********************************************************************/
 void setWifiApSsidMenu() {
-    const bool isDefault = bruceConfig.wifiAp.ssid == "MopieNet";
+    const bool isDefault = mopieConfig.wifiAp.ssid == "MopieNet";
 
     options = {
         {"Default (MopieNet)",
-         [=]() { bruceConfig.setWifiApCreds("MopieNet", bruceConfig.wifiAp.pwd); },
+         [=]() { mopieConfig.setWifiApCreds("MopieNet", mopieConfig.wifiAp.pwd); },
          isDefault                                                                            },
         {"Custom",
          [=]() {
-             String newSsid = keyboard(bruceConfig.wifiAp.ssid, 32, "WiFi AP SSID:");
+             String newSsid = keyboard(mopieConfig.wifiAp.ssid, 32, "WiFi AP SSID:");
              if (newSsid != "\x1B") {
-                 if (!newSsid.isEmpty()) bruceConfig.setWifiApCreds(newSsid, bruceConfig.wifiAp.pwd);
+                 if (!newSsid.isEmpty()) mopieConfig.setWifiApCreds(newSsid, mopieConfig.wifiAp.pwd);
                  else displayError("SSID cannot be empty", true);
              }
          },                                                                         !isDefault},
@@ -1304,17 +1304,17 @@ void setWifiApSsidMenu() {
 **  Handles Menu to set the WiFi AP Password
 **********************************************************************/
 void setWifiApPasswordMenu() {
-    const bool isDefault = bruceConfig.wifiAp.pwd == "mopienet";
+    const bool isDefault = mopieConfig.wifiAp.pwd == "mopienet";
 
     options = {
         {"Default (mopienet)",
-         [=]() { bruceConfig.setWifiApCreds(bruceConfig.wifiAp.ssid, "mopienet"); },
+         [=]() { mopieConfig.setWifiApCreds(mopieConfig.wifiAp.ssid, "mopienet"); },
          isDefault                                                                             },
         {"Custom",
          [=]() {
-             String newPassword = keyboard(bruceConfig.wifiAp.pwd, 32, "WiFi AP Password:", true);
+             String newPassword = keyboard(mopieConfig.wifiAp.pwd, 32, "WiFi AP Password:", true);
              if (newPassword != "\x1B") {
-                 if (!newPassword.isEmpty()) bruceConfig.setWifiApCreds(bruceConfig.wifiAp.ssid, newPassword);
+                 if (!newPassword.isEmpty()) mopieConfig.setWifiApCreds(mopieConfig.wifiAp.ssid, newPassword);
                  else displayError("Password cannot be empty", true);
              }
          },                                                                          !isDefault},
@@ -1371,7 +1371,7 @@ void setBadUSBBLEMenu() {
 **  Main Menu for setting Bad USB/BLE Keyboard Layout
 **********************************************************************/
 void setBadUSBBLEKeyboardLayoutMenu() {
-    uint8_t opt = bruceConfig.badUSBBLEKeyboardLayout;
+    uint8_t opt = mopieConfig.badUSBBLEKeyboardLayout;
 
     options.clear();
     options = {
@@ -1394,7 +1394,7 @@ void setBadUSBBLEKeyboardLayoutMenu() {
 
     loopOptions(options, opt);
 
-    if (opt != bruceConfig.badUSBBLEKeyboardLayout) { bruceConfig.setBadUSBBLEKeyboardLayout(opt); }
+    if (opt != mopieConfig.badUSBBLEKeyboardLayout) { mopieConfig.setBadUSBBLEKeyboardLayout(opt); }
 }
 
 /*********************************************************************
@@ -1402,11 +1402,11 @@ void setBadUSBBLEKeyboardLayoutMenu() {
 **  Main Menu for setting Bad USB/BLE Keyboard Key Delay
 **********************************************************************/
 void setBadUSBBLEKeyDelayMenu() {
-    String delayStr = num_keyboard(String(bruceConfig.badUSBBLEKeyDelay), 3, "Key Delay (ms):");
+    String delayStr = num_keyboard(String(mopieConfig.badUSBBLEKeyDelay), 3, "Key Delay (ms):");
     if (delayStr != "\x1B") {
         uint16_t delayVal = static_cast<uint16_t>(delayStr.toInt());
         if (delayVal <= 500) {
-            bruceConfig.setBadUSBBLEKeyDelay(delayVal);
+            mopieConfig.setBadUSBBLEKeyDelay(delayVal);
         } else if (delayVal != 0) {
             displayError("Invalid key delay value (0 to 500)", true);
         }
@@ -1420,12 +1420,12 @@ void setBadUSBBLEKeyDelayMenu() {
 void setBadUSBBLEShowOutputMenu() {
     options.clear();
     options = {
-        {"Enable",  [&]() { bruceConfig.setBadUSBBLEShowOutput(true); } },
-        {"Disable", [&]() { bruceConfig.setBadUSBBLEShowOutput(false); }},
+        {"Enable",  [&]() { mopieConfig.setBadUSBBLEShowOutput(true); } },
+        {"Disable", [&]() { mopieConfig.setBadUSBBLEShowOutput(false); }},
     };
     addOptionToMainMenu();
 
-    loopOptions(options, bruceConfig.badUSBBLEShowOutput ? 0 : 1);
+    loopOptions(options, mopieConfig.badUSBBLEShowOutput ? 0 : 1);
 }
 
 /*********************************************************************
@@ -1433,24 +1433,24 @@ void setBadUSBBLEShowOutputMenu() {
 **  Handles Menu to configure WiFi MAC Address
 **********************************************************************/
 void setMacAddressMenu() {
-    String currentMAC = bruceConfig.wifiMAC;
+    String currentMAC = mopieConfig.wifiMAC;
     if (currentMAC == "") currentMAC = WiFi.macAddress();
 
     options.clear();
     options = {
         {"Default MAC (" + WiFi.macAddress() + ")",
-         [&]() { bruceConfig.setWifiMAC(""); },
-         bruceConfig.wifiMAC == ""},
+         [&]() { mopieConfig.setWifiMAC(""); },
+         mopieConfig.wifiMAC == ""},
         {"Set Custom MAC",
          [&]() {
-             String newMAC = keyboard(bruceConfig.wifiMAC, 17, "XX:YY:ZZ:AA:BB:CC");
+             String newMAC = keyboard(mopieConfig.wifiMAC, 17, "XX:YY:ZZ:AA:BB:CC");
              if (newMAC == "\x1B") return;
              if (newMAC.length() == 17) {
-                 bruceConfig.setWifiMAC(newMAC);
+                 mopieConfig.setWifiMAC(newMAC);
              } else {
                  displayError("Invalid MAC format");
              }
-         }, bruceConfig.wifiMAC != ""},
+         }, mopieConfig.wifiMAC != ""},
         {"Random MAC", [&]() {
              uint8_t randomMac[6];
              for (int i = 0; i < 6; i++) randomMac[i] = random(0x00, 0xFF);
@@ -1466,7 +1466,7 @@ void setMacAddressMenu() {
                  randomMac[4],
                  randomMac[5]
              );
-             bruceConfig.setWifiMAC(String(buf));
+             mopieConfig.setWifiMAC(String(buf));
          }}
     };
 
@@ -1478,10 +1478,10 @@ void setMacAddressMenu() {
 **  Function: setSPIPins
 **  Main Menu to manually set SPI Pins
 **********************************************************************/
-void setSPIPinsMenu(BruceConfigPins::SPIPins &value) {
+void setSPIPinsMenu(MopieConfigPins::SPIPins &value) {
     uint8_t opt = 0;
     bool changed = false;
-    BruceConfigPins::SPIPins points = value;
+    MopieConfigPins::SPIPins points = value;
 
 RELOAD:
     options = {
@@ -1500,7 +1500,7 @@ RELOAD:
     else if (opt == 7) {
         if (changed) {
             value = points;
-            bruceConfigPins.setSpiPins(value);
+            mopieConfigPins.setSpiPins(value);
         }
     } else {
         options = {};
@@ -1533,10 +1533,10 @@ RELOAD:
 **  Function: setUARTPins
 **  Main Menu to manually set SPI Pins
 **********************************************************************/
-void setUARTPinsMenu(BruceConfigPins::UARTPins &value) {
+void setUARTPinsMenu(MopieConfigPins::UARTPins &value) {
     uint8_t opt = 0;
     bool changed = false;
-    BruceConfigPins::UARTPins points = value;
+    MopieConfigPins::UARTPins points = value;
 
 RELOAD:
     options = {
@@ -1551,7 +1551,7 @@ RELOAD:
     else if (opt == 7) {
         if (changed) {
             value = points;
-            bruceConfigPins.setUARTPins(value);
+            mopieConfigPins.setUARTPins(value);
         }
     } else {
         options = {};
@@ -1576,14 +1576,14 @@ RELOAD:
 **  Function: setI2CPins
 **  Main Menu to manually set SPI Pins
 **********************************************************************/
-void setI2CPinsMenu(BruceConfigPins::I2CPins &value) {
+void setI2CPinsMenu(MopieConfigPins::I2CPins &value) {
 #if defined(SOC_HP_I2C_NUM) && SOC_HP_I2C_NUM < 2 && SYS_I2C_SDA >= 0 && SYS_I2C_SCL >= 0
     displayError("I2C Pins cannot be changed on this board", true);
     return;
 #else
     uint8_t opt = 0;
     bool changed = false;
-    BruceConfigPins::I2CPins points = value;
+    MopieConfigPins::I2CPins points = value;
 
 RELOAD:
     options = {
@@ -1598,7 +1598,7 @@ RELOAD:
     else if (opt == 7) {
         if (changed) {
             value = points;
-            bruceConfigPins.setI2CPins(value);
+            mopieConfigPins.setI2CPins(value);
         }
     } else {
         options = {};
@@ -1646,14 +1646,14 @@ void setTheme() {
         options.push_back(
             {THEMES[i].name,
              [i]() {
-                 bruceConfig.priColor = THEMES[i].pri;
-                 bruceConfig.secColor = THEMES[i].sec;
-                 bruceConfig.bgColor  = TFT_BLACK;
+                 mopieConfig.priColor = THEMES[i].pri;
+                 mopieConfig.secColor = THEMES[i].sec;
+                 mopieConfig.bgColor  = TFT_BLACK;
                  // persist so it survives reboot
-                 bruceConfig.saveFile();
+                 mopieConfig.saveFile();
 #ifdef HAS_RGB_LED
-                 bruceConfig.ledColor = THEMES[i].led;
-                 bruceConfig.saveFile();
+                 mopieConfig.ledColor = THEMES[i].led;
+                 mopieConfig.saveFile();
                  ledSetup();
 #endif
              },

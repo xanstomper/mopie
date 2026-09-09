@@ -407,7 +407,7 @@ void sendRfCommand(struct RfCodes rfcode, bool hideDefaultUI) {
 
     // init transmitter
     if (!initRfModule("", frequency / 1000000.0)) return;
-    if (bruceConfigPins.rfModule == CC1101_SPI_MODULE) { // CC1101 in use
+    if (mopieConfigPins.rfModule == CC1101_SPI_MODULE) { // CC1101 in use
         // derived from
         // https://github.com/LSatan/SmartRC-CC1101-Driver-Lib/blob/master/examples/Rc-Switch%20examples%20cc1101/SendDemo_cc1101/SendDemo_cc1101.ino
         ELECHOUSE_cc1101.setModulation(modulation);
@@ -417,7 +417,7 @@ void sendRfCommand(struct RfCodes rfcode, bool hideDefaultUI) {
                 rxBW
             ); // Set the Receive Bandwidth in kHz. Value from 58.03 to 812.50. Default is 812.50 kHz.
         if (dataRate) ELECHOUSE_cc1101.setDRate(dataRate);
-        pinMode(bruceConfigPins.CC1101_bus.io0, OUTPUT);
+        pinMode(mopieConfigPins.CC1101_bus.io0, OUTPUT);
         ELECHOUSE_cc1101.setPA(
             12
         ); // set TxPower. The following settings are possible depending on the frequency band.  (-30  -20 -15
@@ -503,7 +503,7 @@ void sendRfCommand(struct RfCodes rfcode, bool hideDefaultUI) {
         }
     }
 
-    // digitalWrite(bruceConfigPins.rfTx, LED_OFF);
+    // digitalWrite(mopieConfigPins.rfTx, LED_OFF);
     deinitRfModule();
 }
 

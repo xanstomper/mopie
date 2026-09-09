@@ -189,7 +189,7 @@ TwoWire *getSysI2CBus() {
 
 TwoWire *acquireI2CBus(int8_t sda, int8_t scl) {
     bool sharesSysBus =
-        (gpio_num_t)sda == bruceConfigPins.sys_i2c.sda && (gpio_num_t)scl == bruceConfigPins.sys_i2c.scl;
+        (gpio_num_t)sda == mopieConfigPins.sys_i2c.sda && (gpio_num_t)scl == mopieConfigPins.sys_i2c.scl;
     BUSHAL_DBG(
         "[busHAL] acquire(%d/%d): sharesSysBus=%d userWire=%p userBusShared=%d active=%d/%d\n",
         (int)sda,
@@ -236,7 +236,7 @@ TwoWire *acquireI2CBus(int8_t sda, int8_t scl) {
 }
 
 TwoWire *acquireI2CBus() {
-    return acquireI2CBus((int8_t)bruceConfigPins.i2c_bus.sda, (int8_t)bruceConfigPins.i2c_bus.scl);
+    return acquireI2CBus((int8_t)mopieConfigPins.i2c_bus.sda, (int8_t)mopieConfigPins.i2c_bus.scl);
 }
 
 void releaseI2CBus() {
@@ -253,8 +253,8 @@ void releaseI2CBus() {
 }
 
 bool checkAndRecoverSysI2CBus() {
-    int8_t sda = (int8_t)bruceConfigPins.sys_i2c.sda;
-    int8_t scl = (int8_t)bruceConfigPins.sys_i2c.scl;
+    int8_t sda = (int8_t)mopieConfigPins.sys_i2c.sda;
+    int8_t scl = (int8_t)mopieConfigPins.sys_i2c.scl;
     if (sda < 0 || scl < 0) return false; // board has no sys_i2c
 
     static unsigned long sdaLowSinceMs = 0;
@@ -350,7 +350,7 @@ static SPIClass *acquireSharedSPI(gpio_num_t sck, gpio_num_t miso, gpio_num_t mo
             // StickCPluses share SCK pins with SDCard, but not MISO and MOSI
             // AUX_SPI must be restarted every time we use it with every module in legacy mode
             // so if it doesn't conflict, save the variables to no reset the bus (T-HMI touch)
-            if (!bruceConfigPins.SDCARD_bus.checkConflict(sck)) {
+            if (!mopieConfigPins.SDCARD_bus.checkConflict(sck)) {
                 sharedSpiMiso = miso;
                 sharedSpiMosi = mosi;
             }
@@ -372,7 +372,7 @@ SPIClass *acquireSPIBus(gpio_num_t sck, gpio_num_t miso, gpio_num_t mosi) {
 
     // Same physical wiring as the SD card: it is mounted for the whole program lifetime, so its
     // bus is already up and must not be reconfigured.
-    if (bruceConfigPins.SDCARD_bus.mosi != GPIO_NUM_NC && mosi == bruceConfigPins.SDCARD_bus.mosi) {
+    if (mopieConfigPins.SDCARD_bus.mosi != GPIO_NUM_NC && mosi == mopieConfigPins.SDCARD_bus.mosi) {
         return &sdcardSPI;
     }
 

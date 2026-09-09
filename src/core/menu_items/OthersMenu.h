@@ -14,8 +14,8 @@ public:
     void drawIcon(float scale);
     void drawIconAt(int cx, int cy, float scale);
 
-    bool hasTheme() { return bruceConfig.theme.others; }
-    const String& themePath() override { return bruceConfig.theme.paths.others; }
+    bool hasTheme() { return mopieConfig.theme.others; }
+    const String& themePath() override { return mopieConfig.theme.paths.others; }
 };
 
 #endif

@@ -943,18 +943,18 @@ static void bleSpamRenderList(
     if (fullRedraw) drawMainBorderWithTitle(bleSpamMakeTitle(title));
 
     tft.setTextSize(FP);
-    tft.fillRect(metrics.list_x, metrics.list_y, metrics.list_w, metrics.list_h, bruceConfig.bgColor);
+    tft.fillRect(metrics.list_x, metrics.list_y, metrics.list_w, metrics.list_h, mopieConfig.bgColor);
 
     for (int row = 0; row < metrics.visible_rows; row++) {
         int idx = state.scroll + row;
         int row_y = metrics.list_y + row * metrics.row_h;
-        tft.fillRect(metrics.list_x, row_y, metrics.list_w, metrics.row_h, bruceConfig.bgColor);
+        tft.fillRect(metrics.list_x, row_y, metrics.list_w, metrics.row_h, mopieConfig.bgColor);
 
         if (idx >= itemCount) continue;
 
         bool selected = (idx == state.cursor);
-        uint16_t bg = selected ? bruceConfig.priColor : bruceConfig.bgColor;
-        uint16_t fg = selected ? bruceConfig.bgColor : bruceConfig.priColor;
+        uint16_t bg = selected ? mopieConfig.priColor : mopieConfig.bgColor;
+        uint16_t fg = selected ? mopieConfig.bgColor : mopieConfig.priColor;
 
         tft.fillRect(metrics.list_x, row_y, metrics.list_w, metrics.row_h, bg);
         tft.setTextColor(fg, bg);
@@ -965,8 +965,8 @@ static void bleSpamRenderList(
     }
 
     if (footer != nullptr) {
-        tft.setTextColor(TFT_DARKGREY, bruceConfig.bgColor);
-        tft.fillRect(8, metrics.footer_y, tftWidth - 16, FP * LH, bruceConfig.bgColor);
+        tft.setTextColor(TFT_DARKGREY, mopieConfig.bgColor);
+        tft.fillRect(8, metrics.footer_y, tftWidth - 16, FP * LH, mopieConfig.bgColor);
         tft.drawCentreString(footer, tftWidth / 2, metrics.footer_y + 2, 1);
     }
 }
@@ -1748,9 +1748,9 @@ static void bleSpamRenderConfigRows(
         bool selected = (cursor == i);
         bool editing = (editState.editing && editState.edit_row == i);
 
-        tft.fillRect(10, rowY, tftWidth - 20, rowH, bruceConfig.bgColor);
-        uint16_t fg = selected ? TFT_YELLOW : bruceConfig.priColor;
-        tft.setTextColor(fg, bruceConfig.bgColor);
+        tft.fillRect(10, rowY, tftWidth - 20, rowH, mopieConfig.bgColor);
+        uint16_t fg = selected ? TFT_YELLOW : mopieConfig.priColor;
+        tft.setTextColor(fg, mopieConfig.bgColor);
         tft.drawString(rows[i].label, 12, rowY + 2, 1);
 
         String valueText = rows[i].value;
@@ -1785,13 +1785,13 @@ bleSpamConfigScreen(const BleSpamSelection &selection, BleSpamConfig &config, bo
 
             bleSpamRenderConfigRows(config, cursor, editState, rowStart, rowH);
 
-            tft.fillRect(10, startRowY, tftWidth - 20, rowH, bruceConfig.bgColor);
-            uint16_t startColor = (cursor == 4) ? TFT_YELLOW : bruceConfig.priColor;
-            tft.setTextColor(startColor, bruceConfig.bgColor);
+            tft.fillRect(10, startRowY, tftWidth - 20, rowH, mopieConfig.bgColor);
+            uint16_t startColor = (cursor == 4) ? TFT_YELLOW : mopieConfig.priColor;
+            tft.setTextColor(startColor, mopieConfig.bgColor);
             tft.drawCentreString("[ Start ]", tftWidth / 2, startRowY + 2, 1);
 
-            tft.setTextColor(TFT_DARKGREY, bruceConfig.bgColor);
-            tft.fillRect(8, footerY, tftWidth - 16, footerH, bruceConfig.bgColor);
+            tft.setTextColor(TFT_DARKGREY, mopieConfig.bgColor);
+            tft.fillRect(8, footerY, tftWidth - 16, footerH, mopieConfig.bgColor);
             tft.drawCentreString("Click=Select  ESC=Back", tftWidth / 2, footerY + 2, 1);
 
             redrawRows = false;
@@ -1895,28 +1895,28 @@ static void bleSpamRenderRunningScreen(
         rowH = max(1, min(FP * LH + 4, available / 6));
         configStartY = statsY + rowH * 2 + sepGap;
 
-        tft.drawFastHLine(8, statsY + rowH * 2 - 2, tftWidth - 16, bruceConfig.priColor);
-        tft.drawFastHLine(8, configStartY + rowH * 4 - 2, tftWidth - 16, bruceConfig.priColor);
+        tft.drawFastHLine(8, statsY + rowH * 2 - 2, tftWidth - 16, mopieConfig.priColor);
+        tft.drawFastHLine(8, configStartY + rowH * 4 - 2, tftWidth - 16, mopieConfig.priColor);
 
-        tft.setTextColor(TFT_DARKGREY, bruceConfig.bgColor);
-        tft.fillRect(8, footerY, tftWidth - 16, footerH, bruceConfig.bgColor);
+        tft.setTextColor(TFT_DARKGREY, mopieConfig.bgColor);
+        tft.fillRect(8, footerY, tftWidth - 16, footerH, mopieConfig.bgColor);
         tft.drawCentreString("Click=Edit  ESC=Stop", tftWidth / 2, footerY + 2, 1);
     }
 
     if (blinkDirty) {
         tft.setTextSize(FP);
-        tft.setTextColor(DEFAULT_PRICOLOR, bruceConfig.bgColor);
+        tft.setTextColor(DEFAULT_PRICOLOR, mopieConfig.bgColor);
         int starX = tftWidth - 18;
         int starY = BORDER_PAD_Y + 2;
-        tft.fillRect(starX - 2, starY - 2, 12, 12, bruceConfig.bgColor);
+        tft.fillRect(starX - 2, starY - 2, 12, 12, mopieConfig.bgColor);
         tft.drawString(blinkOn ? "*" : " ", starX, starY, 1);
     }
 
     if (statsDirty) {
         tft.setTextSize(FP);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
 
-        tft.fillRect(10, statsY, tftWidth - 20, rowH * 2, bruceConfig.bgColor);
+        tft.fillRect(10, statsY, tftWidth - 20, rowH * 2, mopieConfig.bgColor);
         char buf[24];
         snprintf(buf, sizeof(buf), "Sent:   %06lu", (unsigned long)displaySent);
         tft.drawString(buf, 12, statsY + 2, 1);
@@ -1950,12 +1950,12 @@ static bool bleSpamStoppedPrompt(const BleSpamSelection &selection, uint32_t sen
                 char buf[32];
                 snprintf(buf, sizeof(buf), "Sent: %06lu  Pkt/s: 0.0", (unsigned long)sentCount);
                 int statsY = BORDER_PAD_Y + FM * LH + 8;
-                tft.fillRect(10, statsY, tftWidth - 20, FP * LH + 6, bruceConfig.bgColor);
+                tft.fillRect(10, statsY, tftWidth - 20, FP * LH + 6, mopieConfig.bgColor);
                 tft.drawString(buf, 12, statsY + 2, 1);
 
-                tft.setTextColor(TFT_DARKGREY, bruceConfig.bgColor);
+                tft.setTextColor(TFT_DARKGREY, mopieConfig.bgColor);
                 int footerY = tftHeight - FP * LH - 12;
-                tft.fillRect(8, footerY, tftWidth - 16, FP * LH + 4, bruceConfig.bgColor);
+                tft.fillRect(8, footerY, tftWidth - 16, FP * LH + 4, mopieConfig.bgColor);
                 tft.drawCentreString("Click=Select  ESC=Back", tftWidth / 2, footerY + 2, 1);
                 layoutDrawn = true;
             }
@@ -1965,8 +1965,8 @@ static bool bleSpamStoppedPrompt(const BleSpamSelection &selection, uint32_t sen
             for (int i = 0; i < optionCount; i++) {
                 int rowY = listY + i * rowH;
                 bool selected = (i == cursor);
-                uint16_t bg = selected ? bruceConfig.priColor : bruceConfig.bgColor;
-                uint16_t fg = selected ? bruceConfig.bgColor : bruceConfig.priColor;
+                uint16_t bg = selected ? mopieConfig.priColor : mopieConfig.bgColor;
+                uint16_t fg = selected ? mopieConfig.bgColor : mopieConfig.priColor;
                 tft.fillRect(10, rowY, tftWidth - 20, rowH, bg);
                 tft.setTextColor(fg, bg);
                 tft.drawString(String(selected ? "> " : "  ") + options[i], 12, rowY + 2, 1);
@@ -2150,8 +2150,8 @@ static int bleSpamTwoOptionPrompt(const String &title, const char *opt0, const c
             for (int i = 0; i < 2; i++) {
                 int rowY = startY + i * rowH;
                 bool sel = (i == cursor);
-                uint16_t bg = sel ? bruceConfig.priColor : bruceConfig.bgColor;
-                uint16_t fg = sel ? bruceConfig.bgColor : bruceConfig.priColor;
+                uint16_t bg = sel ? mopieConfig.priColor : mopieConfig.bgColor;
+                uint16_t fg = sel ? mopieConfig.bgColor : mopieConfig.priColor;
                 tft.fillRect(10, rowY, tftWidth - 20, rowH, bg);
                 tft.setTextColor(fg, bg);
                 tft.setTextSize(FP);

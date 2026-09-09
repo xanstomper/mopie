@@ -146,7 +146,7 @@ void nrf_jammer() {
                 padprintln("> Hop Mode: Sel");
                 padprintln("> Exit: Esc");
 
-                tft.drawRoundRect(5, 5, tftWidth - 10, tftHeight - 10, 5, bruceConfig.priColor);
+                tft.drawRoundRect(5, 5, tftWidth - 10, tftHeight - 10, 5, mopieConfig.priColor);
                 if ((CHECK_NRF_UART(mode)) || (CHECK_NRF_BOTH(mode))) {
                     String Mode = modes[modeIndex].name;
                     Mode.replace(" ", "");

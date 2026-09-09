@@ -18,7 +18,7 @@ inline void drawMopieIcon(const uint8_t *icon, int cx, int cy, float scale) {
     int x0 = cx - total / 2;
     int y0 = cy - total / 2;
 
-    uint16_t colAccent = bruceConfig.priColor;      // v2: 1=red primary
+    uint16_t colAccent = mopieConfig.priColor;      // v2: 1=red primary
     uint16_t colPri    = DEFAULT_ACCENT;            // v2: 2=amber accent
     uint16_t colWhite  = TFT_WHITE;
 

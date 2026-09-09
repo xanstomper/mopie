@@ -605,18 +605,18 @@ static void mj_drawScanScreen(uint8_t currentCh, bool initial) {
 
     // Status line (below title, inside border)
     tft.setTextSize(FP);
-    tft.fillRect(7, contentY, tftWidth - 14, 12, bruceConfig.bgColor);
-    tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+    tft.fillRect(7, contentY, tftWidth - 14, 12, mopieConfig.bgColor);
+    tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
     char statusBuf[40];
     snprintf(statusBuf, sizeof(statusBuf), "CH:%3d  Targets:%d", currentCh, mj_targetCount);
     tft.drawCentreString(statusBuf, tftWidth / 2, contentY, 1);
 
     // Target list
     int maxItems = listH / 12;
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     for (int i = 0; i < maxItems && i < mj_targetCount; i++) {
         int y = listY + i * 12;
-        tft.fillRect(7, y, tftWidth - 14, 12, bruceConfig.bgColor);
+        tft.fillRect(7, y, tftWidth - 14, 12, mopieConfig.bgColor);
         char line[40];
         snprintf(
             line,
@@ -631,8 +631,8 @@ static void mj_drawScanScreen(uint8_t currentCh, bool initial) {
 
     // Footer (inside border)
     int footerY = tftHeight - BORDER_PAD_X - FP * LH - 2;
-    tft.fillRect(7, footerY, tftWidth - 14, FP * LH, bruceConfig.bgColor);
-    tft.setTextColor(TFT_DARKGREY, bruceConfig.bgColor);
+    tft.fillRect(7, footerY, tftWidth - 14, FP * LH, mopieConfig.bgColor);
+    tft.setTextColor(TFT_DARKGREY, mopieConfig.bgColor);
     tft.drawCentreString("[ESC] Stop", tftWidth / 2, footerY, 1);
 }
 
@@ -749,20 +749,20 @@ static void mj_attackString(int targetIndex) {
 
     drawMainBorderWithTitle("INJECTING");
     tft.setTextSize(FP);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     int cy = tftHeight * 0.35;
     tft.drawCentreString(
         "[" + String(mj_getTypeLabel(target.type)) + "] " + mj_formatAddr(target), tftWidth / 2, cy, 1
     );
     cy += 16;
-    tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+    tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
     tft.drawCentreString("Sending keystrokes...", tftWidth / 2, cy, 1);
     cy += 16;
 
     // Show first 30 chars of the text
     String preview = text.substring(0, 30);
     if (text.length() > 30) preview += "...";
-    tft.setTextColor(TFT_YELLOW, bruceConfig.bgColor);
+    tft.setTextColor(TFT_YELLOW, mopieConfig.bgColor);
     tft.drawCentreString(preview, tftWidth / 2, cy, 1);
 
     if (!mj_validateNrfMode()) return;
@@ -806,20 +806,20 @@ static void mj_attackDucky(int targetIndex) {
 
     drawMainBorderWithTitle("DUCKYSCRIPT");
     tft.setTextSize(FP);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     int cy = tftHeight * 0.35;
     tft.drawCentreString(
         "[" + String(mj_getTypeLabel(target.type)) + "] " + mj_formatAddr(target), tftWidth / 2, cy, 1
     );
     cy += 16;
-    tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+    tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
     tft.drawCentreString("Running script...", tftWidth / 2, cy, 1);
     cy += 16;
 
     // Show filename
     int lastSlash = filepath.lastIndexOf('/');
     String fname = (lastSlash >= 0) ? filepath.substring(lastSlash + 1) : filepath;
-    tft.setTextColor(TFT_YELLOW, bruceConfig.bgColor);
+    tft.setTextColor(TFT_YELLOW, mopieConfig.bgColor);
     tft.drawCentreString(fname, tftWidth / 2, cy, 1);
 
     if (!mj_validateNrfMode()) return;

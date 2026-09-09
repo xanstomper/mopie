@@ -85,11 +85,11 @@ void IrRead::setup() {
     const std::vector<std::pair<String, int>> pins = IR_RX_PINS;
     int count = 0;
     for (auto pin : pins) {
-        if (pin.second == bruceConfigPins.irRx) count++;
+        if (pin.second == mopieConfigPins.irRx) count++;
     }
     if (count == 0) gsetIrRxPin(true);
 
-    setup_ir_pin(bruceConfigPins.irRx, INPUT);
+    setup_ir_pin(mopieConfigPins.irRx, INPUT);
     if (headless) return;
     returnToMenu = true;
     std::vector<Option> quickRemoteOptions = {
@@ -204,7 +204,7 @@ void IrRead::begin() {
 void IrRead::cls() {
     drawMainBorder();
     tft.setCursor(10, 28);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
 }
 
 void IrRead::display_banner() {

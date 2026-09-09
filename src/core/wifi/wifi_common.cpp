@@ -52,7 +52,7 @@ void ensureWifiPlatform() {
 }
 
 bool _wifiConnect(const String &ssid, int encryption) {
-    String password = bruceConfig.getWifiPassword(ssid);
+    String password = mopieConfig.getWifiPassword(ssid);
     if (password == "" && encryption > 0) { password = keyboard(password, 63, "Network Password:", true); }
     if (password == "\x1B") return false;
     bool connected = _connectToWifiNetwork(ssid, password);
@@ -83,7 +83,7 @@ bool _wifiConnect(const String &ssid, int encryption) {
     if (connected) {
         wifiConnected = true;
         wifiIP = WiFi.localIP().toString();
-        bruceConfig.addWifiCredential(ssid, password);
+        mopieConfig.addWifiCredential(ssid, password);
 
         // Start timezone update in background if not already running
         if (timezoneTaskHandle == NULL) {
@@ -142,7 +142,7 @@ bool _connectToWifiNetwork(const String &ssid, const String &pwd) {
 bool _setupAP() {
     IPAddress AP_GATEWAY(172, 0, 0, 1);
     WiFi.softAPConfig(AP_GATEWAY, AP_GATEWAY, IPAddress(255, 255, 255, 0));
-    WiFi.softAP(bruceConfig.wifiAp.ssid, bruceConfig.wifiAp.pwd, 6, 0, 4, false);
+    WiFi.softAP(mopieConfig.wifiAp.ssid, mopieConfig.wifiAp.pwd, 6, 0, 4, false);
     wifiIP = WiFi.softAPIP().toString(); // update global var
     Serial.println("IP: " + wifiIP);
     wifiConnected = true;
@@ -311,7 +311,7 @@ void wifiConnectTask(void *pvParameters) {
 
     for (int i = 0; i < nets; i++) {
         ssid = WiFi.SSID(i);
-        pwd = bruceConfig.getWifiPassword(ssid);
+        pwd = mopieConfig.getWifiPassword(ssid);
         if (pwd == "") continue;
 
         WiFi.begin(ssid, pwd);
@@ -369,7 +369,7 @@ bool wifiConnecttoKnownNet(void) {
     for (int i = 0; i < nets; i++) {
         vTaskDelay(10 / portTICK_PERIOD_MS);
         String ssid = WiFi.SSID(i);
-        String password = bruceConfig.getWifiPassword(ssid);
+        String password = mopieConfig.getWifiPassword(ssid);
         if (password != "") {
             Serial.println("Connecting to: " + ssid);
             result = _connectToWifiNetwork(ssid, password);

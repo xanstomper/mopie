@@ -1,5 +1,5 @@
-#ifndef BRUCE_SERIALDEVICE_H
-#define BRUCE_SERIALDEVICE_H
+#ifndef MOPIE_SERIALDEVICE_H
+#define MOPIE_SERIALDEVICE_H
 
 #include <Arduino.h>
 
@@ -28,4 +28,4 @@ public:
     virtual ~SerialDevice() = default;
 };
 
-#endif // BRUCE_SERIALDEVICE_H
+#endif // MOPIE_SERIALDEVICE_H

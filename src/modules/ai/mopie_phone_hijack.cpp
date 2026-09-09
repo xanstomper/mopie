@@ -332,10 +332,10 @@ void mopie_phone_hijack() {
     ducky_startKb(hid, true, 1);   // Media HID profile — reports media keys + keyboard
     if (hid == nullptr) { displayError("HID failed"); return; }
 
-    tft.fillScreen(bruceConfig.bgColor);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.drawCentreString("PHONE HIJACK", tftWidth / 2, 8, 1);
-    tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.secColor, mopieConfig.bgColor);
     tft.drawCentreString("Advertising keyboard...", tftWidth / 2, tftHeight / 2 - 20, 1);
     tft.drawCentreString("Pair on your phone", tftWidth / 2, tftHeight / 2, 1);
     tft.drawCentreString("PWR = abort", tftWidth / 2, tftHeight / 2 + 20, 1);
@@ -361,10 +361,10 @@ void mopie_phone_hijack() {
             wasConnected = true;
             BLEConnected = true;
             Serial.println("[hijack] phone connected; waiting for HID subscription");
-            tft.fillRect(0, 0, tftWidth, tftHeight, bruceConfig.bgColor);
-            tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+            tft.fillRect(0, 0, tftWidth, tftHeight, mopieConfig.bgColor);
+            tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
             tft.drawCentreString("PHONE CONNECTED!", tftWidth / 2, tftHeight / 2 - 26, 1);
-            tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+            tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
             tft.drawCentreString("Now ON YOUR PHONE enable", tftWidth / 2, tftHeight / 2 - 6, 1);
             tft.drawCentreString("this keyboard if asked", tftWidth / 2, tftHeight / 2 + 6, 1);
             tft.drawCentreString("Wait for GO...", tftWidth / 2, tftHeight / 2 + 22, 1);
@@ -374,7 +374,7 @@ void mopie_phone_hijack() {
             blinky = millis();
             blinking = !blinking;
             tft.fillCircle(tftWidth / 2, tftHeight / 2 + 44, 3,
-                           blinking ? 0x07E0 : bruceConfig.bgColor); // green pulse
+                           blinking ? 0x07E0 : mopieConfig.bgColor); // green pulse
             Serial.printf("[hijack] subCount=%d\n", hid->subscribedCount());
         }
         vTaskDelay(50);
@@ -385,10 +385,10 @@ void mopie_phone_hijack() {
     }
 
     Serial.println("[hijack] HID subscribed — firing payload");
-    tft.fillScreen(bruceConfig.bgColor);
-    tft.setTextColor(0x07E0, bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
+    tft.setTextColor(0x07E0, mopieConfig.bgColor);
     tft.drawCentreString("KEYBOARD READY!", tftWidth / 2, tftHeight / 2 - 26, 1);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.drawCentreString(choice == 0 ? "CHAOS ACTIVE — PWR to stop" : "Tweaking device...", tftWidth / 2, tftHeight / 2, 1);
     delay(900);
 
@@ -408,8 +408,8 @@ void mopie_phone_hijack() {
     }
     hid->releaseAll();
 
-    tft.fillScreen(bruceConfig.bgColor);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.drawCentreString("Hijack complete", tftWidth / 2, tftHeight / 2, 1);
     tft.drawCentreString("PWR to exit", tftWidth / 2, tftHeight / 2 + 16, 1);
     while (!check(EscPress)) delay(20);

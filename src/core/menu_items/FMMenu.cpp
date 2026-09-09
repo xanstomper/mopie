@@ -37,23 +37,23 @@ void FMMenu::drawIcon(float scale) {
     int potY = caseY + caseH / 3 + iconH / 10;
 
     // Case
-    tft.drawRoundRect(caseX, caseY, iconW, caseH, iconW / 10, bruceConfig.priColor);
+    tft.drawRoundRect(caseX, caseY, iconW, caseH, iconW / 10, mopieConfig.priColor);
 
     // Potentiometer
-    tft.fillCircle(potX, potY, iconH / 7, bruceConfig.priColor);
+    tft.fillCircle(potX, potY, iconH / 7, mopieConfig.priColor);
 
     // Screen
-    tft.drawRect(caseX + iconW / 10, caseY + iconH / 10, iconW / 2, iconH / 3, bruceConfig.priColor);
+    tft.drawRect(caseX + iconW / 10, caseY + iconH / 10, iconW / 2, iconH / 3, mopieConfig.priColor);
 
     // Antenna
     tft.drawLine(
-        caseX + iconW / 10, caseY, caseX + iconW / 10 + iconH / 3, caseY - iconH / 6, bruceConfig.priColor
+        caseX + iconW / 10, caseY, caseX + iconW / 10 + iconH / 3, caseY - iconH / 6, mopieConfig.priColor
     );
-    tft.fillCircle(caseX + iconW / 10 + iconH / 3, caseY - iconH / 6, iconH / 30, bruceConfig.priColor);
+    tft.fillCircle(caseX + iconW / 10 + iconH / 3, caseY - iconH / 6, iconH / 30, mopieConfig.priColor);
 
     // Buttons
-    tft.fillCircle(caseX + iconW / 10 + iconH / 8, btnY, iconH / 12, bruceConfig.priColor);
-    tft.fillCircle(caseX + iconW / 10 + iconW / 2 - iconH / 8, btnY, iconH / 12, bruceConfig.priColor);
+    tft.fillCircle(caseX + iconW / 10 + iconH / 8, btnY, iconH / 12, mopieConfig.priColor);
+    tft.fillCircle(caseX + iconW / 10 + iconW / 2 - iconH / 8, btnY, iconH / 12, mopieConfig.priColor);
 }
 void FMMenu::drawIconAt(int cx, int cy, float scale) {
     // delegate to central scaling glyph — fits the grid cell like every other icon

@@ -38,12 +38,12 @@ void BleMenu::optionsMenu() {
     options.push_back({"Disconnect Flood", [=]() {
         // Mopie-owned BLE disconnect churn: scan + connect/disconnect nearby
         // peripherals. Runs ~10s; real connect/disconnect, not just adv spam.
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("Disconnect Flood ~10s", tftWidth / 2, 24, 1);
         int cycles = mopieBLEFlood(10000);
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("Flood done", tftWidth / 2, 20, 1);
         tft.drawCentreString(String(cycles) + " connect cycles", tftWidth / 2, 40, 1);
         while (!check(AnyKeyPress)) delay(50);
@@ -62,16 +62,16 @@ void BleMenu::optionsMenu() {
 
     // === MOPIE EXTRAS ===
     options.push_back({"BLE RSSI Scan", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("BLE RSSI Scan", tftWidth/2, 5, 1);
         tft.drawCentreString("Scanning 5s...", tftWidth/2, 20, 1);
         NimBLEScan* pScan = NimBLEDevice::getScan();
         pScan->setActiveScan(true);
         pScan->start(5, false);
         NimBLEScanResults results = pScan->getResults();
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("BLE Devices", tftWidth/2, 2, 1);
         int y = 15;
         for (int i = 0; i < (int)results.getCount() && y < tftHeight - 10; i++) {
@@ -85,8 +85,8 @@ void BleMenu::optionsMenu() {
         pScan->stop();
     }});
     options.push_back({"BLE Beacon Clone", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("Beacon Clone", tftWidth/2, 5, 1);
         tft.drawCentreString("Scanning...", tftWidth/2, 20, 1);
         NimBLEScan* pScan = NimBLEDevice::getScan();
@@ -105,8 +105,8 @@ void BleMenu::optionsMenu() {
         pScan->stop();
     }});
     options.push_back({"BLE Flood", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("BLE Flood", tftWidth/2, 5, 1);
         tft.drawCentreString("Hold BTN to stop", tftWidth/2, 20, 1);
         const char* names[] = {"iPhone", "Galaxy S24", "Pixel 8", "AirPods", "MacBook", "iPad", "Watch"};
@@ -115,15 +115,15 @@ void BleMenu::optionsMenu() {
             String name = String(names[count % 7]) + String(count);
             ibeacon(name.c_str(), "e4c159a0-8c82-11e6-bdf4-0800200c9a66", 0x004C);
             count++;
-            tft.fillRect(2, 35, tftWidth-4, 15, bruceConfig.bgColor);
+            tft.fillRect(2, 35, tftWidth-4, 15, mopieConfig.bgColor);
             tft.drawCentreString("Sent: " + String(count), tftWidth/2, 40, 1);
             delay(200);
         }
     }});
     // === MOPIE ADVANCED BLE ===
     options.push_back({"BLE Spoof All", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("BLE Spoof All", tftWidth/2, 5, 1);
         tft.drawCentreString("Cycling devices...", tftWidth/2, 20, 1);
         tft.drawCentreString("Hold BTN to stop", tftWidth/2, 35, 1);
@@ -136,15 +136,15 @@ void BleMenu::optionsMenu() {
         int count = 0;
         while (!check(EscPress)) {
             ibeacon(devices[count % 16], "e4c159a0-8c82-11e6-bdf4-0800200c9a66", 0x004C);
-            tft.fillRect(2, 50, tftWidth-4, 12, bruceConfig.bgColor);
+            tft.fillRect(2, 50, tftWidth-4, 12, mopieConfig.bgColor);
             tft.drawCentreString(String(count) + ": " + devices[count % 16], tftWidth/2, 52, 1);
             count++;
             delay(400);
         }
     }});
     options.push_back({"BLE Jammer", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("BLE Jammer", tftWidth/2, 5, 1);
         tft.drawCentreString("Advertising flood", tftWidth/2, 20, 1);
         tft.drawCentreString("Hold BTN to stop", tftWidth/2, 35, 1);
@@ -159,15 +159,15 @@ void BleMenu::optionsMenu() {
                 pAdv->start();
             }
             count++;
-            tft.fillRect(2, 50, tftWidth-4, 12, bruceConfig.bgColor);
+            tft.fillRect(2, 50, tftWidth-4, 12, mopieConfig.bgColor);
             tft.drawCentreString("Cycles: " + String(count), tftWidth/2, 52, 1);
             delay(50);
         }
         NimBLEDevice::getAdvertising()->stop();
     }});
     options.push_back({"BLE MAC Random", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("BLE MAC Random", tftWidth/2, 5, 1);
         tft.drawCentreString("Spoofing MAC...", tftWidth/2, 20, 1);
         uint8_t mac[6];
@@ -179,15 +179,15 @@ void BleMenu::optionsMenu() {
         delay(3000);
     }});
     options.push_back({"BLE Connect Brute", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("BLE Connect Brute", tftWidth/2, 5, 1);
         tft.drawCentreString("Scanning targets...", tftWidth/2, 20, 1);
         NimBLEScan* pScan = NimBLEDevice::getScan();
         pScan->setActiveScan(true);
         pScan->start(5, false);
         NimBLEScanResults results = pScan->getResults();
-        tft.fillScreen(bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
         tft.drawCentreString("Brute forcing " + String(results.getCount()) + " devs", tftWidth/2, 2, 1);
         int y = 15;
         for (int i = 0; i < (int)results.getCount() && y < tftHeight - 20; i++) {
@@ -202,8 +202,8 @@ void BleMenu::optionsMenu() {
         pScan->stop();
     }});
     options.push_back({"BLE Adv Replay", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("BLE Adv Replay", tftWidth/2, 5, 1);
         tft.drawCentreString("Capture & replay", tftWidth/2, 20, 1);
         NimBLEScan* pScan = NimBLEDevice::getScan();
@@ -225,16 +225,16 @@ void BleMenu::optionsMenu() {
     }});
     // === MOPIE PRO BLE TOOLS ===
     options.push_back({"BLE Adv Sniffer", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("ADV SNIFFER", tftWidth/2, 2, 1);
         tft.drawCentreString("Raw adv capture", tftWidth/2, 14, 1);
         NimBLEScan* pScan = NimBLEDevice::getScan();
         pScan->setActiveScan(false);
         pScan->start(4, false);
         NimBLEScanResults res = pScan->getResults();
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("ADVERTISEMENTS", tftWidth/2, 2, 1);
         int y = 14;
         int shown = 0;
@@ -254,8 +254,8 @@ void BleMenu::optionsMenu() {
         pScan->stop();
     }});
     options.push_back({"BLE Device Finder", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("DEVICE FINDER", tftWidth/2, 2, 1);
         tft.drawCentreString("Nearest by RSSI", tftWidth/2, 14, 1);
         NimBLEScan* pScan = NimBLEDevice::getScan();
@@ -273,7 +273,7 @@ void BleMenu::optionsMenu() {
                     if (bestName.length() == 0) bestName = String(dev->getAddress().toString().c_str()).substring(0, 11);
                 }
             }
-            tft.fillRect(2, 28, tftWidth-4, 40, bruceConfig.bgColor);
+            tft.fillRect(2, 28, tftWidth-4, 40, mopieConfig.bgColor);
             tft.drawCentreString(bestName.substring(0, 18), tftWidth/2, 30, 1);
             tft.drawCentreString(String(bestRssi) + " dBm", tftWidth/2, 44, 1);
             int bars = map(constrain(bestRssi, -100, -40), -100, -40, 0, 5);
@@ -285,15 +285,15 @@ void BleMenu::optionsMenu() {
         pScan->stop();
     }});
     options.push_back({"BLE GATT Dump", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("GATT Dump", tftWidth/2, 5, 1);
         tft.drawCentreString("Scanning services...", tftWidth/2, 20, 1);
         NimBLEScan* pScan = NimBLEDevice::getScan();
         pScan->setActiveScan(true);
         pScan->start(4, false);
         NimBLEScanResults res = pScan->getResults();
-        tft.fillScreen(bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
         tft.drawCentreString("GATT Services", tftWidth/2, 2, 1);
         int y = 15;
         for (int i = 0; i < (int)res.getCount() && i < 8 && y < tftHeight - 20; i++) {
@@ -309,8 +309,8 @@ void BleMenu::optionsMenu() {
     }});
     options.push_back({"BLE SwiftPair Spam", [=]() {
         // Real: Microsoft Swift Pair advertisements (pop up on Windows)
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("SwiftPair Spam", tftWidth/2, 5, 1);
         tft.drawCentreString("Windows pairing popups", tftWidth/2, 20, 1);
         tft.drawCentreString("Hold side btn to stop", tftWidth/2, 35, 1);
@@ -329,21 +329,21 @@ void BleMenu::optionsMenu() {
             delay(80);
             pAdv->stop();
             count++;
-            tft.fillRect(2, 50, tftWidth-4, 12, bruceConfig.bgColor);
+            tft.fillRect(2, 50, tftWidth-4, 12, mopieConfig.bgColor);
             tft.drawCentreString("Sent: " + String(count), tftWidth/2, 52, 1);
         }
         pAdv->stop();
     }});
     options.push_back({"BLE UUID Scan", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("UUID Scanner", tftWidth/2, 5, 1);
         tft.drawCentreString("Deep service scan...", tftWidth/2, 20, 1);
         NimBLEScan* pScan = NimBLEDevice::getScan();
         pScan->setActiveScan(true);
         pScan->start(5, false);
         NimBLEScanResults res = pScan->getResults();
-        tft.fillScreen(bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
         tft.drawCentreString("UUIDs Found", tftWidth/2, 2, 1);
         int y = 15;
         for (int i = 0; i < (int)res.getCount() && i < 6 && y < tftHeight - 20; i++) {
@@ -357,8 +357,8 @@ void BleMenu::optionsMenu() {
         pScan->stop();
     }});
     options.push_back({"BLE Distance Track", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("Distance Track", tftWidth/2, 5, 1);
         tft.drawCentreString("RSSI proximity radar", tftWidth/2, 20, 1);
         tft.drawCentreString("Hold BTN to stop", tftWidth/2, 35, 1);
@@ -367,7 +367,7 @@ void BleMenu::optionsMenu() {
         while (!check(EscPress)) {
             pScan->start(2, false);
             NimBLEScanResults res = pScan->getResults();
-            tft.fillRect(2, 50, tftWidth-4, 40, bruceConfig.bgColor);
+            tft.fillRect(2, 50, tftWidth-4, 40, mopieConfig.bgColor);
             int y = 52;
             for (int i = 0; i < (int)res.getCount() && i < 3 && y < tftHeight - 10; i++) {
                 const NimBLEAdvertisedDevice* dev = res.getDevice(i);
@@ -384,16 +384,16 @@ void BleMenu::optionsMenu() {
     }});
     options.push_back({"BLE Conn Scanner", [=]() {
         // Real: async connect attempts to nearby connectable devices, report results
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("Conn Scanner", tftWidth/2, 5, 1);
         tft.drawCentreString("Testing connectability", tftWidth/2, 20, 1);
         NimBLEScan* pScan = NimBLEDevice::getScan();
         pScan->setActiveScan(true);
         pScan->start(4, false);
         NimBLEScanResults res = pScan->getResults();
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("Connectable Devices", tftWidth/2, 2, 1);
         int y = 15;
         int connectable = 0;

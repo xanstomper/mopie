@@ -130,14 +130,14 @@ void wg_setup() {
     printSubtitle("Connected");
     tft.setTextSize(FP);
     padprintln("");
-    tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+    tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
     padprintln("Status: Connected");
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     padprintln("");
     padprintln("Tunnel IP:");
-    tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+    tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
     padprintln(local_ip.toString());
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     padprintln("");
     padprintln("Endpoint: " + String(endpoint_address));
     padprintln("Port: " + String(endpoint_port));

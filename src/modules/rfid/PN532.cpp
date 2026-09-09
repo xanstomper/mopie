@@ -320,16 +320,16 @@ PN532::PN532(CONNECTION_TYPE connection_type) {
     _connection_type = connection_type;
     _use_i2c = (connection_type == I2C || connection_type == I2C_SPI);
     if (connection_type == CONNECTION_TYPE::I2C)
-        nfc.setInterface(bruceConfigPins.i2c_bus.sda, bruceConfigPins.i2c_bus.scl);
+        nfc.setInterface(mopieConfigPins.i2c_bus.sda, mopieConfigPins.i2c_bus.scl);
 #ifdef M5STICK
     else if (connection_type == CONNECTION_TYPE::I2C_SPI) nfc.setInterface(GPIO_NUM_26, GPIO_NUM_25);
 #endif
     else
         nfc.setInterface(
-            bruceConfigPins.PN532_bus.sck,
-            bruceConfigPins.PN532_bus.miso,
-            bruceConfigPins.PN532_bus.mosi,
-            bruceConfigPins.PN532_bus.cs
+            mopieConfigPins.PN532_bus.sck,
+            mopieConfigPins.PN532_bus.miso,
+            mopieConfigPins.PN532_bus.mosi,
+            mopieConfigPins.PN532_bus.cs
         );
 }
 
@@ -350,10 +350,10 @@ bool PN532::begin() {
         "&Wire=%p\n",
         (int)_connection_type,
         (int)_use_i2c,
-        (int)bruceConfigPins.i2c_bus.sda,
-        (int)bruceConfigPins.i2c_bus.scl,
-        (int)bruceConfigPins.sys_i2c.sda,
-        (int)bruceConfigPins.sys_i2c.scl,
+        (int)mopieConfigPins.i2c_bus.sda,
+        (int)mopieConfigPins.i2c_bus.scl,
+        (int)mopieConfigPins.sys_i2c.sda,
+        (int)mopieConfigPins.sys_i2c.scl,
         (void *)Wire,
         (void *)&::Wire
     );
@@ -514,7 +514,7 @@ int PN532::emulate() {
             if ((!canParseUltralightDump ||
                  !extractNdefMessageFromPageDump(strAllPages, emulatedNdefMessage))) {
                 if (!buildNdefMessageFromStruct(this->ndefMessage, emulatedNdefMessage)) {
-                    std::vector<uint8_t> uriPayload = Ndef::urlNdefAbbrv("https://bruce.computer");
+                    std::vector<uint8_t> uriPayload = Ndef::urlNdefAbbrv("https://github.com/xanstomper/mopie");
                     emulatedNdefMessage = Ndef::newMessage(uriPayload);
                 }
             }
@@ -1110,7 +1110,7 @@ int PN532::read_mifare_classic_data_sector(byte sector) {
 }
 
 int PN532::authenticate_mifare_classic(byte block) {
-    bruceConfig.ensureMifareKeysLoaded();
+    mopieConfig.ensureMifareKeysLoaded();
     uint8_t successA = 0;
     uint8_t successB = 0;
 
@@ -1126,7 +1126,7 @@ int PN532::authenticate_mifare_classic(byte block) {
     if (!successA) {
         uint8_t keyA[6];
 
-        for (const auto &mifKey : bruceConfig.mifareKeys) {
+        for (const auto &mifKey : mopieConfig.mifareKeys) {
             for (size_t i = 0; i < mifKey.length(); i += 2) {
                 keyA[i / 2] = strtoul(mifKey.substring(i, i + 2).c_str(), NULL, 16);
             }
@@ -1152,7 +1152,7 @@ int PN532::authenticate_mifare_classic(byte block) {
     if (!successB) {
         uint8_t keyB[6];
 
-        for (const auto &mifKey : bruceConfig.mifareKeys) {
+        for (const auto &mifKey : mopieConfig.mifareKeys) {
             for (size_t i = 0; i < mifKey.length(); i += 2) {
                 keyB[i / 2] = strtoul(mifKey.substring(i, i + 2).c_str(), NULL, 16);
             }

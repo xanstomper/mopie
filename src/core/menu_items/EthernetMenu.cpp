@@ -85,18 +85,18 @@ void EthernetMenu::drawIcon(float scale) {
 
 
     // Borders
-    tft.fillRect(x1, y1, w, t, bruceConfig.priColor);
+    tft.fillRect(x1, y1, w, t, mopieConfig.priColor);
 
-    tft.fillRect(x1, y1, t, h, bruceConfig.priColor);
-    tft.fillRect(x2 - t, y1, t, h, bruceConfig.priColor);
+    tft.fillRect(x1, y1, t, h, mopieConfig.priColor);
+    tft.fillRect(x2 - t, y1, t, h, mopieConfig.priColor);
 
     // Pieces
     int sideW = (w - nw) / 2 + t;
-    tft.fillRect(x1, y2 - t, sideW, t, bruceConfig.priColor);
-    tft.fillRect(x2 - sideW, y2 - t, sideW, t, bruceConfig.priColor);
-    tft.fillRect(cx - nw / 2, y2 - nh - t, t, nh + t, bruceConfig.priColor);
-    tft.fillRect(cx + nw / 2 - t, y2 - nh - t, t, nh + t, bruceConfig.priColor);
-    tft.fillRect(cx - nw / 2, y2 - nh - t, nw, t, bruceConfig.priColor);
+    tft.fillRect(x1, y2 - t, sideW, t, mopieConfig.priColor);
+    tft.fillRect(x2 - sideW, y2 - t, sideW, t, mopieConfig.priColor);
+    tft.fillRect(cx - nw / 2, y2 - nh - t, t, nh + t, mopieConfig.priColor);
+    tft.fillRect(cx + nw / 2 - t, y2 - nh - t, t, nh + t, mopieConfig.priColor);
+    tft.fillRect(cx - nw / 2, y2 - nh - t, nw, t, mopieConfig.priColor);
 
     // 8 Pins
     int pinW = 2 * scale;
@@ -110,7 +110,7 @@ void EthernetMenu::drawIcon(float scale) {
 
     for (int i = 0; i < 8; i++) {
         int px = firstPinX + (i * step) - (pinW / 2);
-        tft.fillRect(px, y1 + t, pinW, pinH, bruceConfig.priColor);
+        tft.fillRect(px, y1 + t, pinW, pinH, mopieConfig.priColor);
     }
 }
 void EthernetMenu::drawIconAt(int cx, int cy, float scale) {

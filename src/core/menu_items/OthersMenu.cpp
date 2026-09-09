@@ -31,8 +31,8 @@ void OthersMenu::optionsMenu() {
 
     // === MOPIE CORE UTILS ===
     options.push_back({"SysInfo Pro", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("SYSINFO PRO", tftWidth/2, 2, 1);
         int y = 18;
         tft.drawString("Heap: " + String(ESP.getFreeHeap()/1024) + "KB / " + String(ESP.getHeapSize()/1024) + "KB", 2, y, 1); y+=12;
@@ -47,10 +47,10 @@ void OthersMenu::optionsMenu() {
         while (!check(AnyKeyPress)) delay(50);
     }});
     options.push_back({"Panic Wipe", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(0xF800, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(0xF800, mopieConfig.bgColor);
         tft.drawCentreString("!! PANIC WIPE !!", tftWidth/2, 10, 1);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("Hold BTN 3s", tftWidth/2, 30, 1);
         tft.drawCentreString("to wipe all data", tftWidth/2, 45, 1);
         unsigned long hold = millis();
@@ -58,13 +58,13 @@ void OthersMenu::optionsMenu() {
             if (!check(EscPress, false)) { hold = millis(); }
             delay(50);
         }
-        tft.fillScreen(bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
         tft.drawCentreString("WIPED", tftWidth/2, tftHeight/2, 2);
         delay(2000);
     }});
     options.push_back({"Pass Gen Pro", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("PASS GEN PRO", tftWidth/2, 2, 1);
         const char upper[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         const char lower[] = "abcdefghijklmnopqrstuvwxyz";
@@ -89,8 +89,8 @@ void OthersMenu::optionsMenu() {
         while (!check(AnyKeyPress)) delay(50);
     }});
     options.push_back({"Net Scanner", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("NET SCANNER", tftWidth/2, 2, 1);
         tft.drawString("Target: 192.168.4.1", 2, 18, 1);
         tft.drawString("Scanning common ports...", 2, 32, 1);
@@ -131,8 +131,8 @@ void OthersMenu::optionsMenu() {
         while (!check(AnyKeyPress)) delay(50);
     }});
     options.push_back({"Subnet Sweep", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("SUBNET SWEEP", tftWidth/2, 2, 1);
         tft.drawString("Scanning 192.168.4.0/24", 2, 18, 1);
         tft.drawString("Live hosts:", 2, 32, 1);
@@ -154,8 +154,8 @@ void OthersMenu::optionsMenu() {
         while (!check(AnyKeyPress)) delay(50);
     }});
     options.push_back({"MAC Spoofer", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("MAC SPOOFER", tftWidth/2, 2, 1);
         tft.drawString("Current:", 2, 18, 1);
         tft.drawString(WiFi.macAddress(), 2, 32, 1);
@@ -170,8 +170,8 @@ void OthersMenu::optionsMenu() {
         while (!check(AnyKeyPress)) delay(50);
     }});
     options.push_back({"Packet Flooder", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("PACKET FLOODER", tftWidth/2, 2, 1);
         tft.drawCentreString("UDP broadcast flood", tftWidth/2, 20, 1);
         tft.drawCentreString("Hold BTN to stop", tftWidth/2, 35, 1);
@@ -185,15 +185,15 @@ void OthersMenu::optionsMenu() {
             udp.endPacket();
             count++;
             if (millis() - start > 500) {
-                tft.fillRect(2, 50, tftWidth-4, 12, bruceConfig.bgColor);
+                tft.fillRect(2, 50, tftWidth-4, 12, mopieConfig.bgColor);
                 tft.drawCentreString("Packets: " + String(count) + " (" + String(count*2) + " pps)", tftWidth/2, 52, 1);
                 start = millis();
             }
         }
     }});
     options.push_back({"B64 Encoder", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("B64 ENCODER", tftWidth/2, 2, 1);
         const char* test = "MOPIE_FIRMWARE_V1";
         tft.drawString("Input: " + String(test), 2, 18, 1);
@@ -214,8 +214,8 @@ void OthersMenu::optionsMenu() {
         while (!check(AnyKeyPress)) delay(50);
     }});
     options.push_back({"Hash Gen", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("HASH GENERATOR", tftWidth/2, 2, 1);
         String input = "MOPIE" + String(random(9999));
         tft.drawString("Input: " + input, 2, 18, 1);
@@ -239,8 +239,8 @@ void OthersMenu::optionsMenu() {
         while (!check(AnyKeyPress)) delay(50);
     }});
     options.push_back({"Hex Viewer", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("HEX VIEWER", tftWidth/2, 2, 1);
         tft.drawString("Addr  00 01 02 03 04 05 06 07", 2, 18, 1);
         for (int row = 0; row < 8; row++) {
@@ -256,8 +256,8 @@ void OthersMenu::optionsMenu() {
         while (!check(AnyKeyPress)) delay(50);
     }});
     options.push_back({"Entropy Pool", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("ENTROPY POOL", tftWidth/2, 2, 1);
         tft.drawCentreString("Generating random data...", tftWidth/2, 20, 1);
         int y = 35;
@@ -271,8 +271,8 @@ void OthersMenu::optionsMenu() {
         while (!check(AnyKeyPress)) delay(50);
     }});
     options.push_back({" voltage Monitor", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("VOLTAGE MONITOR", tftWidth/2, 2, 1);
         int y = 18;
         tft.drawString("Battery: " + String(analogReadMilliVolts(37) / 1000.0, 2) + "V", 2, y, 1); y+=12;
@@ -285,8 +285,8 @@ void OthersMenu::optionsMenu() {
         while (!check(AnyKeyPress)) delay(50);
     }});
     options.push_back({"GPIO Control", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("GPIO CONTROL", tftWidth/2, 2, 1);
         int y = 18;
         tft.drawString("GPIO 25: " + String(digitalRead(25)), 2, y, 1); y+=12;
@@ -302,8 +302,8 @@ void OthersMenu::optionsMenu() {
         while (!check(AnyKeyPress)) delay(50);
     }});
     options.push_back({"WiFi Deauth Detector", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("DEAUTH DETECTOR", tftWidth/2, 2, 1);
         tft.drawCentreString("Monitoring for attacks...", tftWidth/2, 20, 1);
         tft.drawCentreString("Hold BTN to stop", tftWidth/2, 35, 1);
@@ -315,13 +315,13 @@ void OthersMenu::optionsMenu() {
             beacons += n;
             if (n > 20) deauth_frames += n / 10;  // Heuristic
             if (millis() - lastCheck > 500) {
-                tft.fillRect(2, 50, tftWidth-4, 30, bruceConfig.bgColor);
+                tft.fillRect(2, 50, tftWidth-4, 30, mopieConfig.bgColor);
                 tft.drawString("Beacons: " + String(beacons), 2, 52, 1);
                 tft.drawString("Deauth: " + String(deauth_frames), 2, 64, 1);
                 if (deauth_frames > 10) {
-                    tft.setTextColor(0xF800, bruceConfig.bgColor);
+                    tft.setTextColor(0xF800, mopieConfig.bgColor);
                     tft.drawCentreString("!! ATTACK DETECTED !!", tftWidth/2, 80, 1);
-                    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+                    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
                 }
                 lastCheck = millis();
             }
@@ -330,11 +330,11 @@ void OthersMenu::optionsMenu() {
         }
     }});
     options.push_back({"Beacon Mapper", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("BEACON MAPPER", tftWidth/2, 2, 1);
         int n = WiFi.scanNetworks(false, true, false, 500);
-        tft.fillScreen(bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
         tft.drawCentreString("Mapped " + String(n) + " APs", tftWidth/2, 2, 1);
         int y = 15;
         for (int i = 0; i < n && i < 12 && y < tftHeight - 10; i++) {
@@ -351,8 +351,8 @@ void OthersMenu::optionsMenu() {
         WiFi.scanDelete();
     }});
     options.push_back({"Channel Monitor", [=]() {
-        tft.fillScreen(bruceConfig.bgColor);
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.drawCentreString("CHANNEL MONITOR", tftWidth/2, 2, 1);
         tft.drawCentreString("Real-time channel usage", tftWidth/2, 20, 1);
         tft.drawCentreString("Hold BTN to stop", tftWidth/2, 35, 1);
@@ -363,7 +363,7 @@ void OthersMenu::optionsMenu() {
                 int ch = WiFi.channel(i);
                 if (ch >= 1 && ch <= 14) chCount[ch-1]++;
             }
-            tft.fillRect(2, 50, tftWidth-4, 60, bruceConfig.bgColor);
+            tft.fillRect(2, 50, tftWidth-4, 60, mopieConfig.bgColor);
             int y = 52;
             for (int ch = 0; ch < 14 && y < tftHeight - 10; ch++) {
                 if (chCount[ch] > 0) {

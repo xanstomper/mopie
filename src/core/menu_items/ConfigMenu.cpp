@@ -41,7 +41,7 @@ void ConfigMenu::optionsMenu() {
         }
 #endif
 
-        if (bruceConfig.devMode) {
+        if (mopieConfig.devMode) {
             localOptions.push_back({"Dev Console", [this]() { devMenu(); }});
         }
 
@@ -98,10 +98,10 @@ void ConfigMenu::ledMenu() {
                  beginLed();
                  setLedBrightnessConfig();
              }                                                                            },
-            {String("LED Blink: ") + (bruceConfig.ledBlinkEnabled ? "ON" : "OFF"),
+            {String("LED Blink: ") + (mopieConfig.ledBlinkEnabled ? "ON" : "OFF"),
              [this]() {
-                 bruceConfig.ledBlinkEnabled = !bruceConfig.ledBlinkEnabled;
-                 bruceConfig.saveFile();
+                 mopieConfig.ledBlinkEnabled = !mopieConfig.ledBlinkEnabled;
+                 mopieConfig.saveFile();
              }                                                                            },
             {"Back",                                                               []() {}},
         };
@@ -122,10 +122,10 @@ void ConfigMenu::audioMenu() {
         std::vector<Option> localOptions = {
 #if !defined(LITE_VERSION)
 #if defined(BUZZ_PIN) || defined(HAS_NS4168_SPKR)
-            {String("Sound: ") + (bruceConfig.soundEnabled ? "ON" : "OFF"),
+            {String("Sound: ") + (mopieConfig.soundEnabled ? "ON" : "OFF"),
                                                              [this]() {
-                 bruceConfig.soundEnabled = !bruceConfig.soundEnabled;
-                 bruceConfig.saveFile();
+                 mopieConfig.soundEnabled = !mopieConfig.soundEnabled;
+                 mopieConfig.saveFile();
              }                                                                                                                                            },
 #if defined(HAS_NS4168_SPKR)
             {"Volume",                                                    [this]() { setSoundVolume(); }},
@@ -148,20 +148,20 @@ void ConfigMenu::audioMenu() {
 void ConfigMenu::systemMenu() {
     while (true) {
         std::vector<Option> localOptions = {
-            {String("QuickBoot: ") + (bruceConfig.instantBoot ? "ON" : "OFF"),
+            {String("QuickBoot: ") + (mopieConfig.instantBoot ? "ON" : "OFF"),
              [this]() {
-                 bruceConfig.instantBoot = !bruceConfig.instantBoot;
-                 bruceConfig.saveFile();
+                 mopieConfig.instantBoot = !mopieConfig.instantBoot;
+                 mopieConfig.saveFile();
              }                                                                                                           },
-            {String("AutoWiFi: ") + (bruceConfig.wifiAtStartup ? "ON" : "OFF"),
+            {String("AutoWiFi: ") + (mopieConfig.wifiAtStartup ? "ON" : "OFF"),
              [this]() {
-                 bruceConfig.wifiAtStartup = !bruceConfig.wifiAtStartup;
-                 bruceConfig.saveFile();
+                 mopieConfig.wifiAtStartup = !mopieConfig.wifiAtStartup;
+                 mopieConfig.saveFile();
              }                                                                                                           },
             {"Startup App",                                                         [this]() { setStartupApp(); }        },
             {"App Manager",                                                      [this]() { mainMenu.hideAppsMenu(); }},
             {"Clock Setup",                                                       [this]() { setClock(); }             },
-            {String("Language: ") + bruceConfig.keyboardLang,              [this]() { setKeyboardLanguage(); }  },
+            {String("Language: ") + mopieConfig.keyboardLang,              [this]() { setKeyboardLanguage(); }  },
             {"Advanced",                                                            [this]() { advancedMenu(); }         },
             {"Back",                                                                []() {}                              },
         };
@@ -186,8 +186,8 @@ void ConfigMenu::advancedMenu() {
 #endif
             {"Device Name",
              [this]() {
-                 String name = keyboard(bruceConfigPins.bleName, 30, "Device name");
-                 if (name.length() > 0 && name != "\x1B") bruceConfigPins.setBleName(name);
+                 String name = keyboard(mopieConfigPins.bleName, 30, "Device name");
+                 if (name.length() > 0 && name != "\x1B") mopieConfigPins.setBleName(name);
              }                                                     },
             {"Network Creds",   [this]() { setNetworkCredsMenu(); }},
             {"Factory Reset",
@@ -201,8 +201,8 @@ void ConfigMenu::advancedMenu() {
                      TFT_RED
                  );
                  if (choice == 1) {
-                     bruceConfigPins.factoryReset();
-                     bruceConfig.factoryReset();
+                     mopieConfigPins.factoryReset();
+                     mopieConfig.factoryReset();
                  }
              }                                                     },
             {"Back",            []() {}                            },
@@ -248,7 +248,7 @@ void ConfigMenu::devMenu() {
         std::vector<Option> localOptions = {
             {"Serial -> USB",   [this]() { switchToUSBSerial(); }          },
             {"Serial -> UART",  [this]() { switchToUARTSerial(); }         },
-            {"Exit Dev Mode",   [this]() { bruceConfig.setDevMode(false); }},
+            {"Exit Dev Mode",   [this]() { mopieConfig.setDevMode(false); }},
             {"Back",            []() {}                                    },
         };
 
@@ -271,17 +271,17 @@ void ConfigMenu::pinsMenu() {
     while (true) {
         std::vector<Option> localOptions = {
             {"I2C Scanner",    [this]() { find_i2c_addresses(); }                      },
-            {"CC1101",         [this]() { setSPIPinsMenu(bruceConfigPins.CC1101_bus); }},
-            {"NRF24",          [this]() { setSPIPinsMenu(bruceConfigPins.NRF24_bus); } },
+            {"CC1101",         [this]() { setSPIPinsMenu(mopieConfigPins.CC1101_bus); }},
+            {"NRF24",          [this]() { setSPIPinsMenu(mopieConfigPins.NRF24_bus); } },
 #if !defined(LITE_VERSION)
-            {"LoRa",           [this]() { setSPIPinsMenu(bruceConfigPins.LoRa_bus); }  },
-            {"ST25R3916",      [this]() { setSPIPinsMenu(bruceConfigPins.ST25R_bus); } },
-            {"W5500",          [this]() { setSPIPinsMenu(bruceConfigPins.W5500_bus); } },
+            {"LoRa",           [this]() { setSPIPinsMenu(mopieConfigPins.LoRa_bus); }  },
+            {"ST25R3916",      [this]() { setSPIPinsMenu(mopieConfigPins.ST25R_bus); } },
+            {"W5500",          [this]() { setSPIPinsMenu(mopieConfigPins.W5500_bus); } },
 #endif
-            {"SDCard",         [this]() { setSPIPinsMenu(bruceConfigPins.SDCARD_bus); }},
-            {"I2C Bus",        [this]() { setI2CPinsMenu(bruceConfigPins.i2c_bus); }   },
-            {"UART",           [this]() { setUARTPinsMenu(bruceConfigPins.uart_bus); } },
-            {"GPS",            [this]() { setUARTPinsMenu(bruceConfigPins.gps_bus); }  },
+            {"SDCard",         [this]() { setSPIPinsMenu(mopieConfigPins.SDCARD_bus); }},
+            {"I2C Bus",        [this]() { setI2CPinsMenu(mopieConfigPins.i2c_bus); }   },
+            {"UART",           [this]() { setUARTPinsMenu(mopieConfigPins.uart_bus); } },
+            {"GPS",            [this]() { setUARTPinsMenu(mopieConfigPins.gps_bus); }  },
             {"Back",           []() {}                                                 },
         };
 
@@ -303,21 +303,21 @@ void ConfigMenu::switchToUSBSerial() {
 **  Function: switchToUARTSerial
 **********************************************************************/
 void ConfigMenu::switchToUARTSerial() {
-    if (bruceConfigPins.SDCARD_bus.checkConflict(bruceConfigPins.uart_bus.rx) ||
-        bruceConfigPins.SDCARD_bus.checkConflict(bruceConfigPins.uart_bus.tx)) {
+    if (mopieConfigPins.SDCARD_bus.checkConflict(mopieConfigPins.uart_bus.rx) ||
+        mopieConfigPins.SDCARD_bus.checkConflict(mopieConfigPins.uart_bus.tx)) {
         sdcardSPI.end();
     }
 
-    if (bruceConfigPins.CC1101_bus.checkConflict(bruceConfigPins.uart_bus.rx) ||
-        bruceConfigPins.CC1101_bus.checkConflict(bruceConfigPins.uart_bus.tx) ||
-        bruceConfigPins.NRF24_bus.checkConflict(bruceConfigPins.uart_bus.rx) ||
-        bruceConfigPins.NRF24_bus.checkConflict(bruceConfigPins.uart_bus.tx)) {
+    if (mopieConfigPins.CC1101_bus.checkConflict(mopieConfigPins.uart_bus.rx) ||
+        mopieConfigPins.CC1101_bus.checkConflict(mopieConfigPins.uart_bus.tx) ||
+        mopieConfigPins.NRF24_bus.checkConflict(mopieConfigPins.uart_bus.rx) ||
+        mopieConfigPins.NRF24_bus.checkConflict(mopieConfigPins.uart_bus.tx)) {
         AUX_SPI.end();
     }
 
-    pinMode(bruceConfigPins.uart_bus.rx, INPUT);
-    pinMode(bruceConfigPins.uart_bus.tx, OUTPUT);
-    Serial1.begin(115200, SERIAL_8N1, bruceConfigPins.uart_bus.rx, bruceConfigPins.uart_bus.tx);
+    pinMode(mopieConfigPins.uart_bus.rx, INPUT);
+    pinMode(mopieConfigPins.uart_bus.tx, OUTPUT);
+    Serial1.begin(115200, SERIAL_8N1, mopieConfigPins.uart_bus.rx, mopieConfigPins.uart_bus.tx);
     USBserial.setSerialOutput(&Serial1);
 }
 

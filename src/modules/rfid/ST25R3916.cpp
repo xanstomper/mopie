@@ -213,19 +213,19 @@ ST25R3916::~ST25R3916() {
 bool ST25R3916::_initSPI() {
     _deselectSharedSpiDevices();
 
-    int cs = (int)bruceConfigPins.ST25R_bus.cs;
-    int irq = (int)bruceConfigPins.ST25R_bus.io0;
+    int cs = (int)mopieConfigPins.ST25R_bus.cs;
+    int irq = (int)mopieConfigPins.ST25R_bus.io0;
     ST25R_LOG(
         "_initSPI: CS=%d IRQ=%d MOSI=%d MISO=%d SCK=%d",
         cs,
         irq,
-        (int)bruceConfigPins.ST25R_bus.mosi,
-        (int)bruceConfigPins.ST25R_bus.miso,
-        (int)bruceConfigPins.ST25R_bus.sck
+        (int)mopieConfigPins.ST25R_bus.mosi,
+        (int)mopieConfigPins.ST25R_bus.miso,
+        (int)mopieConfigPins.ST25R_bus.sck
     );
 
     _spi = acquireSPIBus(
-        bruceConfigPins.ST25R_bus.sck, bruceConfigPins.ST25R_bus.miso, bruceConfigPins.ST25R_bus.mosi
+        mopieConfigPins.ST25R_bus.sck, mopieConfigPins.ST25R_bus.miso, mopieConfigPins.ST25R_bus.mosi
     );
     if (!_spi) {
         ST25R_LOG("_initSPI: no hardware SPI bus available for these pins");
@@ -474,7 +474,7 @@ bool ST25R3916::_buildLoadedNdefMessage(std::vector<uint8_t> &ndefOut) {
     if (st25ExtractNdefMessageFromPageDump(strAllPages, ndefOut)) return true;
     if (st25BuildNdefMessageFromStruct(ndefMessage, ndefOut)) return true;
 
-    std::vector<uint8_t> uriPayload = Ndef::urlNdefAbbrv("https://bruce.computer");
+    std::vector<uint8_t> uriPayload = Ndef::urlNdefAbbrv("https://github.com/xanstomper/mopie");
     ndefOut = Ndef::newMessage(uriPayload);
     return !ndefOut.empty();
 }
@@ -2453,7 +2453,7 @@ void ST25R3916::_mfcRebuildStrAllPages() {
 }
 
 int ST25R3916::_readMifareClassic(rfalNfcDevice *dev) {
-    bruceConfig.ensureMifareKeysLoaded();
+    mopieConfig.ensureMifareKeysLoaded();
     memset(&mfcDump, 0, sizeof(mfcDump));
     _mfcAuthed = false;
 
@@ -2507,10 +2507,10 @@ int ST25R3916::_readMifareClassic(rfalNfcDevice *dev) {
             }
         }
 
-        // Fallback: try user keys from bruceConfig.mifareKeys (custom dictionary).
+        // Fallback: try user keys from mopieConfig.mifareKeys (custom dictionary).
         if (!authed) {
             for (int useB = 0; useB <= 1 && !authed; useB++) {
-                for (const auto &mifKey : bruceConfig.mifareKeys) {
+                for (const auto &mifKey : mopieConfig.mifareKeys) {
                     uint8_t k[6];
                     for (int i = 0; i < 6; i++)
                         k[i] = (uint8_t)strtoul(mifKey.substring(i * 2, i * 2 + 2).c_str(), nullptr, 16);
@@ -3065,8 +3065,8 @@ void ST25R3916::_buildT4TFiles() {
         memcpy(&rec[4], ndefMessage.payload, ndefMessage.payloadSize);
         rl = (uint16_t)(4 + ndefMessage.payloadSize);
     } else {
-        // Default: URI "https://bruce.computer".
-        const char *url = "bruce.computer";
+        // Default: URI "https://github.com/xanstomper/mopie".
+        const char *url = "github.com/xanstomper/mopie";
         uint8_t ul = (uint8_t)strlen(url);
         rec[0] = 0xD1;
         rec[1] = 0x01;

@@ -24,7 +24,7 @@ static bool connected = false;
 /** Select the proper SPI bus for the W5500, reusing existing shared buses when possible. */
 static SPIClass *selectEthernetSPIBus() {
     SPIClass *bus = acquireSPIBus(
-        bruceConfigPins.W5500_bus.sck, bruceConfigPins.W5500_bus.miso, bruceConfigPins.W5500_bus.mosi
+        mopieConfigPins.W5500_bus.sck, mopieConfigPins.W5500_bus.miso, mopieConfigPins.W5500_bus.mosi
     );
     if (!bus) {
         Serial.println("No hardware SPI bus available for Ethernet, falling back to default SPI");
@@ -97,8 +97,8 @@ void EthernetHelper::generate_mac() {
 }
 
 bool EthernetHelper::setup() {
-    if (bruceConfigPins.W5500_bus.cs == GPIO_NUM_NC || bruceConfigPins.W5500_bus.sck == GPIO_NUM_NC ||
-        bruceConfigPins.W5500_bus.miso == GPIO_NUM_NC || bruceConfigPins.W5500_bus.mosi == GPIO_NUM_NC) {
+    if (mopieConfigPins.W5500_bus.cs == GPIO_NUM_NC || mopieConfigPins.W5500_bus.sck == GPIO_NUM_NC ||
+        mopieConfigPins.W5500_bus.miso == GPIO_NUM_NC || mopieConfigPins.W5500_bus.mosi == GPIO_NUM_NC) {
         displayError("W5500 Pins not set", true);
         Serial.println("W5500 pins not configured, skipping Ethernet setup.");
         return false;
@@ -114,11 +114,11 @@ bool EthernetHelper::setup() {
     ethEventId = Network.onEvent(ethernet_event_handler);
 
     ethSpi = selectEthernetSPIBus();
-    const int csPin = static_cast<int>(bruceConfigPins.W5500_bus.cs);
+    const int csPin = static_cast<int>(mopieConfigPins.W5500_bus.cs);
     const int irqPin =
-        (bruceConfigPins.W5500_bus.io0 == GPIO_NUM_NC) ? -1 : static_cast<int>(bruceConfigPins.W5500_bus.io0);
+        (mopieConfigPins.W5500_bus.io0 == GPIO_NUM_NC) ? -1 : static_cast<int>(mopieConfigPins.W5500_bus.io0);
     const int rstPin =
-        (bruceConfigPins.W5500_bus.io2 == GPIO_NUM_NC) ? -1 : static_cast<int>(bruceConfigPins.W5500_bus.io2);
+        (mopieConfigPins.W5500_bus.io2 == GPIO_NUM_NC) ? -1 : static_cast<int>(mopieConfigPins.W5500_bus.io2);
 
     if (!ETH.begin(ETH_PHY_W5500, 1, csPin, irqPin, rstPin, *ethSpi)) {
         displayError("Ethernet start failed", true);

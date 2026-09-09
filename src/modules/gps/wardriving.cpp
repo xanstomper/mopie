@@ -76,9 +76,9 @@ void Wardriving::begin_wifi() {
 
 bool Wardriving::begin_gps() {
     releasePins();
-    pinMode(bruceConfigPins.gps_bus.rx, INPUT);
+    pinMode(mopieConfigPins.gps_bus.rx, INPUT);
     GPSserial.begin(
-        bruceConfigPins.gpsBaudrate, SERIAL_8N1, bruceConfigPins.gps_bus.rx, bruceConfigPins.gps_bus.tx
+        mopieConfigPins.gpsBaudrate, SERIAL_8N1, mopieConfigPins.gps_bus.rx, mopieConfigPins.gps_bus.tx
     );
 
     int count = 0;
@@ -495,16 +495,16 @@ void Wardriving::create_filename() {
 
 void Wardriving::releasePins() {
     rxPinReleased = false;
-    if (bruceConfigPins.CC1101_bus.checkConflict(bruceConfigPins.gps_bus.rx) ||
-        bruceConfigPins.NRF24_bus.checkConflict(bruceConfigPins.gps_bus.rx) ||
+    if (mopieConfigPins.CC1101_bus.checkConflict(mopieConfigPins.gps_bus.rx) ||
+        mopieConfigPins.NRF24_bus.checkConflict(mopieConfigPins.gps_bus.rx) ||
 #if !defined(LITE_VERSION)
-        bruceConfigPins.W5500_bus.checkConflict(bruceConfigPins.gps_bus.rx) ||
-        bruceConfigPins.LoRa_bus.checkConflict(bruceConfigPins.gps_bus.rx) ||
+        mopieConfigPins.W5500_bus.checkConflict(mopieConfigPins.gps_bus.rx) ||
+        mopieConfigPins.LoRa_bus.checkConflict(mopieConfigPins.gps_bus.rx) ||
 #endif
-        bruceConfigPins.SDCARD_bus.checkConflict(bruceConfigPins.gps_bus.rx)) {
+        mopieConfigPins.SDCARD_bus.checkConflict(mopieConfigPins.gps_bus.rx)) {
         // T-Embed CC1101 and T-Display S3 Touch ties this pin to the NRF24 CS;
         // switch it to input so the GPS UART can drive it.
-        pinMode(bruceConfigPins.gps_bus.rx, INPUT);
+        pinMode(mopieConfigPins.gps_bus.rx, INPUT);
         rxPinReleased = true;
     }
 }
@@ -529,29 +529,29 @@ void Wardriving::checkForAlert(const String &macAddress, const String &deviceTyp
 
 void Wardriving::restorePins() {
     if (rxPinReleased) {
-        if (bruceConfigPins.CC1101_bus.checkConflict(bruceConfigPins.gps_bus.rx) ||
-            bruceConfigPins.NRF24_bus.checkConflict(bruceConfigPins.gps_bus.rx) ||
+        if (mopieConfigPins.CC1101_bus.checkConflict(mopieConfigPins.gps_bus.rx) ||
+            mopieConfigPins.NRF24_bus.checkConflict(mopieConfigPins.gps_bus.rx) ||
 #if !defined(LITE_VERSION)
-            bruceConfigPins.W5500_bus.checkConflict(bruceConfigPins.gps_bus.rx) ||
-            bruceConfigPins.LoRa_bus.checkConflict(bruceConfigPins.gps_bus.rx) ||
+            mopieConfigPins.W5500_bus.checkConflict(mopieConfigPins.gps_bus.rx) ||
+            mopieConfigPins.LoRa_bus.checkConflict(mopieConfigPins.gps_bus.rx) ||
 #endif
-            bruceConfigPins.SDCARD_bus.checkConflict(bruceConfigPins.gps_bus.rx)) {
+            mopieConfigPins.SDCARD_bus.checkConflict(mopieConfigPins.gps_bus.rx)) {
             // Restore the original board state after leaving the GPS app s
             // o the radio/other peripherals behave as expected
-            pinMode(bruceConfigPins.gps_bus.rx, OUTPUT);
-            if (bruceConfigPins.gps_bus.rx == bruceConfigPins.CC1101_bus.cs ||
-                bruceConfigPins.gps_bus.rx == bruceConfigPins.NRF24_bus.cs ||
+            pinMode(mopieConfigPins.gps_bus.rx, OUTPUT);
+            if (mopieConfigPins.gps_bus.rx == mopieConfigPins.CC1101_bus.cs ||
+                mopieConfigPins.gps_bus.rx == mopieConfigPins.NRF24_bus.cs ||
 #if !defined(LITE_VERSION)
-                bruceConfigPins.gps_bus.rx == bruceConfigPins.W5500_bus.cs ||
-                bruceConfigPins.gps_bus.rx == bruceConfigPins.W5500_bus.cs ||
+                mopieConfigPins.gps_bus.rx == mopieConfigPins.W5500_bus.cs ||
+                mopieConfigPins.gps_bus.rx == mopieConfigPins.W5500_bus.cs ||
 #endif
-                bruceConfigPins.gps_bus.rx == bruceConfigPins.SDCARD_bus.cs) {
+                mopieConfigPins.gps_bus.rx == mopieConfigPins.SDCARD_bus.cs) {
                 // If it is conflicting to an SPI CS pin, keep it HIGH
-                digitalWrite(bruceConfigPins.gps_bus.rx, HIGH);
+                digitalWrite(mopieConfigPins.gps_bus.rx, HIGH);
             } else {
                 // If it is conflicting with any other SPI pin, keep it LOW
                 // Avoids CC1101 Jamming and nRF24 radio to keep enabled
-                digitalWrite(bruceConfigPins.gps_bus.rx, LOW);
+                digitalWrite(mopieConfigPins.gps_bus.rx, LOW);
             }
         }
         rxPinReleased = false;

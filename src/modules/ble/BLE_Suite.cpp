@@ -30,7 +30,7 @@
 int showSubMenu(const char *title, const char *options[], int optionCount);
 
 extern tft_logger tft;
-extern BruceConfig bruceConfig;
+extern MopieConfig mopieConfig;
 extern volatile int tftWidth;
 extern volatile int tftHeight;
 
@@ -2435,8 +2435,8 @@ bool MultiConnectionAttack::advertisingSpamSingle(NimBLEAddress target) {
     NimBLEAdvertising *pAdvertising = NimBLEDevice::getAdvertising();
     if (!pAdvertising) return false;
 
-    uint8_t bruceData[] = {0xFF, 0xFF, 'B', 'R', 'U', 'C', 'E'};
-    pAdvertising->setManufacturerData(bruceData, sizeof(bruceData));
+    uint8_t mopieData[] = {0xFF, 0xFF, 'B', 'R', 'U', 'C', 'E'};
+    pAdvertising->setManufacturerData(mopieData, sizeof(mopieData));
     pAdvertising->setName("Mopie-Spammer");
     pAdvertising->addServiceUUID(NimBLEUUID("12345678-1234-5678-1234-567812345678"));
 
@@ -3013,16 +3013,16 @@ String selectFileFromSD() {
 
     while (!exitMenu) {
         if (selected != lastSelected || scrollOffset != lastScrollOffset) {
-            tft.fillScreen(bruceConfig.bgColor);
+            tft.fillScreen(mopieConfig.bgColor);
             tft.drawRect(5, 5, tftWidth - 10, tftHeight - 10, TFT_WHITE);
 
-            tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+            tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
             tft.setTextSize(2);
             tft.setCursor((tftWidth - strlen("SD CARD FILES") * 12) / 2, 15);
             tft.print("SD CARD FILES");
             tft.setTextSize(1);
 
-            tft.setTextColor(TFT_YELLOW, bruceConfig.bgColor);
+            tft.setTextColor(TFT_YELLOW, mopieConfig.bgColor);
             tft.setCursor(20, 40);
             tft.print("Found: ");
             tft.print(fileCount);
@@ -3039,8 +3039,8 @@ String selectFileFromSD() {
                     tft.setCursor(25, yPos + 8);
                     tft.print("> ");
                 } else {
-                    tft.fillRect(20, yPos, tftWidth - 40, menuItemHeight - 3, bruceConfig.bgColor);
-                    tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+                    tft.fillRect(20, yPos, tftWidth - 40, menuItemHeight - 3, mopieConfig.bgColor);
+                    tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
                     tft.setCursor(25, yPos + 8);
                     tft.print("  ");
                 }
@@ -3051,14 +3051,14 @@ String selectFileFromSD() {
             }
 
             if (fileCount > maxVisibleItems) {
-                tft.setTextColor(TFT_CYAN, bruceConfig.bgColor);
+                tft.setTextColor(TFT_CYAN, mopieConfig.bgColor);
                 tft.setCursor(tftWidth - 25, menuStartY + 5);
                 if (scrollOffset > 0) tft.print("^");
                 tft.setCursor(tftWidth - 25, menuStartY + (maxVisibleItems * menuItemHeight) - 20);
                 if (scrollOffset + maxVisibleItems < fileCount) tft.print("v");
             }
 
-            tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+            tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
             tft.setCursor(20, tftHeight - 30);
             tft.print("SEL: Select  PREV/NEXT: Navigate");
             tft.setCursor(20, tftHeight - 20);
@@ -3146,11 +3146,11 @@ String getScriptFromUser() {
 
     while (!exitMenu) {
         if (selected != lastSelected || scrollOffset != lastScrollOffset) {
-            tft.fillScreen(bruceConfig.bgColor);
+            tft.fillScreen(mopieConfig.bgColor);
             TouchFooter();
             tft.drawRect(5, 5, tftWidth - 10, tftHeight - 10, TFT_WHITE);
 
-            tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+            tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
             tft.setTextSize(2);
             tft.setCursor((tftWidth - strlen("SELECT SCRIPT") * 12) / 2, 15);
             tft.print("SELECT SCRIPT");
@@ -3167,8 +3167,8 @@ String getScriptFromUser() {
                     tft.setCursor(25, yPos + 8);
                     tft.print("> ");
                 } else {
-                    tft.fillRect(20, yPos, tftWidth - 40, menuItemHeight - 3, bruceConfig.bgColor);
-                    tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+                    tft.fillRect(20, yPos, tftWidth - 40, menuItemHeight - 3, mopieConfig.bgColor);
+                    tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
                     tft.setCursor(25, yPos + 8);
                     tft.print("  ");
                 }
@@ -3179,14 +3179,14 @@ String getScriptFromUser() {
             }
 
             if (scriptCount > maxVisibleItems) {
-                tft.setTextColor(TFT_CYAN, bruceConfig.bgColor);
+                tft.setTextColor(TFT_CYAN, mopieConfig.bgColor);
                 tft.setCursor(tftWidth - 25, menuStartY + 5);
                 if (scrollOffset > 0) tft.print("^");
                 tft.setCursor(tftWidth - 25, menuStartY + (maxVisibleItems * menuItemHeight) - 20);
                 if (scrollOffset + maxVisibleItems < scriptCount) tft.print("v");
             }
 
-            tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+            tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
             tft.setCursor(20, tftHeight - 30);
             tft.print("SEL: Select  PREV/NEXT: Navigate");
             tft.setCursor(20, tftHeight - 20);
@@ -3970,11 +3970,11 @@ void BLE_Sniffer() {
                 }
 
                 if (redraw) {
-                    tft.fillScreen(bruceConfig.bgColor);
+                    tft.fillScreen(mopieConfig.bgColor);
                     drawMainBorderWithTitle("CAPTURED PACKETS");
 
                     tft.setTextSize(FP);
-                    tft.setTextColor(TFT_CYAN, bruceConfig.bgColor);
+                    tft.setTextColor(TFT_CYAN, mopieConfig.bgColor);
                     tft.setCursor(10, y);
                     tft.println("Packets: " + String(snifferPacketCount));
                     y += lineH;
@@ -3984,8 +3984,8 @@ void BLE_Sniffer() {
                         int idx = scrollOffset + i;
                         SnifferPacket &pkt = snifferPackets[idx];
                         bool selectedItem = (idx == selected);
-                        uint16_t fg = selectedItem ? bruceConfig.bgColor : TFT_WHITE;
-                        uint16_t bg = selectedItem ? bruceConfig.priColor : bruceConfig.bgColor;
+                        uint16_t fg = selectedItem ? mopieConfig.bgColor : TFT_WHITE;
+                        uint16_t bg = selectedItem ? mopieConfig.priColor : mopieConfig.bgColor;
 
                         tft.fillRect(10, y, tftWidth - 20, lineH - 2, bg);
                         tft.setTextColor(fg, bg);
@@ -3997,7 +3997,7 @@ void BLE_Sniffer() {
                     }
 
                     if (snifferPacketCount > visibleItems) {
-                        tft.setTextColor(TFT_CYAN, bruceConfig.bgColor);
+                        tft.setTextColor(TFT_CYAN, mopieConfig.bgColor);
                         tft.setCursor(tftWidth - 30, BORDER_PAD_Y + FM * LH + 4 + lineH);
                         if (scrollOffset > 0)
                             tft.drawString("^", tftWidth - 25, BORDER_PAD_Y + FM * LH + 4 + lineH, 1);
@@ -4008,7 +4008,7 @@ void BLE_Sniffer() {
                         }
                     }
 
-                    tft.setTextColor(TFT_DARKGREY, bruceConfig.bgColor);
+                    tft.setTextColor(TFT_DARKGREY, mopieConfig.bgColor);
                     tft.setCursor(10, tftHeight - 20);
                     tft.drawString(
                         "PREV/NEXT: Navigate  SEL: View Details  ESC: Back", 10, tftHeight - 20, 1
@@ -4040,7 +4040,7 @@ void BLE_Sniffer() {
                     int dy = BORDER_PAD_Y + FM * LH + 4;
                     int dlh = max(12, tftHeight / 14);
                     tft.setTextSize(FP);
-                    tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+                    tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
 
                     tft.setCursor(10, dy);
                     tft.println("Device: " + pkt.name);
@@ -4057,16 +4057,16 @@ void BLE_Sniffer() {
                     dy += dlh;
 
                     String parsed = parseManufacturerData(pkt.payload);
-                    tft.setTextColor(TFT_CYAN, bruceConfig.bgColor);
+                    tft.setTextColor(TFT_CYAN, mopieConfig.bgColor);
                     tft.println(parsed);
                     dy += dlh;
 
-                    tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+                    tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
                     String hexDump = pkt.payloadHex;
                     if (hexDump.length() > 400) hexDump = hexDump.substring(0, 400) + "...\n(truncated)";
                     tft.println(hexDump);
 
-                    tft.setTextColor(TFT_DARKGREY, bruceConfig.bgColor);
+                    tft.setTextColor(TFT_DARKGREY, mopieConfig.bgColor);
                     tft.setCursor(10, tftHeight - 20);
                     tft.drawString("Press any key to continue", 10, tftHeight - 20, 1);
 
@@ -4177,11 +4177,11 @@ String selectTargetFromScan(const char *title) {
     // Clear previous results before scanning
     g_pBLEScan->clearResults();
 
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     tft.drawRect(5, 5, tftWidth - 10, tftHeight - 10, TFT_WHITE);
     TouchFooter();
 
-    tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+    tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
     tft.setTextSize(2);
     String titleStr = String(title);
     int maxTitleWidth = tftWidth - 20;
@@ -4347,17 +4347,17 @@ String selectTargetFromScan(const char *title) {
 
     while (!exitLoop) {
         if (selectedIdx != lastSelected || scrollOffset != lastScrollOffset) {
-            tft.fillScreen(bruceConfig.bgColor);
+            tft.fillScreen(mopieConfig.bgColor);
             tft.drawRect(5, 5, tftWidth - 10, tftHeight - 10, TFT_WHITE);
             TouchFooter();
 
-            tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+            tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
             tft.setTextSize(2);
             tft.setCursor((tftWidth - tft.textWidth("SELECT DEVICE")) / 2, 15);
             tft.print("SELECT DEVICE");
             tft.setTextSize(1);
 
-            tft.setTextColor(TFT_YELLOW, bruceConfig.bgColor);
+            tft.setTextColor(TFT_YELLOW, mopieConfig.bgColor);
             tft.setCursor(20, 40);
             tft.print("Found: ");
             tft.print(deviceCount);
@@ -4382,8 +4382,8 @@ String selectTargetFromScan(const char *title) {
                     tft.setCursor(20, yPos + 10);
                     tft.print("> ");
                 } else {
-                    tft.fillRect(15, yPos, tftWidth - 30, deviceItemHeight - 5, bruceConfig.bgColor);
-                    tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+                    tft.fillRect(15, yPos, tftWidth - 30, deviceItemHeight - 5, mopieConfig.bgColor);
+                    tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
                     tft.setCursor(20, yPos + 10);
                     tft.print("  ");
                 }
@@ -4391,14 +4391,14 @@ String selectTargetFromScan(const char *title) {
             }
 
             if (deviceCount > (size_t)maxVisibleDevices) {
-                tft.setTextColor(TFT_CYAN, bruceConfig.bgColor);
+                tft.setTextColor(TFT_CYAN, mopieConfig.bgColor);
                 tft.setCursor(tftWidth - 25, menuStartY + 10);
                 if (scrollOffset > 0) tft.print("^");
                 tft.setCursor(tftWidth - 25, menuStartY + (maxVisibleDevices * deviceItemHeight) - 15);
                 if (scrollOffset + maxVisibleDevices < (int)deviceCount) tft.print("v");
             }
 
-            tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+            tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
             tft.setCursor(20, tftHeight - 30);
             tft.print("SEL: Select  PREV/NEXT: Navigate");
             tft.setCursor(20, tftHeight - 20);
@@ -4473,17 +4473,17 @@ String selectMultipleTargetsFromScan(const char *title, std::vector<NimBLEAddres
     if (maxVisibleItems > (int)deviceCount) maxVisibleItems = deviceCount;
 
     while (!exitMenu) {
-        tft.fillScreen(bruceConfig.bgColor);
+        tft.fillScreen(mopieConfig.bgColor);
         tft.drawRect(5, 5, tftWidth - 10, tftHeight - 10, TFT_WHITE);
         TouchFooter();
 
-        tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+        tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
         tft.setTextSize(2);
         tft.setCursor((tftWidth - tft.textWidth(title)) / 2, 15);
         tft.print(title);
         tft.setTextSize(1);
 
-        tft.setTextColor(TFT_YELLOW, bruceConfig.bgColor);
+        tft.setTextColor(TFT_YELLOW, mopieConfig.bgColor);
         tft.setCursor(20, 40);
         tft.print("Selected: ");
         tft.print(targets.size());
@@ -4501,8 +4501,8 @@ String selectMultipleTargetsFromScan(const char *title, std::vector<NimBLEAddres
                 tft.setCursor(25, yPos + 8);
                 tft.print(selected[idx] ? "[X] " : "[ ] ");
             } else {
-                tft.fillRect(20, yPos, tftWidth - 40, menuItemHeight - 3, bruceConfig.bgColor);
-                tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+                tft.fillRect(20, yPos, tftWidth - 40, menuItemHeight - 3, mopieConfig.bgColor);
+                tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
                 tft.setCursor(25, yPos + 8);
                 tft.print(selected[idx] ? "[X] " : "[ ] ");
             }
@@ -4513,14 +4513,14 @@ String selectMultipleTargetsFromScan(const char *title, std::vector<NimBLEAddres
         }
 
         if (deviceCount > (size_t)maxVisibleItems) {
-            tft.setTextColor(TFT_CYAN, bruceConfig.bgColor);
+            tft.setTextColor(TFT_CYAN, mopieConfig.bgColor);
             tft.setCursor(tftWidth - 25, menuStartY + 5);
             if (scrollOffset > 0) tft.print("^");
             tft.setCursor(tftWidth - 25, menuStartY + (maxVisibleItems * menuItemHeight) - 20);
             if (scrollOffset + maxVisibleItems < (int)deviceCount) tft.print("v");
         }
 
-        tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+        tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
         tft.setCursor(20, tftHeight - 30);
         tft.print("SEL: Toggle  NEXT: Confirm  PREV: Select");
         tft.setCursor(20, tftHeight - 20);
@@ -4883,19 +4883,19 @@ static bool welcomeShown = false;
 void showWelcomeScreen() {
     if (welcomeShown) return;
 
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     TouchFooter();
     tft.setTextSize(4);
-    tft.setTextColor(DEFAULT_PRICOLOR, bruceConfig.bgColor);
+    tft.setTextColor(DEFAULT_PRICOLOR, mopieConfig.bgColor);
     tft.setCursor((tftWidth - tft.textWidth("MOPIE")) / 2, 35);
     tft.print("MOPIE");
 
-    tft.setTextColor(TFT_BLUE, bruceConfig.bgColor);
+    tft.setTextColor(TFT_BLUE, mopieConfig.bgColor);
     tft.setTextSize(2);
     tft.setCursor((tftWidth - tft.textWidth("BLE SUITE")) / 2, 80);
     tft.print("BLE SUITE");
 
-    tft.setTextColor(TFT_LIGHTGREY, bruceConfig.bgColor);
+    tft.setTextColor(TFT_LIGHTGREY, mopieConfig.bgColor);
     tft.setTextSize(1.5);
     tft.setCursor((tftWidth - tft.textWidth("v3.1")) / 2, 100);
     tft.print("v3.1");
@@ -4941,11 +4941,11 @@ void BleSuiteMenu() {
 
     while (true) {
         if (selected != lastSelected || scrollOffset != lastScrollOffset) {
-            tft.fillScreen(bruceConfig.bgColor);
+            tft.fillScreen(mopieConfig.bgColor);
             TouchFooter();
             tft.drawRect(5, 5, tftWidth - 10, tftHeight - 10, TFT_WHITE);
 
-            tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+            tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
             tft.setTextSize(2);
             tft.setCursor((tftWidth - tft.textWidth("BLE SUITE")) / 2, 15);
             tft.print("BLE SUITE");
@@ -4961,8 +4961,8 @@ void BleSuiteMenu() {
                     tft.setCursor(25, yPos + 5);
                     tft.print("> ");
                 } else {
-                    tft.fillRect(20, yPos, tftWidth - 40, 20, bruceConfig.bgColor);
-                    tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+                    tft.fillRect(20, yPos, tftWidth - 40, 20, mopieConfig.bgColor);
+                    tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
                     tft.setCursor(25, yPos + 5);
                     tft.print("  ");
                 }
@@ -4970,14 +4970,14 @@ void BleSuiteMenu() {
             }
 
             if (MENU_ITEMS > maxVisible) {
-                tft.setTextColor(TFT_CYAN, bruceConfig.bgColor);
+                tft.setTextColor(TFT_CYAN, mopieConfig.bgColor);
                 tft.setCursor(tftWidth - 25, 65);
                 if (scrollOffset > 0) tft.print("^");
                 tft.setCursor(tftWidth - 25, 65 + (maxVisible * 25) - 10);
                 if (scrollOffset + maxVisible < MENU_ITEMS) tft.print("v");
             }
 
-            tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+            tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
             tft.setCursor(20, tftHeight - 30);
             tft.print("SEL: Select  PREV/NEXT: Navigate");
             tft.setCursor(20, tftHeight - 20);
@@ -5089,11 +5089,11 @@ void executeAttackWithTargetScan(int attackIndex) {
 //=============================================================================
 
 int showSubMenu(const char *title, const char *options[], int optionCount) {
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     TouchFooter();
     tft.drawRect(5, 5, tftWidth - 10, tftHeight - 10, TFT_WHITE);
 
-    tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+    tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
     tft.setTextSize(2);
     tft.setTextWrap(true, true);
     tft.setCursor((tftWidth - tft.textWidth(title)) / 2, 15);
@@ -5106,7 +5106,7 @@ int showSubMenu(const char *title, const char *options[], int optionCount) {
 
     while (true) {
         if (selected != lastSelected || scrollOffset != lastScrollOffset) {
-            tft.fillRect(20, 60, tftWidth - 40, tftHeight - 115, bruceConfig.bgColor);
+            tft.fillRect(20, 60, tftWidth - 40, tftHeight - 115, mopieConfig.bgColor);
 
             for (int i = 0; i < maxVisible && (scrollOffset + i) < optionCount; i++) {
                 int idx = scrollOffset + i;
@@ -5132,8 +5132,8 @@ int showSubMenu(const char *title, const char *options[], int optionCount) {
                     tft.setCursor(25, yPos + 5);
                     tft.print("> ");
                 } else {
-                    tft.fillRect(20, yPos, tftWidth - 40, 20, bruceConfig.bgColor);
-                    tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+                    tft.fillRect(20, yPos, tftWidth - 40, 20, mopieConfig.bgColor);
+                    tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
                     tft.setCursor(25, yPos + 5);
                     tft.print("  ");
                 }
@@ -5141,14 +5141,14 @@ int showSubMenu(const char *title, const char *options[], int optionCount) {
             }
 
             if (optionCount > maxVisible) {
-                tft.setTextColor(TFT_CYAN, bruceConfig.bgColor);
+                tft.setTextColor(TFT_CYAN, mopieConfig.bgColor);
                 tft.setCursor(tftWidth - 25, 65);
                 if (scrollOffset > 0) tft.print("^");
                 tft.setCursor(tftWidth - 25, 65 + (maxVisible * 25) - 10);
                 if (scrollOffset + maxVisible < optionCount) tft.print("v");
             }
 
-            tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+            tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
             tft.setCursor(20, tftHeight - 30);
             tft.print("SEL: Select  PREV/NEXT: Navigate");
             tft.setCursor(20, tftHeight - 20);
@@ -5784,17 +5784,17 @@ void runAudioControlTest(NimBLEAddress target) {
 
     while (!exitSubmenu) {
         if (selectedTest != lastSelected) {
-            tft.fillScreen(bruceConfig.bgColor);
+            tft.fillScreen(mopieConfig.bgColor);
             TouchFooter();
             tft.drawRect(5, 5, tftWidth - 10, tftHeight - 10, TFT_WHITE);
 
-            tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+            tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
             tft.setTextSize(2);
             tft.setCursor((tftWidth - tft.textWidth("AUDIO CONTROL TEST")) / 2, 15);
             tft.print("AUDIO CONTROL TEST");
             tft.setTextSize(1);
 
-            tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+            tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
             tft.setCursor(20, 60);
             tft.println("Select Audio Test:");
 
@@ -5822,7 +5822,7 @@ void runAudioControlTest(NimBLEAddress target) {
                 tft.print(displayName);
             }
 
-            tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+            tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
             tft.setCursor(20, tftHeight - 30);
             tft.print("SEL: Select  PREV/NEXT: Navigate");
             tft.setCursor(20, tftHeight - 20);
@@ -5950,17 +5950,17 @@ void runHFPHIDPivotAttack(NimBLEAddress target) {
 //=============================================================================
 
 void showAttackProgress(const char *message, uint16_t color) {
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     TouchFooter();
     tft.drawRect(5, 5, tftWidth - 10, tftHeight - 10, TFT_WHITE);
 
-    tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+    tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
     tft.setTextSize(2);
     tft.setCursor((tftWidth - tft.textWidth("BLE SUITE")) / 2, 15);
     tft.print("BLE SUITE");
     tft.setTextSize(1);
 
-    tft.setTextColor(color, bruceConfig.bgColor);
+    tft.setTextColor(color, mopieConfig.bgColor);
 
     String msg = message;
     int maxWidth = tftWidth - 40;
@@ -5997,7 +5997,7 @@ void showAttackProgress(const char *message, uint16_t color) {
     tft.print(spinner[spinnerPos % 4]);
     spinnerPos++;
 
-    tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+    tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
     tft.setCursor(20, tftHeight - 30);
     tft.print("Please wait...");
 }
@@ -6070,11 +6070,11 @@ void showAttackResult(bool success, const char *message) {
 }
 
 bool confirmAttack(const char *targetName) {
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     TouchFooter();
     tft.drawRect(5, 5, tftWidth - 10, tftHeight - 10, TFT_WHITE);
 
-    tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+    tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
     tft.setTextSize(2);
     tft.setCursor((tftWidth - tft.textWidth("CONFIRM ATTACK")) / 2, 15);
     tft.print("CONFIRM ATTACK");
@@ -6093,7 +6093,7 @@ bool confirmAttack(const char *targetName) {
     tft.setCursor(20, 90);
     tft.println("FastPair buffer overflow exploit");
 
-    tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+    tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
     tft.setCursor(20, tftHeight - 30);
     tft.print("SEL: Yes  NEXT: No  ESC: Cancel");
 
@@ -6106,17 +6106,17 @@ bool confirmAttack(const char *targetName) {
 }
 
 bool requireSimpleConfirmation(const char *message) {
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     TouchFooter();
     tft.drawRect(5, 5, tftWidth - 10, tftHeight - 10, TFT_WHITE);
 
-    tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+    tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
     tft.setTextSize(2);
     tft.setCursor((tftWidth - tft.textWidth("CONFIRM")) / 2, 15);
     tft.print("CONFIRM");
     tft.setTextSize(1);
 
-    tft.fillRect(20, 50, tftWidth - 40, 80, bruceConfig.bgColor);
+    tft.fillRect(20, 50, tftWidth - 40, 80, mopieConfig.bgColor);
     tft.setCursor(20, 60);
     String msgStr = message;
 
@@ -6148,7 +6148,7 @@ bool requireSimpleConfirmation(const char *message) {
         if (yPos > 130) break;
     }
 
-    tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+    tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
     tft.setCursor(20, tftHeight - 35);
     tft.print("SEL: OK  ESC: Cancel");
 
@@ -6172,16 +6172,16 @@ int8_t showAdaptiveMessage(
     if (strlen(btn2) > 0) buttonCount++;
     if (strlen(btn3) > 0) buttonCount++;
 
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
     TouchFooter();
     tft.drawRect(5, 5, tftWidth - 10, tftHeight - 10, TFT_WHITE);
-    tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+    tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
     tft.setTextSize(2);
     tft.setCursor((tftWidth - tft.textWidth("MESSAGE")) / 2, 15);
     tft.print("MESSAGE");
     tft.setTextSize(1);
 
-    tft.setTextColor(color, bruceConfig.bgColor);
+    tft.setTextColor(color, mopieConfig.bgColor);
 
     String lineStr = line1;
     int maxWidth = tftWidth - 40;
@@ -6212,7 +6212,7 @@ int8_t showAdaptiveMessage(
         if (yPos > 140) break;
     }
 
-    tft.setTextColor(TFT_BLACK, bruceConfig.bgColor);
+    tft.setTextColor(TFT_BLACK, mopieConfig.bgColor);
     tft.setCursor(20, tftHeight - 35);
 
     if (buttonCount == 0) {

@@ -6,10 +6,10 @@
 #include <esp_wifi.h>
 
 void applyConfiguredMAC() {
-    if (bruceConfig.wifiMAC.length() == 17 && validateMACFormat(bruceConfig.wifiMAC)) {
+    if (mopieConfig.wifiMAC.length() == 17 && validateMACFormat(mopieConfig.wifiMAC)) {
         uint8_t newMAC[6];
         sscanf(
-            bruceConfig.wifiMAC.c_str(),
+            mopieConfig.wifiMAC.c_str(),
             "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx",
             &newMAC[0],
             &newMAC[1],
@@ -20,7 +20,7 @@ void applyConfiguredMAC() {
         );
 
         if (esp_wifi_set_mac(WIFI_IF_STA, newMAC) == ESP_OK) {
-            Serial.println("[WiFi] Custom MAC applied: " + bruceConfig.wifiMAC);
+            Serial.println("[WiFi] Custom MAC applied: " + mopieConfig.wifiMAC);
         } else {
             Serial.println("[WiFi] Failed to apply custom MAC, using default");
         }
@@ -44,8 +44,8 @@ bool setCustomMAC(const String &mac) {
         displayError("Invalid MAC Format!");
         return false;
     }
-    bruceConfig.wifiMAC = mac;
-    bruceConfig.saveFile();
+    mopieConfig.wifiMAC = mac;
+    mopieConfig.saveFile();
     return true;
 }
 
@@ -64,8 +64,8 @@ String generateRandomMAC() {
 void wifiMACMenu() {
     String currentMAC;
 
-    if (bruceConfig.wifiMAC != "" && validateMACFormat(bruceConfig.wifiMAC)) {
-        currentMAC = bruceConfig.wifiMAC + " (Custom)";
+    if (mopieConfig.wifiMAC != "" && validateMACFormat(mopieConfig.wifiMAC)) {
+        currentMAC = mopieConfig.wifiMAC + " (Custom)";
     } else {
         currentMAC = WiFi.macAddress() + " (Default)";
     }
@@ -75,8 +75,8 @@ void wifiMACMenu() {
 
     options.clear();
     options.push_back({"Default MAC", []() {
-                           bruceConfig.wifiMAC = "";
-                           bruceConfig.saveFile();
+                           mopieConfig.wifiMAC = "";
+                           mopieConfig.saveFile();
                            displayTextLine("Default MAC set");
                        }});
 

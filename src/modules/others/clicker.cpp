@@ -123,15 +123,15 @@ void drawMenuItem(
     // Clear item area to prevent visual artifacts
     int clearHeight = (itemIndex == ITEM_START) ? layout.button_height : layout.item_height;
     tft.fillRect(
-        layout.margin - 5, yPos - 5, tftWidth - 2 * layout.margin + 10, clearHeight + 10, bruceConfig.bgColor
+        layout.margin - 5, yPos - 5, tftWidth - 2 * layout.margin + 10, clearHeight + 10, mopieConfig.bgColor
     );
 
     tft.setTextSize(layout.text_size_large);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
 
     // Draw selection border (green when editing, white when selected)
     if (isSelected && itemIndex != ITEM_START) {
-        uint16_t borderColor = isEdit ? TFT_GREEN : bruceConfig.priColor;
+        uint16_t borderColor = isEdit ? TFT_GREEN : mopieConfig.priColor;
         int borderWidth = isEdit ? 2 : 1;
 
         for (int i = 0; i < borderWidth; i++) {
@@ -164,10 +164,10 @@ void drawMenuItem(
             int numWidth = strlen(delayStr) * 6 * layout.text_size_large;
 
             tft.setCursor(unitX - numWidth - 12, contentY);
-            if (isEdit && isSelected) tft.setTextColor(TFT_YELLOW, bruceConfig.bgColor);
+            if (isEdit && isSelected) tft.setTextColor(TFT_YELLOW, mopieConfig.bgColor);
             tft.print(delayStr);
 
-            tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+            tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
             tft.print("ms");
             break;
         }
@@ -182,7 +182,7 @@ void drawMenuItem(
             int textWidth = strlen(btnName) * 6 * layout.text_size_large;
 
             tft.setCursor(unitX - textWidth, contentY);
-            if (isEdit && isSelected) tft.setTextColor(TFT_YELLOW, bruceConfig.bgColor);
+            if (isEdit && isSelected) tft.setTextColor(TFT_YELLOW, mopieConfig.bgColor);
             tft.print(btnName);
             break;
         }
@@ -198,14 +198,14 @@ void drawMenuItem(
                 const char *customText = "Custom";
                 int textWidth = strlen(customText) * 6 * layout.text_size_large;
                 tft.setCursor(unitX - textWidth, contentY);
-                if (isEdit && isSelected) tft.setTextColor(TFT_YELLOW, bruceConfig.bgColor);
+                if (isEdit && isSelected) tft.setTextColor(TFT_YELLOW, mopieConfig.bgColor);
                 tft.print(customText);
             } else if (config.max_clicks == 0) {
                 // Show "Infinite" or "INF" for unlimited clicks
                 const char *infText = (tftWidth > 200) ? "Infinite" : "INF";
                 int textWidth = strlen(infText) * 6 * layout.text_size_large;
                 tft.setCursor(unitX - textWidth, contentY);
-                if (isEdit && isSelected) tft.setTextColor(TFT_YELLOW, bruceConfig.bgColor);
+                if (isEdit && isSelected) tft.setTextColor(TFT_YELLOW, mopieConfig.bgColor);
                 tft.print(infText);
             } else {
                 // Show numeric value
@@ -213,7 +213,7 @@ void drawMenuItem(
                 snprintf(clicksStr, sizeof(clicksStr), "%d", config.max_clicks);
                 int numWidth = strlen(clicksStr) * 6 * layout.text_size_large;
                 tft.setCursor(unitX - numWidth, contentY);
-                if (isEdit && isSelected) tft.setTextColor(TFT_YELLOW, bruceConfig.bgColor);
+                if (isEdit && isSelected) tft.setTextColor(TFT_YELLOW, mopieConfig.bgColor);
                 tft.print(clicksStr);
             }
             break;
@@ -247,18 +247,18 @@ void drawMenuItem(
  * @param layout Screen layout configuration
  */
 void drawConfigScreen(const LayoutConfig &layout) {
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
 
     // Header bar with app title
-    tft.fillRect(0, 0, tftWidth, layout.header_height, bruceConfig.priColor);
-    tft.setTextColor(bruceConfig.bgColor, bruceConfig.priColor);
+    tft.fillRect(0, 0, tftWidth, layout.header_height, mopieConfig.priColor);
+    tft.setTextColor(mopieConfig.bgColor, mopieConfig.priColor);
     tft.setTextSize(layout.text_size_large);
     tft.setCursor(layout.margin, (layout.header_height - (layout.text_size_large * 8)) / 2);
     tft.println("AUTO CLICKER v1.1");
 
     // Footer with control hints (only on larger screens)
     if (tftHeight > 200) {
-        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
         tft.setTextSize(layout.text_size_small);
         tft.setCursor(layout.margin, tftHeight - 15);
         tft.print("NAV: ^v | EDIT: Sel | START: Sel");
@@ -272,7 +272,7 @@ void drawConfigScreen(const LayoutConfig &layout) {
  * @param buttonName Name of the button being clicked (LEFT/RIGHT/MID)
  */
 void drawClickingScreen(const LayoutConfig &layout, const char *buttonName) {
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
 
     // Animated header to show active state
     const int headerHeight = (tftHeight > 200) ? 40 : 30;
@@ -287,7 +287,7 @@ void drawClickingScreen(const LayoutConfig &layout, const char *buttonName) {
 
     // Static configuration info
     const int infoY = headerHeight + 10;
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setTextSize(layout.text_size_small);
 
     // Line 1: Delay and button type
@@ -322,20 +322,20 @@ void updateCPSDisplay(const LayoutConfig &layout, int currentCPS, unsigned long 
     const int cpsSize = (tftWidth > 200) ? 3 : 2;
 
     // Clear previous CPS area to prevent overlap
-    tft.fillRect(0, cpsY - 5, tftWidth, cpsSize * 8 + 30, bruceConfig.bgColor);
+    tft.fillRect(0, cpsY - 5, tftWidth, cpsSize * 8 + 30, mopieConfig.bgColor);
 
     // Large CPS value centered
     char cpsStr[16];
     snprintf(cpsStr, sizeof(cpsStr), "%d", currentCPS);
     tft.setTextSize(cpsSize);
-    tft.setTextColor(TFT_GREEN, bruceConfig.bgColor);
+    tft.setTextColor(TFT_GREEN, mopieConfig.bgColor);
     int cpsWidth = strlen(cpsStr) * 6 * cpsSize;
     tft.setCursor((tftWidth - cpsWidth) / 2, cpsY);
     tft.print(cpsStr);
 
     // Label below CPS value
     tft.setTextSize(layout.text_size_small);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     const char *label = "Clicks/Second";
     int labelWidth = strlen(label) * 6;
     tft.setCursor((tftWidth - labelWidth) / 2, cpsY + cpsSize * 8 + 5);
@@ -373,7 +373,7 @@ void drawSummaryScreen(
     const LayoutConfig &layout, unsigned long totalClicks, const char *buttonName, bool completed,
     unsigned long delay_ms, int max_clicks
 ) {
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
 
     // Header shows completion status
     uint16_t headerColor = completed ? TFT_DARKGREEN : TFT_DARKGREY;
@@ -387,7 +387,7 @@ void drawSummaryScreen(
     tft.print(statusText);
 
     // Display statistics
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setTextSize(layout.text_size_small);
     int infoY = layout.header_height + 20;
 
@@ -421,7 +421,7 @@ void drawSummaryScreen(
  * @param layout Screen layout configuration
  */
 void drawUSBInitScreen(const LayoutConfig &layout) {
-    tft.fillScreen(bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
 
     // Header
     const int headerHeight = (tftHeight > 200) ? 40 : 30;
@@ -435,7 +435,7 @@ void drawUSBInitScreen(const LayoutConfig &layout) {
     tft.print(headerText);
 
     // Message
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setTextSize(layout.text_size_small);
     int msgY = tftHeight / 2 - 20;
 
@@ -451,12 +451,12 @@ void drawUSBInitScreen(const LayoutConfig &layout) {
 
     // Countdown animation (3 seconds)
     tft.setTextSize((tftWidth > 200) ? 3 : 2);
-    tft.setTextColor(TFT_YELLOW, bruceConfig.bgColor);
+    tft.setTextColor(TFT_YELLOW, mopieConfig.bgColor);
 
     for (int i = 3; i > 0; i--) {
         // Clear previous number
         int numY = tftHeight / 2 + 20;
-        tft.fillRect(0, numY - 5, tftWidth, 30, bruceConfig.bgColor);
+        tft.fillRect(0, numY - 5, tftWidth, 30, mopieConfig.bgColor);
 
         // Draw countdown number
         char numStr[2];
@@ -830,10 +830,10 @@ void clicker_setup() {
     delay(2000);
 
     // Show restart/exit prompt
-    tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+    tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
     tft.setTextSize(layout.text_size_small);
     int promptY = tftHeight - 20;
-    tft.fillRect(0, promptY - 5, tftWidth, 25, bruceConfig.bgColor);
+    tft.fillRect(0, promptY - 5, tftWidth, 25, mopieConfig.bgColor);
     tft.setCursor(layout.margin, promptY);
     tft.print("OK: Restart | ESC: Exit");
 
@@ -888,8 +888,8 @@ void usbClickerSetup() { clicker_setup(); }
  * Will require BLE HID library and pairing logic
  */
 void bleClickerSetup() {
-    tft.fillScreen(bruceConfig.bgColor);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setTextSize(2);
     tft.setCursor(10, tftHeight / 2 - 8);
     tft.print("BLE Mode");

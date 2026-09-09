@@ -18,12 +18,12 @@ Wigle::Wigle() {}
 Wigle::~Wigle() {}
 
 bool Wigle::_check_token() {
-    if (bruceConfig.wigleBasicToken == "") {
+    if (mopieConfig.wigleBasicToken == "") {
         displayError("Wigle token not found", true);
         return false;
     }
 
-    auth_header = "Basic " + bruceConfig.wigleBasicToken;
+    auth_header = "Basic " + mopieConfig.wigleBasicToken;
 
     if (!wifiConnected) wifiConnectMenu();
 
@@ -44,7 +44,7 @@ bool Wigle::get_user() {
     client.print("Host: ");
     client.println(host);
     client.println("Connection: close");
-    client.println("User-Agent: bruce.wardriving");
+    client.println("User-Agent: mopie.wardriving");
     client.print("Authorization: ");
     client.println(auth_header);
     client.println();
@@ -92,7 +92,7 @@ void Wigle::send_upload_headers(
     client.print("Host: ");
     client.println(host);
     client.println("Connection: close");
-    client.println("User-Agent: bruce.wardriving");
+    client.println("User-Agent: mopie.wardriving");
     client.print("Authorization: ");
     client.println(auth_header);
     client.print("Content-Type: multipart/form-data; boundary=");

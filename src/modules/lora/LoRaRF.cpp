@@ -14,7 +14,7 @@
 #include <globals.h>
 #include <vector>
 
-extern BruceConfigPins bruceConfigPins;
+extern MopieConfigPins mopieConfigPins;
 
 bool update = false;
 String msg;
@@ -49,7 +49,7 @@ int getLoraIrqPin() {
 #ifdef LORA_IRQ
     return LORA_IRQ;
 #else
-    return bruceConfigPins.LoRa_bus.io2;
+    return mopieConfigPins.LoRa_bus.io2;
 #endif
 }
 
@@ -61,8 +61,8 @@ int getLoraBusyPin() {
 #endif
 }
 
-int getLoraResetPin() { return bruceConfigPins.LoRa_bus.io0; }
-int getLoraCsPin() { return bruceConfigPins.LoRa_bus.cs; }
+int getLoraResetPin() { return mopieConfigPins.LoRa_bus.io0; }
+int getLoraCsPin() { return mopieConfigPins.LoRa_bus.cs; }
 
 void clearLoraRadio() {
     if (lora1276) {
@@ -86,7 +86,7 @@ void onLoraPacket() {
 
 SPIClass *selectLoraSPIBus() {
     SPIClass *bus =
-        acquireSPIBus(bruceConfigPins.LoRa_bus.sck, bruceConfigPins.LoRa_bus.miso, bruceConfigPins.LoRa_bus.mosi);
+        acquireSPIBus(mopieConfigPins.LoRa_bus.sck, mopieConfigPins.LoRa_bus.miso, mopieConfigPins.LoRa_bus.mosi);
     if (!bus) {
         Serial.println("No hardware SPI bus available for LoRa, falling back to default SPI");
         return &SPI;
@@ -99,8 +99,8 @@ bool startLoraRadio(float bandMHz) {
     loraPacketReceived = false;
     loraInterruptEnabled = true;
     const int irqPin = getLoraIrqPin();
-    if (getLoraCsPin() == GPIO_NUM_NC || bruceConfigPins.LoRa_bus.mosi == GPIO_NUM_NC ||
-        bruceConfigPins.LoRa_bus.miso == GPIO_NUM_NC || bruceConfigPins.LoRa_bus.sck == GPIO_NUM_NC) {
+    if (getLoraCsPin() == GPIO_NUM_NC || mopieConfigPins.LoRa_bus.mosi == GPIO_NUM_NC ||
+        mopieConfigPins.LoRa_bus.miso == GPIO_NUM_NC || mopieConfigPins.LoRa_bus.sck == GPIO_NUM_NC) {
         Serial.println("LoRa pins not configured!");
         displayError("LoRa pins not configured!", true);
         return false;
@@ -217,7 +217,7 @@ void render() {
     int endLine = scrollOffset + maxMessages;
     if (endLine > messages.size()) endLine = messages.size();
     for (int i = scrollOffset; i < endLine; i++) {
-        tft.setTextColor(bruceConfig.priColor);
+        tft.setTextColor(mopieConfig.priColor);
         tft.drawString(messages[i], 10, yPos);
         yPos += ySpacing;
     }
@@ -244,7 +244,7 @@ void sendmsg() {
     Serial.println("C bttn");
     tft.fillScreen(TFT_BLACK);
     if (!intlora) {
-        tft.setTextColor(bruceConfig.priColor);
+        tft.setTextColor(mopieConfig.priColor);
 
         tft.setTextColor(TFT_RED);
         tft.setTextSize(2);
@@ -338,15 +338,15 @@ void mainloop() {
                         15,
                         0,
                         sweep,
-                        getColorVariation(bruceConfig.priColor),
-                        bruceConfig.bgColor
+                        getColorVariation(mopieConfig.priColor),
+                        mopieConfig.bgColor
                     );
                 }
                 vTaskDelay(10 / portTICK_PERIOD_MS);
             }
             // clear arc
             tft.drawArc(
-                tftWidth / 2, tftHeight / 2, 25, 15, 0, 360, bruceConfig.bgColor, bruceConfig.bgColor
+                tftWidth / 2, tftHeight / 2, 25, 15, 0, 360, mopieConfig.bgColor, mopieConfig.bgColor
             );
             LongPress = false;
             // #endif
@@ -409,9 +409,9 @@ void lorachat() {
     update = true;
     Serial.println("Initializing LoRa...");
     Serial.println(
-        "Pins: SCK:" + String(bruceConfigPins.LoRa_bus.sck) +
-        " MISO:" + String(bruceConfigPins.LoRa_bus.miso) + " MOSI:" + String(bruceConfigPins.LoRa_bus.mosi) +
-        " CS:" + String(bruceConfigPins.LoRa_bus.cs) + " RST:" + String(getLoraResetPin()) +
+        "Pins: SCK:" + String(mopieConfigPins.LoRa_bus.sck) +
+        " MISO:" + String(mopieConfigPins.LoRa_bus.miso) + " MOSI:" + String(mopieConfigPins.LoRa_bus.mosi) +
+        " CS:" + String(mopieConfigPins.LoRa_bus.cs) + " RST:" + String(getLoraResetPin()) +
         " IRQ:" + String(getLoraIrqPin()) + "BAND: " + String(bandMHz) +
         "MHz Radio: " + ((loraRadioVariant == LoRaRadioVariant::SX1262) ? "SX1262" : "SX1276") +
         " DisplayName:  " + displayName

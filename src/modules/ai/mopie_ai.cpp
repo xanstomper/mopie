@@ -84,7 +84,7 @@ static bool execAiCmd(const AiCmd &cmd, String &result) {
     if (cmd.name == "led") {
 #ifdef HAS_RGB_LED
         uint32_t rgb = strtoul(cmd.arg.c_str(), nullptr, 16);
-        bruceConfig.ledColor = rgb;
+        mopieConfig.ledColor = rgb;
         beginLed();
         setLedColor(rgb);
         result = "LED set to " + cmd.arg;
@@ -376,15 +376,15 @@ bool aiChatWeb(const String &q, String &reply, String &execResult) {
 // UI helpers
 // ---------------------------------------------------------------------------
 static void aiDrawHeader(const char *title) {
-    tft.fillScreen(bruceConfig.bgColor);
-    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.fillScreen(mopieConfig.bgColor);
+    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
     tft.setTextSize(1);
     tft.drawCentreString(title, tftWidth / 2, 4, 1);
-    tft.drawFastHLine(0, 14, tftWidth, bruceConfig.priColor);
+    tft.drawFastHLine(0, 14, tftWidth, mopieConfig.priColor);
 }
 
 static void aiWrapPrint(const String &txt, int startY) {
-    tft.setTextColor(TFT_WHITE, bruceConfig.bgColor);
+    tft.setTextColor(TFT_WHITE, mopieConfig.bgColor);
     tft.setTextSize(1);
     int y = startY;
     String line = "";
@@ -431,12 +431,12 @@ static void aiSetupMenu() {
             }},
             {"Status", []() {
                 aiDrawHeader("AI STATUS");
-                tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+                tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
                 tft.drawString("WiFi: " + String(WiFi.isConnected() ? "ON " + WiFi.localIP().toString() : "OFF"), 4, 22, 1);
                 tft.drawString("Key: " + String(aiKey.length() ? "set (" + String(aiKey.length()) + " chars)" : "NOT SET"), 4, 34, 1);
                 tft.drawString("Model: " + aiModel, 4, 46, 1);
                 tft.drawString("EP: " + aiEndpoint.substring(0, 30), 4, 58, 1);
-                tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+                tft.setTextColor(mopieConfig.secColor, mopieConfig.bgColor);
                 tft.drawCentreString("Browser: http://" + WiFi.localIP().toString() + "/ai", tftWidth/2, tftHeight - 22, 1);
                 while (!check(AnyKeyPress)) delay(50);
             }},
@@ -475,7 +475,7 @@ static void aiChatMenu() {
         if (q.length() == 0 || q == "\x1B") continue;
 
         aiDrawHeader("MOPIE AI");
-        tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+        tft.setTextColor(mopieConfig.secColor, mopieConfig.bgColor);
         tft.setTextSize(1);
         tft.drawString("You: " + q.substring(0, 36), 4, 20, 1);
         tft.drawCentreString("thinking...", tftWidth / 2, tftHeight / 2, 1);
@@ -487,11 +487,11 @@ static void aiChatMenu() {
             if (history.size() > 8) history.erase(history.begin());  // cap context
 
             // redraw area
-            tft.fillRect(0, 16, tftWidth, tftHeight - 30, bruceConfig.bgColor);
-            tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+            tft.fillRect(0, 16, tftWidth, tftHeight - 30, mopieConfig.bgColor);
+            tft.setTextColor(mopieConfig.secColor, mopieConfig.bgColor);
             tft.drawString("You:", 4, 18, 1);
             aiWrapPrint(q, 30);
-            tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+            tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
             tft.drawString("AI:", 4, 54, 1);
             aiWrapPrint(reply, 66);
 
@@ -500,7 +500,7 @@ static void aiChatMenu() {
             if (parseAiCmd(reply, cmd)) {
                 String result;
                 execAiCmd(cmd, result);
-                tft.setTextColor(DEFAULT_ACCENT, bruceConfig.bgColor);
+                tft.setTextColor(DEFAULT_ACCENT, mopieConfig.bgColor);
                 tft.drawString("[exec] " + cmd.name + ": " + result, 4, tftHeight - 30, 1);
             }
         } else {
@@ -527,7 +527,7 @@ void mopie_ai_setup() {
                     stopBLEStack();   // free heap for WiFi+web on 520KB chip
                     vTaskDelay(150);
                     aiDrawHeader("AI WEB SETUP");
-                    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+                    tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
                     tft.drawCentreString("Connecting to WiFi...", tftWidth / 2, tftHeight / 2, 1);
                     wifiConnectMenu(WIFI_STA);
                     // wait up to 10s for a real IP (DHCP), not just association
@@ -540,7 +540,7 @@ void mopie_ai_setup() {
                         // no router IP → fall back to access point (always 192.168.4.1)
                         useAP = true;
                         aiDrawHeader("NO ROUTER");
-                        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+                        tft.setTextColor(mopieConfig.priColor, mopieConfig.bgColor);
                         tft.drawCentreString("Using AP: MopieNet/mopienet", tftWidth / 2, tftHeight / 2, 1);
                         tft.drawCentreString("open http://192.168.4.1/ai", tftWidth / 2, tftHeight / 2 + 14, 1);
                         delay(1500);

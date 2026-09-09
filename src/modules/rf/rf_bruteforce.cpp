@@ -46,11 +46,11 @@ static inline void sendPulse(int txpin, int duration) {
 static bool rf_brute_start() {
     int txpin;
 
-    if (bruceConfigPins.rfModule == CC1101_SPI_MODULE) {
-        txpin = bruceConfigPins.CC1101_bus.io0;
+    if (mopieConfigPins.rfModule == CC1101_SPI_MODULE) {
+        txpin = mopieConfigPins.CC1101_bus.io0;
         if (!initRfModule("tx", brute_frequency)) return false;
     } else {
-        txpin = bruceConfigPins.rfTx;
+        txpin = mopieConfigPins.rfTx;
         if (!initRfModule("tx")) return false;
     }
 
@@ -87,8 +87,8 @@ static bool rf_brute_start() {
         if (code % 10 == 0) {
             displayRedStripe(
                 String(code) + "/" + String(total) + " " + proto.name,
-                getComplementaryColor2(bruceConfig.priColor),
-                bruceConfig.priColor
+                getComplementaryColor2(mopieConfig.priColor),
+                mopieConfig.priColor
             );
         }
     }

@@ -276,6 +276,52 @@ void dmNetStats() {
 }
 
 // ---------------------------------------------------------------------------
+// dmSummonRogue — broadcast a fake AP beacon for a captured target, as a lure.
+// Picks any AP from the recon set and summons a rogue twin via Mopie's own
+// beacon builder — a "catch, then lure" follow-up brucegotchi can't do.
+// ---------------------------------------------------------------------------
+void dmSummonRogue() {
+    std::vector<BeaconList> apList(registeredBeacons.begin(), registeredBeacons.end());
+    if (apList.empty()) { displayWarning("No APs seen yet", true); return; }
+
+    std::vector<Option> apOpts;
+    for (size_t i = 0; i < apList.size() && i < 12; i++) {
+        apOpts.push_back({dmMacStr((const char *)apList[i].MAC) + " ch" + String(apList[i].channel), [i]() {}, false});
+    }
+    apOpts.push_back({"Back", []() {}, false});
+    int pick = loopOptions(apOpts, MENU_TYPE_SUBMENU, "Summon rogue of");
+    if (pick < 0 || pick >= (int)apList.size()) return;
+
+    auto &tgt = apList[pick];
+    uint8_t bssid[6];
+    memcpy(bssid, tgt.MAC, 6);
+    bssid[0] |= 0x02;   // tweak the local-admin bit so it's recognizably "the twin"
+
+    tft.fillScreen(bruceConfig.bgColor);
+    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.drawCentreString("SUMMONING ROGUE AP", tftWidth / 2, 14, 1);
+    tft.setTextColor(TFT_RED, bruceConfig.bgColor);
+    tft.drawCentreString(dmMacStr((const char *)bssid), tftWidth / 2, 42, 1);
+    tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+    tft.drawCentreString("beaconing ch" + String(tgt.channel) + " ...", tftWidth / 2, 60, 1);
+
+    uint8_t frame[128];
+    // craft SSID = "rogue-" + short bssid
+    char ssid[20];
+    snprintf(ssid, sizeof(ssid), "rogue-%02X%02X%02X", bssid[3], bssid[4], bssid[5]);
+    size_t fl = mopie_build_beacon(frame, bssid, ssid);
+    unsigned long t0 = millis();
+    int sent = 0;
+    while (!check(EscPress) && millis() - t0 < 10000) {
+        if (fl) sent += mopie_send_raw(frame, fl, tgt.channel, 1);
+        vTaskDelay(120);
+    }
+    tft.fillScreen(bruceConfig.bgColor);
+    setMood(14, "(T_T)", "Rogue beacon done (" + String(sent) + ")");
+    updateUi(true);
+}
+
+// ---------------------------------------------------------------------------
 // RECON phase — hop all channels, build sorted AP list
 // ---------------------------------------------------------------------------
 static void reconPhase(MopieState &s) {
@@ -501,6 +547,7 @@ void detective_mopie_start() {
             options = {
                 {"Targeted Deauth", [&]() { dmTargetedDeauth(); }},
                 {"Net Stats", [&]() { dmNetStats(); }},
+                {"Summon Rogue AP", [&]() { dmSummonRogue(); }},
                 {"Find friends", yield},
                 {"Net beacon", send_pwnagotchi_beacon_main},
                 {channel_status.c_str(), toggle_all_channels},

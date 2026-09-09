@@ -12,4 +12,5 @@ void detective_mopie_setup();
 void pwnie_update();
 void dmTargetedDeauth();
 void dmNetStats();
+void dmSummonRogue();
 #endif

@@ -129,17 +129,29 @@ void drawTopCanvas() {
     tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
     tft.drawString(buffer, 108, 3);
 
-    // channel scan animation: 13 segment bar, filled up to current channel
+    // channel scan animation: 13 segment bar = real AP density per channel,
+    // with a moving sweep highlight so it reads as a live radar sweep.
     const int barY = canvas_top_h - 4;
-    const int segW = 6, segH = 8, gap = 1;
+    const int segW = 6, segH = 12, gap = 1;
+    static uint8_t sweep = 0;              // advancing highlight
+    long scanMs = millis();
+    long phase = scanMs / 220;             // sweep step every 220ms
+    sweep = phase;                         // just cycles as an int
+    int chCount[14] = {0};
+    for (const auto &b : registeredBeacons) {
+        if (b.channel >= 1 && b.channel <= 13) chCount[b.channel]++;
+    }
+    int maxC = 1;
+    for (int i = 1; i <= 13; i++) if (chCount[i] > maxC) maxC = chCount[i];
     for (int i = 0; i < 13; i++) {
         int x = 2 + i * (segW + gap);
-        uint16_t c;
-        if (i < ch && ch > 0 && ch <= 13) c = bruceConfig.secColor;
-        else c = bruceConfig.bgColor;
-        if (i == ch - 1) c = bruceConfig.priColor;
-        // height varies like a spectrum
-        int hh = segH / 2 + (i % 3) * 2;
+        int cn = chCount[i + 1];           // APs on channel i+1
+        int hh = 2 + (cn * (segH - 3)) / maxC;   // density-proportional height
+        if (cn == 0) hh = 3;
+        uint16_t c = bruceConfig.bgColor;
+        if (cn > 0) c = bruceConfig.secColor;                    // active channel
+        if (i + 1 == ch) c = bruceConfig.priColor;               // current channel
+        if ((int)(sweep % 13) == i) c = bruceConfig.secColor;    // sweep highlight
         tft.fillRect(x, barY - hh, segW, hh, c);
     }
     tft.drawLine(0, canvas_top_h - 1, display_w, canvas_top_h - 1, bruceConfig.priColor);

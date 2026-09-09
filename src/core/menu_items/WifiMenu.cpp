@@ -15,6 +15,7 @@
 #include "modules/wifi/evil_portal.h"
 #include "modules/wifi/karma_attack.h"
 #include "modules/wifi/mopie_tools.h"
+#include "modules/wifi/mopie_portal.h"
 #include "modules/wifi/mopie_tx.h"
 #include "modules/wifi/netcut.h"
 #include "modules/wifi/responder.h"
@@ -147,10 +148,20 @@ void WifiMenu::optionsMenu() {
         // Rand Mac + troll the ARP table (real MAC randomizer UI)
         wifiMACMenu();   // existing real MAC-menu (includes Random + custom)
     }});
-    options.push_back({"Evil Portal", [=]() {
-                           // WebUI cleanup now handled automatically inside EvilPortal constructor
-                           EvilPortal();
-                       }});
+    options.push_back({"Mopie Portal", [=]() {
+        // Mopie's from-scratch captive portal (replaces inherited EvilPortal as
+        // the menu surface). Fake AP + captive DNS + phishing page + cred CSV.
+        tft.fillScreen(bruceConfig.bgColor);
+        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.drawCentreString("Starting Mopie Portal...", tftWidth / 2, 20, 1);
+        int got = mopiePortal();
+        tft.fillScreen(bruceConfig.bgColor);
+        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.drawCentreString("Portal stopped", tftWidth / 2, 20, 1);
+        if (got >= 0) tft.drawCentreString(String(got) + " creds captured", tftWidth / 2, 40, 1);
+        else tft.drawCentreString("failed (low heap)", tftWidth / 2, 40, 1);
+        while (!check(AnyKeyPress)) delay(50);
+    }});
     options.push_back({"NetCut", [=]() { netcutMenu(); }});
     // options.push_back({"ReverseShell", [=]()       { ReverseShell(); }});
 #ifndef LITE_VERSION

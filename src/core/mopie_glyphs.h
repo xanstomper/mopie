@@ -43,13 +43,16 @@ inline void drawMopieGlyph(int g, int cx, int cy, int s) {
         break;
     }
     case GLYPH_RF: {
+        // Broadcast tower: mast + top dot + two arcs fanning UP over the top,
+        // all inside the s-box. TFT_eSPI drawArc: 0deg=6 o'clock, 180=top.
+        // Top fan = 90..270 sweep (through 180). Radii ≤ h*4/5 stay in-box.
         int ty = cy - h * 3 / 4;
         tft.drawWideLine(cx, ty + h / 4, cx, cy + h, lw + 1, P, P);          // mast
         tft.drawWideLine(cx - h * 3 / 5, cy + h, cx, cy + h / 5, lw, P, P);  // legs
         tft.drawWideLine(cx + h * 3 / 5, cy + h, cx, cy + h / 5, lw, P, P);
         tft.fillCircle(cx, ty, lw + 2, A);                                   // top
-        tft.drawArc(cx, ty, h * 9 / 10, h * 9 / 10 - lw, 130, 230, P, BG);   // waves
-        tft.drawArc(cx, ty, h * 6 / 5, h * 6 / 5 - lw, 140, 220, A, BG);
+        tft.drawArc(cx, ty, h * 3 / 5, h * 3 / 5 - lw, 90, 270, P, BG);      // inner wave (top)
+        tft.drawArc(cx, ty, h * 4 / 5, h * 4 / 5 - lw, 100, 260, A, BG);     // outer wave (top)
         tft.drawFastHLine(cx - h * 3 / 4, cy + h, s * 3 / 4, A);             // ground
         break;
     }

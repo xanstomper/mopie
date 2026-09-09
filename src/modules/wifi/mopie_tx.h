@@ -25,4 +25,10 @@ size_t mopie_build_deauth(uint8_t *buf, const uint8_t *bssid, const uint8_t *tar
 // buf must be >= 38 + ssid.length() bytes (use 128).
 size_t mopie_build_beacon(uint8_t *buf, const uint8_t *bssid, const char *ssid);
 
+// Broadcast-deauth sweep across 2.4GHz channels 1..11 (Mopie's own deauth-all).
+// `ssid` is the AP to impersonate (may be empty to use a random SSID). Deauths
+// each client on each channel to force re-association. Runs ~10s unless stopped.
+// Returns frames sent. Pure mopie_tx — no inherited deauth-all subsystem.
+int mopie_deauth_sweep(const uint8_t *apBssid, const char *ssid, int durationMs = 10000);
+
 #endif

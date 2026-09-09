@@ -121,12 +121,27 @@ void quickflashLEDx(uint8_t x) {
 
 void checkIrTxPin() {
     const std::vector<std::pair<String, int>> pins = IR_TX_PINS;
-    int count = 0;
-    for (auto pin : pins) {
-        if (pin.second == bruceConfigPins.irTx) count++;
+    // The M5StickC Plus has NO on-board IR LED. TXLED (GPIO 9) is the visible
+    // front LED — it cannot drive a real IR emitter. So a "Default" (TXLED) pin
+    // means the user has NOT wired an IR LED, and TV-B-Gone will do nothing.
+    if (bruceConfigPins.irTx == TXLED || bruceConfigPins.irTx <= 0) {
+        tft.fillScreen(bruceConfig.bgColor);
+        tft.setTextColor(TFT_RED, bruceConfig.bgColor);
+        tft.drawCentreString("NO IR LED ENABLED", tftWidth / 2, 12, 1);
+        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.drawCentreString("This board has no IR emitter.", tftWidth / 2, 34, 1);
+        tft.drawCentreString("Wire an IR LED, then pick its pin:", tftWidth / 2, 48, 1);
+        tft.drawCentreString("  G26 or G25 or Grove", tftWidth / 2, 62, 1);
+        delay(1600);
+        // Force the IR TX pin picker so they choose a real emitter pin
+        gsetIrTxPin(true);
     }
-    if (count > 0) return;
-    else gsetIrTxPin(true);
+    // validate final pin is in the known set
+    for (auto pin : pins) {
+        if (pin.second == bruceConfigPins.irTx) return;
+    }
+    // still not a known IR pin — reset to an IR-capable default and warn
+    if (!pins.empty()) bruceConfigPins.setIrTxPin(pins[0].second);
 }
 
 // Mutex setup - one-time initialization

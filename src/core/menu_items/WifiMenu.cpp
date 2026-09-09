@@ -14,6 +14,7 @@
 #include "modules/wifi/deauther.h"
 #include "modules/wifi/evil_portal.h"
 #include "modules/wifi/karma_attack.h"
+#include "modules/wifi/mopie_tools.h"
 #include "modules/wifi/mopie_tx.h"
 #include "modules/wifi/netcut.h"
 #include "modules/wifi/responder.h"
@@ -64,6 +65,8 @@ void WifiMenu::optionsMenu() {
         options.push_back({"AP info", displayAPInfo});
     }
     options.push_back({"Wifi Atks", wifi_atk_menu});
+    // ==== MOPIE ASSAULT KIT — Mopie-branded tactical console (own feel) ====
+    options.push_back({"Assault Kit", []() { mopieAssaultKit(); }});
     // ==== MOPIE TROLL TOOLBOX (real, reuses proven deauther/beacon primitives) ====
     options.push_back({"Troll: SSID Blast", [=]() {
         // Mopie's OWN from-scratch beacon flood — broadcasts a rotating set of

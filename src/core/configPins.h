@@ -119,7 +119,7 @@ public:
         }
     };
 
-    const char *filepath = "/brucePins.conf";
+    const char *filepath = "/mopiePins.conf";
 
     // SPI Buses
 

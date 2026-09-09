@@ -1,5 +1,5 @@
-#ifndef BRUCE_BLE_SERVICE_H
-#define BRUCE_BLE_SERVICE_H
+#ifndef MOPIE_BLE_SERVICE_H
+#define MOPIE_BLE_SERVICE_H
 #if !defined(LITE_VERSION)
 #include <NimBLEServer.h>
 
@@ -14,4 +14,4 @@ public:
     void setMTU(int new_mtu) { mtu = new_mtu; }
 };
 #endif
-#endif // BRUCE_BLE_SERVICE_H
+#endif // MOPIE_BLE_SERVICE_H

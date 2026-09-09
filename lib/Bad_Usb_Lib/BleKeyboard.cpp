@@ -420,18 +420,18 @@ size_t BleKeyboard::write(const uint8_t *buffer, size_t size) {
 }
 void BleKeyboard::ServerCallbacks::onConnect(NimBLEServer *pServer, NimBLEConnInfo &connInfo) {
     parent->connected = true;
-    Serial.println("BRUCE KEYBOARD: lib connected");
+    Serial.println("MOPIE KEYBOARD: lib connected");
 }
 void BleKeyboard::ServerCallbacks::onDisconnect(NimBLEServer *pServer, NimBLEConnInfo &connInfo, int reason) {
     parent->connected = false;
-    Serial.println("BRUCE KEYBOARD: lib disconnected");
+    Serial.println("MOPIE KEYBOARD: lib disconnected");
 }
 void BleKeyboard::ServerCallbacks::onAuthenticationComplete(NimBLEConnInfo &connInfo) {
     if (connInfo.isEncrypted()) {
-        Serial.println("BRUCE KEYBOARD: Paired successfully.");
+        Serial.println("MOPIE KEYBOARD: Paired successfully.");
         parent->connected = true;
     } else {
-        Serial.println("BRUCE KEYBOARD: Pairing failed");
+        Serial.println("MOPIE KEYBOARD: Pairing failed");
         parent->connected = false;
     }
 }
@@ -447,11 +447,11 @@ void BleKeyboard::CharacteristicCallbacks::onSubscribe(
     NimBLECharacteristic *pCharacteristic, NimBLEConnInfo &connInfo, uint16_t subValue
 ) {
     if (subValue == 0) {
-        Serial.println("BRUCE KEYBOARD: Client unsubscribed from notifications/indications.");
+        Serial.println("MOPIE KEYBOARD: Client unsubscribed from notifications/indications.");
         if (parent->m_subCount) parent->m_subCount--;
     } else {
         parent->m_subCount++;
-        Serial.println("BRUCE KEYBOARD: Client subscribed to notifications.");
+        Serial.println("MOPIE KEYBOARD: Client subscribed to notifications.");
     }
 }
 

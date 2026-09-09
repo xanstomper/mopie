@@ -40,7 +40,7 @@ typedef struct {
     JSTimer timers[MAX_TIMERS];
 } JSTimerContextState;
 
-static const char *kTimersStateProp = "__bruce_timers_state";
+static const char *kTimersStateProp = "__mopie_timers_state";
 
 static JSTimerContextState *get_timer_state(JSContext *ctx, bool create) {
     JSValue global = JS_GetGlobalObject(ctx);

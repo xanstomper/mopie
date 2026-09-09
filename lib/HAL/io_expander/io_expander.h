@@ -98,7 +98,7 @@ public:
         output(IO_EXP_VIBRO, LOW); // SMOOCHIE||REAPER
         output(IO_EXP_CC_RX, LOW); // SMOOCHIE||REAPER
         output(IO_EXP_CC_TX, LOW); // SMOOCHIE||REAPER
-        output(IO_EXP_LOGO, HIGH); // BRUCE LOGO LED ON REAPER
+        output(IO_EXP_LOGO, HIGH); // MOPIE LOGO LED ON REAPER
         output(IO_EXP_NRF, HIGH);  // NRF ON BY DEFAULT FOR C5
         output(IO_EXP_NFC, HIGH);  // ST25R NFC chip power on Lilygo T-LoraPager
 

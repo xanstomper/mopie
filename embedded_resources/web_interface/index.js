@@ -133,7 +133,7 @@ async function requestGet(url, data) {
   return new Promise((resolve, reject) => {
     let req = new XMLHttpRequest();
     let realUrl = url;
-    if (IS_DEV) realUrl = "/bruce" + url;
+    if (IS_DEV) realUrl = "/mopie" + url;
     if (data) {
       let urlParams = new URLSearchParams(data);
       realUrl += "?" + urlParams.toString();
@@ -164,7 +164,7 @@ async function requestPost(url, data) {
     }
 
     let realUrl = url;
-    if (IS_DEV) realUrl = "/bruce" + url;
+    if (IS_DEV) realUrl = "/mopie" + url;
     let req = new XMLHttpRequest();
     req.open("POST", realUrl, true);
     req.onload = () => {
@@ -256,7 +256,7 @@ async function uploadFile() {
     fd.append("fs", currentDrive);
 
     let realUrl = `/upload`;
-    if (IS_DEV) realUrl = "/bruce" + realUrl;
+    if (IS_DEV) realUrl = "/mopie" + realUrl;
     let req = new XMLHttpRequest();
     req.upload.onprogress = (e) => {
       if (e.lengthComputable) {
@@ -383,7 +383,7 @@ function renderFileRow(fileList) {
         e.querySelector(".col-action").classList.add("type-file");
 
         let downloadUrl = `/file?fs=${currentDrive}&name=${encodeURIComponent(dPath)}&action=download`;
-        if (IS_DEV) downloadUrl = "/bruce" + downloadUrl;
+        if (IS_DEV) downloadUrl = "/mopie" + downloadUrl;
         e.querySelector(".act-download").setAttribute("download", name);
         e.querySelector(".act-download").setAttribute("href", downloadUrl);
 
@@ -464,7 +464,7 @@ async function fetchSystemInfo() {
   Dialog.loading.show("Fetching system info...");
   let req = await requestGet("/systeminfo");
   let info = JSON.parse(req);
-  $(".bruce-version").textContent = info.BRUCE_VERSION;
+  $(".mopie-version").textContent = info.MOPIE_VERSION;
   $(".free-space .free-sd span").innerHTML =
     `${info.SD.used} / ${info.SD.total}`;
   $(".free-space .free-fs span").innerHTML =
@@ -531,7 +531,7 @@ async function reloadScreen() {
   SCREEN_RELOAD = true;
   btnForceReload.classList.add("reloading");
   try {
-    let binResponse = await fetch((IS_DEV ? "/bruce" : "") + "/getscreen");
+    let binResponse = await fetch((IS_DEV ? "/mopie" : "") + "/getscreen");
     let arrayBuffer = await binResponse.arrayBuffer();
     let screenData = new Uint8Array(arrayBuffer);
     await renderTFT(screenData);
@@ -595,7 +595,7 @@ async function renderTFT(data) {
   };
 
   const drawImageCached = async (img_url, input) => {
-    if (IS_DEV) img_url = "/bruce" + img_url;
+    if (IS_DEV) img_url = "/mopie" + img_url;
     let img = await loadImage(img_url);
     let drawX = input.x;
     let drawY = input.y;

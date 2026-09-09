@@ -10,4 +10,6 @@ Thanks to @bmorcelli for his help doing a better code.
 void detective_mopie_start();
 void detective_mopie_setup();
 void pwnie_update();
+void dmTargetedDeauth();
+void dmNetStats();
 #endif

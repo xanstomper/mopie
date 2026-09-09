@@ -7,6 +7,7 @@
 #include "modules/ble/ble_ninebot.h"
 #include "modules/ble/ble_spam.h"
 #include "modules/ai/mopie_phone_hijack.h"
+#include "modules/ble/mopie_ble_troll.h"
 #if !defined(LITE_VERSION)
 #include "modules/ble/BLE_Suite.h"
 #else
@@ -34,6 +35,19 @@ void BleMenu::optionsMenu() {
                        }});
     options.push_back({"Bad BLE", [=]() { ducky_setup(hid_ble, true); }});
     options.push_back({"Phone Hijack", [=]() { mopie_phone_hijack(); }});
+    options.push_back({"Disconnect Flood", [=]() {
+        // Mopie-owned BLE disconnect churn: scan + connect/disconnect nearby
+        // peripherals. Runs ~10s; real connect/disconnect, not just adv spam.
+        tft.fillScreen(bruceConfig.bgColor);
+        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.drawCentreString("Disconnect Flood ~10s", tftWidth / 2, 24, 1);
+        int cycles = mopieBLEFlood(10000);
+        tft.fillScreen(bruceConfig.bgColor);
+        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.drawCentreString("Flood done", tftWidth / 2, 20, 1);
+        tft.drawCentreString(String(cycles) + " connect cycles", tftWidth / 2, 40, 1);
+        while (!check(AnyKeyPress)) delay(50);
+    }});
     options.push_back({"BLE Keyboard", [=]() { ducky_keyboard(hid_ble, true); }});
 #endif
     options.push_back({"BLE Spam", [=]() { spamMenu(); }});

@@ -14,6 +14,7 @@
 #include "modules/wifi/deauther.h"
 #include "modules/wifi/evil_portal.h"
 #include "modules/wifi/karma_attack.h"
+#include "modules/wifi/mopie_tx.h"
 #include "modules/wifi/netcut.h"
 #include "modules/wifi/responder.h"
 #include "modules/wifi/scan_hosts.h"
@@ -65,13 +66,32 @@ void WifiMenu::optionsMenu() {
     options.push_back({"Wifi Atks", wifi_atk_menu});
     // ==== MOPIE TROLL TOOLBOX (real, reuses proven deauther/beacon primitives) ====
     options.push_back({"Troll: SSID Blast", [=]() {
-        // Broadcast a rotating set of funny fake APs via beaconAttack() re-scan flood
+        // Mopie's OWN from-scratch beacon flood — broadcasts a rotating set of
+        // funny SSIDs via mopie_build_beacon, no inherited beaconAttack/template.
+        static const char *funny[] = {
+            "FREE_WIFI_5G", "FBI_SURVEILLANCE_VAN", "Get_Off_My_Lawn",
+            "Pretty_Fly_For_WiFi", "Skynet_Backup", "NSA_Truck", "Dont_Connect",
+        };
+        const int N = sizeof(funny) / sizeof(funny[0]);
         tft.fillScreen(bruceConfig.bgColor);
         tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
-        tft.drawCentreString("SSID Blast (beacons)", tftWidth / 2, 10, 1);
-        tft.drawCentreString("Funny APs everywhere", tftWidth / 2, 40, 1);
-        tft.drawCentreString("PWR to stop", tftWidth / 2, 60, 1);
-        beaconAttack();   // existing real beacon flood w/ themed SSIDs
+        tft.drawCentreString("SSID Blast (own engine)", tftWidth / 2, 10, 1);
+        uint8_t bssid[6] = {0x02, 0, 0, 0, 0, 0};  // locally administered
+        for (int k = 1; k < 6; k++) bssid[k] = (uint8_t)random(256);
+        unsigned long t0 = millis();
+        while (!check(EscPress) && millis() - t0 < 20000) {
+            for (int f = 0; f < N; f++) {
+                uint8_t beacon[128];
+                size_t blen = mopie_build_beacon(beacon, bssid, funny[f]);
+                if (blen) mopie_send_raw(beacon, blen, 6, 2);
+                // bump the SSID field's channel tag? no — just re-send with fresh
+                // randomize the source MAC periodically for effect
+                if (random(4) == 0) { for (int k = 1; k < 6; k++) bssid[k] = (uint8_t)random(256); }
+            }
+            tft.drawCentreString(String((int)((millis() - t0) / 1000)) + "s of trolling", tftWidth / 2, 60, 1);
+            vTaskDelay(50);
+        }
+        tft.fillScreen(bruceConfig.bgColor);
     }});
     options.push_back({"Troll: Kick 'em All", [=]() {
         // Deauth every client on every channel — classic "kick everyone off"

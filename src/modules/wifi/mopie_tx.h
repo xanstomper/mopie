@@ -19,4 +19,10 @@ int mopie_send_raw(const uint8_t *frame, size_t len, uint8_t channel, int retrie
 size_t mopie_build_deauth(uint8_t *buf, const uint8_t *bssid, const uint8_t *target,
                           uint16_t reason = 0x0001);
 
+// Build a beacon frame for SSID `ssid` under MAC `bssid` (randomize + set the
+// local-admin bit). Cap ability to the open-network capability field.
+// Returns full frame length (varies with SSID length in bytes) or 0 on error.
+// buf must be >= 38 + ssid.length() bytes (use 128).
+size_t mopie_build_beacon(uint8_t *buf, const uint8_t *bssid, const char *ssid);
+
 #endif

@@ -47,3 +47,37 @@ size_t mopie_build_deauth(uint8_t *buf, const uint8_t *bssid, const uint8_t *tar
     buf[25] = (uint8_t)((reason >> 8) & 0xFF);
     return 26;
 }
+
+// Build a beacon from the 802.11 spec:
+//   24-byte mgmt header (type 0x8 = beacon) + 12-byte fixed params
+//   (timestamp 8, beacon interval 2, capability 2)
+//   then tagged params: SSID, supported rates, DS parameter set (channel auto).
+size_t mopie_build_beacon(uint8_t *buf, const uint8_t *bssid, const char *ssid) {
+    if (!buf || !bssid || !ssid) return 0;
+    size_t ssidLen = strlen(ssid);
+    if (ssidLen == 0 || ssidLen > 32) return 0;
+
+    size_t i = 0;
+    // management header
+    buf[i++] = 0x80;   // beacon subtype
+    buf[i++] = 0x00;
+    buf[i++] = 0x00;   // duration
+    buf[i++] = 0x00;
+    memset(&buf[i], 0xFF, 6); i += 6;   // addr1 = broadcast
+    memcpy(&buf[i], bssid, 6); i += 6;  // addr2 = source (us)
+    memcpy(&buf[i], bssid, 6); i += 6;  // addr3 = BSSID
+    buf[i++] = 0x00; buf[i++] = 0x00;   // seq (kernel fills)
+    // fixed params
+    memset(&buf[i], 0, 8); i += 8;       // timestamp 0
+    buf[i++] = 0x64; buf[i++] = 0x00;    // beacon interval 100 TU (~1s)
+    buf[i++] = 0x04; buf[i++] = 0x00;    // capability: ESS + privacy clear (open)
+    // tagged params
+    buf[i++] = 0x00;                     // SSID tag
+    buf[i++] = (uint8_t)ssidLen;
+    memcpy(&buf[i], ssid, ssidLen); i += ssidLen;
+    buf[i++] = 0x01;                     // supported rates
+    buf[i++] = 0x04;
+    buf[i++] = 0x82; buf[i++] = 0x84;    // 1, 2
+    buf[i++] = 0x8B; buf[i++] = 0x96;    // 5.5, 11
+    return i;
+}

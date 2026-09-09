@@ -405,7 +405,7 @@ void configureWebServer() {
 
     // Index — land on the Mopie Agent chat by default (the primary face of the device)
     server->on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-        // Redirect straight to the Mopie Agent dashboard, not Bruce's management UI
+        // Redirect straight to the Mopie Agent dashboard, the primary landing page
         AsyncWebServerResponse *res = request->beginResponse(302);
         res->addHeader("Location", "/ai");
         request->send(res);

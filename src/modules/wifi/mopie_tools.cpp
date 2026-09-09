@@ -9,8 +9,8 @@
 #include <Arduino.h>
 #include <globals.h>
 
-// Mopie Assault Kit — a Mopie-branded console distinct from Bruce's option
-// lists. Draws a tactical header, then presents each tool as a bracketed row
+// Mopie Assault Kit — a Mopie-branded tactical console with its own layout.
+// Draws a tactical header, then presents each tool as a bracketed row
 // with a one-line effect label. Selecting runs the Mopie-owned primitive.
 
 namespace {

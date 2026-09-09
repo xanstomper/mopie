@@ -115,6 +115,27 @@ void WifiMenu::optionsMenu() {
         tft.drawCentreString(String(sent) + " deauth frames", tftWidth / 2, 40, 1);
         while (!check(AnyKeyPress)) delay(50);
     }});
+    options.push_back({"Troll: Probe Flood", [=]() {
+        // Mopie's OWN probe-request flood — random MAC floods fake SSID hunts.
+        static const char *targets[] = {"Corp_WiFi", "IoT_Net", "CCTV_Backhaul", "Nobody_home"};
+        const int NT = sizeof(targets) / sizeof(targets[0]);
+        tft.fillScreen(bruceConfig.bgColor);
+        tft.setTextColor(bruceConfig.priColor, bruceConfig.bgColor);
+        tft.drawCentreString("Probe flood (own engine)", tftWidth / 2, 10, 1);
+        uint8_t src[6] = {0x02, 0, 0, 0, 0, 0};
+        unsigned long t0 = millis();
+        uint32_t sent = 0;
+        while (!check(EscPress) && millis() - t0 < 8000) {
+            for (int k = 1; k < 6; k++) src[k] = (uint8_t)random(256);   // fresh MAC
+            uint8_t p[64];
+            size_t plen = mopie_build_probe(p, src, targets[random(NT)]);
+            if (plen) sent += (uint32_t)mopie_send_raw(p, plen, 1, 1);
+            tft.drawCentreString(String(sent) + " probes", tftWidth / 2, 40, 1);
+            vTaskDelay(15);
+        }
+        tft.drawCentreString("Probe flood done", tftWidth / 2, tftHeight - 20, 1);
+        while (!check(AnyKeyPress)) delay(50);
+    }});
     options.push_back({"Troll: Deauth + Mock", [=]() {
         // Kick a target off, then the deauth routine warns them — classic prank
         deauthAllByChannel();  // real channel-by-channel deauth sweep

@@ -31,4 +31,10 @@ size_t mopie_build_beacon(uint8_t *buf, const uint8_t *bssid, const char *ssid);
 // Returns frames sent. Pure mopie_tx — no inherited deauth-all subsystem.
 int mopie_deauth_sweep(const uint8_t *apBssid, const char *ssid, int durationMs = 10000);
 
+// Build a probe-request management frame (type 0x40) looking for `ssid`.
+// A station sends these to find an AP; flooding SSIDs makes nearby sniffers/APs
+// log the device actively probing. Returns frame length (>24) or 0 on error.
+// buf must be >= 26 + ssid.length() bytes.
+size_t mopie_build_probe(uint8_t *buf, const uint8_t *srcMac, const char *ssid);
+
 #endif

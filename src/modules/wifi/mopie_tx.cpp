@@ -108,3 +108,31 @@ int mopie_deauth_sweep(const uint8_t *apBssid, const char *ssid, int durationMs)
     }
     return sent;
 }
+
+// Build a probe request. Station is srcMac, broadcast dest, SSID tag in payload.
+// A probe-request flood from a random MAC reads as an active scanner.
+size_t mopie_build_probe(uint8_t *buf, const uint8_t *srcMac, const char *ssid) {
+    if (!buf || ssid == nullptr) return 0;
+    size_t ssidLen = strlen(ssid);
+    if (ssidLen > 32) return 0;
+
+    size_t i = 0;
+    buf[i++] = 0x40;   // probe request
+    buf[i++] = 0x00;
+    buf[i++] = 0x00;   // duration
+    buf[i++] = 0x00;
+    memset(&buf[i], 0xFF, 6); i += 6;   // addr1 = broadcast
+    memcpy(&buf[i], srcMac, 6); i += 6; // addr2 = our (probe) MAC
+    memset(&buf[i], 0, 6); i += 6;      // addr3 = 0 for probe
+    buf[i++] = 0x00; buf[i++] = 0x00;   // seq (kernel fills)
+    if (ssidLen) {
+        buf[i++] = 0x00;                 // SSID tag
+        buf[i++] = (uint8_t)ssidLen;
+        memcpy(&buf[i], ssid, ssidLen); i += ssidLen;
+    }
+    // supported rates
+    buf[i++] = 0x01;
+    buf[i++] = 0x04;
+    buf[i++] = 0x82; buf[i++] = 0x84; buf[i++] = 0x8B; buf[i++] = 0x96;
+    return i;
+}
